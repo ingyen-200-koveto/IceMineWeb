@@ -13,8 +13,9 @@
 <meta property="og:title" content="IceMine Network | Magyarország legmenőbb Minecraft közössége">
 <meta property="og:description" content="Készülj fel a fagyos kalandokra! Egyedi fejlesztésű játékmódok, havonta megújuló események és kiegyensúlyozott gazdaság. Támogatott verziók: 1.20 – 1.21.x.">
 <script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite","name":"IceMine","url":"https://icemine.hu/"}</script>
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;800&family=Sora:wght@600;800&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:Sora;src:url(/fonts/sora.woff) format("woff");font-weight:100 800;font-display:swap}
+@font-face{font-family:Manrope;src:url(/fonts/manrope.woff) format("woff");font-weight:200 800;font-display:swap}
 :root{--bg:#f2f8fc;--bg2:#e4effa;--solid:#fff;--ink:#0a1e2b;--mute:#587184;--ice:#1c8ad6;--line:#0b3a5b1f;--bad:#c62828;--ok:#14884f;--glow:#7fd3ff;--sh:0 18px 40px -24px #0b3a5b77;--hh:72px;
 box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06121b;--bg2:#0a1d2b;--solid:#0f2638;--ink:#e8f4fb;--mute:#8fb1c6;--ice:#5cc0ff;--line:#8fd0ff26;--bad:#ff8a80;--ok:#5fe0a3;--glow:#2a8fd0;--sh:0 18px 40px -24px #000}}
@@ -368,6 +369,29 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .dtabs button.on{background:var(--ink);color:var(--bg);box-shadow:none}
 .doc{display:none;padding:24px;min-height:220px}.doc.on{display:block}
 .page .doc h3{margin:0;font-size:22px}
+.doc{line-height:1.65;font-size:15px}
+.doc .upd{margin:4px 0 14px;color:var(--mute);font-size:13.5px;font-weight:600}
+.page .doc h4,.docview .doc h4{margin:24px 0 8px;font:800 16.5px Sora,sans-serif;color:var(--ink)}
+.doc p{margin:0 0 10px}
+.doc ul,.doc ol{margin:0 0 10px;padding-left:22px}
+.doc li{margin:0 0 6px}
+.doc ul.dl{list-style:none;padding:14px 16px;border-radius:14px;background:var(--bg2)}
+.doc a{color:var(--ice);font-weight:700}
+mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;font-weight:700}
+.docview{position:fixed;inset:0;z-index:80;overflow-y:auto;background:var(--bg);-webkit-overflow-scrolling:touch}
+.dvin{max-width:860px;margin:0 auto;padding:18px 16px calc(40px + env(safe-area-inset-bottom,0px))}
+.dvhead{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:12px;margin:-18px -16px 14px;padding:12px 16px;background:color-mix(in srgb,var(--bg) 88%,transparent);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+.dvhead .lg{height:46px;width:auto}
+.dvhead .x{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font:700 22px/1 Sora,sans-serif;cursor:pointer}
+.dvhead h2{flex:1;margin:0;font-size:20px}
+.chk{display:flex;align-items:flex-start;gap:10px;font-weight:600;font-size:13.5px;line-height:1.5;color:var(--mute);cursor:pointer}
+.chk input{flex:none;width:20px;height:20px;margin:1px 0 0;accent-color:#1c8ad6;cursor:pointer}
+.chk a{color:var(--ice);font-weight:700}
+.consent{margin:18px 0 0;padding:14px 16px;border-radius:16px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.consent.need{box-shadow:inset 0 0 0 2px var(--bad)}
+.disc{margin:14px auto 0;max-width:360px;text-align:center;color:var(--mute);font-size:10.5px;letter-spacing:.02em;line-height:1.5;opacity:.85}
+.links .disc{margin:12px 10px 0;text-align:left;max-width:none}
+.afoot.docs{margin-top:10px}
 .pw{position:relative}
 .pw input{padding-right:50px}
 .eye{position:absolute;right:6px;top:50%;transform:translateY(-50%);width:38px;height:38px;display:grid;place-items:center;border:0;border-radius:10px;background:none;color:var(--mute);cursor:pointer}
@@ -420,6 +444,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
         <div class="mwrap" id="aMeterW" hidden><div class="meter" id="aMeter" data-s="0"><i></i><i></i><i></i><i></i></div><span class="mlabel" id="aMeterL"></span></div>
         <label id="pass2Row" hidden>Jelszó újra
           <input name="pass2" type="password" autocomplete="new-password"></label>
+        <label class="chk" id="accRow" hidden><input type="checkbox" name="accept"><span>Elfogadom az <a href="#aszf">Általános Szerződési Feltételeket</a> és a <a href="#szabalyzat">Szabályzatot</a>, és megismertem az <a href="#adatvedelem">Adatkezelési tájékoztatót</a>.</span></label>
         <div class="msg" id="aMsg" aria-live="polite"></div>
         <button class="btn mc" type="submit" id="aBtn">Belépés</button>
         <button class="linkbtn" type="button" id="forgotBtn">Elfelejtettem a jelszavam</button>
@@ -462,6 +487,8 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
         </div>
       </form>
       <div class="afoot"><a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discord</a><a href="https://youtube.com/@icemine_1?si=AdKZdLQsWEK8M_tw" target="_blank" rel="noopener">YouTube</a><a href="https://www.instagram.com/icemine_1" target="_blank" rel="noopener">Instagram</a><a href="mailto:icemine2026@gmail.com">Kapcsolat</a></div>
+      <div class="afoot docs"><a href="#szabalyzat">Szabályzat</a><a href="#aszf">ÁSZF</a><a href="#adatvedelem">Adatvédelem</a><a href="#visszaterites">Visszatérítés</a></div>
+      <p class="disc">NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</p>
     </div>
   </div>
 </div>
@@ -491,6 +518,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
         <a class="lk" href="https://youtube.com/@icemine_1?si=AdKZdLQsWEK8M_tw" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg>YouTube</a>
         <a class="lk" href="https://www.instagram.com/icemine_1" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg>Instagram</a>
         <a class="lk" href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Discord</a>
+        <p class="disc">NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</p>
       </div>
     </aside>
     <main id="content">
@@ -561,6 +589,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
           <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="rankBal">0</b></div>
         </div>
         <div id="rankNote" role="status" aria-live="polite"></div>
+        <label class="chk consent" id="rkConsentRow" style="margin:0 0 16px"><input type="checkbox" id="rkConsent"><span>Forintos vásárlásnál: kérem a rang azonnali jóváírását, és tudomásul veszem, hogy ezzel elveszítem a 14 napos elállási jogomat. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
         <div class="rbar"><small>Jutalmak ebben a játékmódban:</small><div class="rmodes" id="rModes" role="group" aria-label="Játékmód"></div></div>
         <div class="msg" id="rankMsg" aria-live="polite"></div>
         <div class="rgrid" id="rankGrid"></div>
@@ -574,6 +603,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
         </div>
         <div id="payNote" role="status" aria-live="polite"></div>
         <div class="packs" id="packs" role="radiogroup" aria-label="IceCoin csomagok"></div>
+        <label class="chk consent" id="coConsentRow"><input type="checkbox" id="coConsent"><span>Kérem az IceCoin azonnali jóváírását, és tudomásul veszem, hogy ezzel elveszítem a 14 napos elállási jogomat. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
         <div class="checkout">
           <div class="sel"><small>Kiválasztott csomag</small><b id="coSel">Válassz egy csomagot</b><span id="coPrice"></span></div>
           <button class="btn" type="button" id="coBtn" disabled>Tovább a fizetéshez</button>
@@ -584,7 +614,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
           <div><b>2</b>Fizesd ki a rendelést</div>
           <div><b>3</b>Az IceCoin a fiókodra kerül</div>
         </div>
-        <p class="legal">A vásárlásra az <a href="#dokumentumok">ÁSZF</a> és a <a href="#dokumentumok">visszatérítési feltételek</a> vonatkoznak.</p>
+        <p class="legal">A vásárlásra az <a href="#aszf">ÁSZF</a> és a <a href="#visszaterites">visszatérítési feltételek</a> vonatkoznak. A fizetést a Stripe bonyolítja, a kártyaadataidat nem látjuk.</p>
       </section>
 
       <section class="page" data-page="szerencsekerek">
@@ -614,16 +644,241 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 
       <section class="page" data-page="dokumentumok">
         <h2>Dokumentumok</h2>
+        <div id="docsBox">
         <div class="dtabs">
           <button type="button" class="on" data-d="szabalyzat">Szabályzat</button>
           <button type="button" data-d="aszf">ÁSZF</button>
           <button type="button" data-d="adatvedelem">Adatvédelem</button>
           <button type="button" data-d="visszaterites">Visszatérítés</button>
         </div>
-        <div class="card doc on" data-doc="szabalyzat"><h3>Szabályzat</h3></div>
-        <div class="card doc" data-doc="aszf"><h3>ÁSZF</h3></div>
-        <div class="card doc" data-doc="adatvedelem"><h3>Adatvédelem</h3></div>
-        <div class="card doc" data-doc="visszaterites"><h3>Visszatérítés</h3></div>
+        <div class="card doc on" data-doc="szabalyzat">
+          <h3>Szabályzat</h3>
+          <p class="upd">Hatályos: 2026. október 12-től</p>
+          <p>A Szabályzat az IceMine Minecraft szerverre (play.icemine.hu), az icemine.hu weboldalra és az IceMine hivatalos Discord szerverére vonatkozik. A játékkal és a regisztrációval elfogadod. Ha nem ismered a szabályokat, az nem mentesít a következmények alól.</p>
+
+          <h4>1. Általános</h4>
+          <ul>
+            <li>A staff (adminisztrátorok, moderátorok) utasításait követni kell. Azokban az esetekben, amelyekről a Szabályzat nem rendelkezik, a staff dönt.</li>
+            <li>Az egyes játékmódokban (pl. Kingdoms, KitPvP, SkyPvP) külön szabályok is lehetnek. Ezek az adott játékmódban érvényesek.</li>
+          </ul>
+
+          <h4>2. Viselkedés és chat</h4>
+          <ul>
+            <li>Tilos más játékosok sértegetése, zaklatása, fenyegetése, valamint bármilyen diszkriminatív (pl. származás, vallás, nem, szexuális irányultság alapján történő) megnyilvánulás.</li>
+            <li>Tilos a spam, a flood, a csupa nagybetűs írás és a karakterek felesleges ismétlése.</li>
+            <li>Tilos más szerverek, weboldalak, Discord szerverek reklámozása.</li>
+            <li>Tilos trágár, szexuális, erőszakos vagy más módon nem mindenki számára megfelelő tartalom megosztása chatben, táblán, építményen, felhasználónévben vagy skinen.</li>
+            <li>Tilos más személyes adatainak (pl. lakcím, telefonszám, valódi név, fénykép) kiadása.</li>
+            <li>Tilos a staff tagjainak megszemélyesítése.</li>
+          </ul>
+
+          <h4>3. Játékmenet</h4>
+          <ul>
+            <li>Tilos minden csaló kliens, mod vagy program használata (pl. KillAura, Fly, X-Ray, AutoClicker, makrók, automatizáló botok). Teljesítményjavító és kozmetikai modok (pl. OptiFine, Sodium, Iris) használhatók.</li>
+            <li>Tilos a játék vagy a szerver hibáinak (bug, glitch, tárgyduplikálás) kihasználása. A talált hibát jelentsd a staffnak.</li>
+            <li>Tilos más játékosok becsapása (scam), például kereskedésnél.</li>
+            <li>Tilos a griefelés, a lopás védett területről, valamint a szerver szándékos lassítása (pl. lag gépek).</li>
+          </ul>
+
+          <h4>4. Fiók, IceCoin és vásárlás</h4>
+          <ul>
+            <li>A fiókodért te felelsz. Ne add ki senkinek a jelszavad, a fiók megosztása a saját felelősséged.</li>
+            <li>Tilos IceCoint, rangot, játékbeli tárgyat vagy fiókot valódi pénzért, illetve más játék vagy szerver javaiért adni-venni.</li>
+            <li>Tilos több fiók létrehozása az ingyenes jutalmak (pl. a heti ingyenes szerencsekerék-pörgetés) kihasználására.</li>
+            <li>A felhasználónév és a feltöltött skin nem lehet sértő, trágár vagy félrevezető (pl. nem tűnhet a staff tagjának).</li>
+          </ul>
+
+          <h4>5. Büntetések</h4>
+          <ul>
+            <li>A szabályszegés lehetséges következményei: figyelmeztetés, némítás (mute), kirúgás (kick), ideiglenes vagy végleges kitiltás (ban).</li>
+            <li>A büntetés mértéke a szabályszegés súlyától és ismétlődésétől függ. Súlyos esetben (pl. csalás, fiókfeltörés, valódi pénzes kereskedés) azonnali végleges kitiltás is járhat.</li>
+            <li>A kitiltás hatásait a virtuális javakra (IceCoin, rangok) az <a href="#aszf">ÁSZF</a> szabályozza.</li>
+          </ul>
+
+          <h4>6. Jelentés és fellebbezés</h4>
+          <p>Szabályszegést jelenteni és büntetés ellen fellebbezni a <a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discord szerveren</a> vagy e-mailben lehet: <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a>. Bizonyíték (képernyőkép, videó) csatolása gyorsítja az ügyintézést.</p>
+
+          <h4>7. Módosítás</h4>
+          <p>A Szabályzatot az üzemeltető módosíthatja. A mindenkori hatályos változat ezen az oldalon olvasható.</p>
+        </div>
+
+        <div class="card doc" data-doc="aszf">
+          <h3>Általános Szerződési Feltételek (ÁSZF)</h3>
+          <p class="upd">Hatályos: 2026. október 12-től</p>
+
+          <h4>1. A Szolgáltató adatai</h4>
+          <ul class="dl">
+            <li><b>Név / cégnév:</b> <mark class="todo">[ÜZEMELTETŐ NEVE]</mark></li>
+            <li><b>Székhely / cím:</b> <mark class="todo">[CÍM]</mark></li>
+            <li><b>Adószám:</b> <mark class="todo">[ADÓSZÁM]</mark></li>
+            <li><b>Nyilvántartási szám / cégjegyzékszám:</b> <mark class="todo">[NYILVÁNTARTÁSI SZÁM]</mark></li>
+            <li><b>E-mail:</b> <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a></li>
+            <li><b>Weboldal:</b> https://icemine.hu &nbsp;·&nbsp; <b>Minecraft szerver:</b> play.icemine.hu</li>
+            <li><b>Tárhelyszolgáltató:</b> Rackhost Zrt., 6722 Szeged, Tisza Lajos krt. 41., info@rackhost.hu, +36 1 445 1200</li>
+          </ul>
+
+          <h4>2. Az ÁSZF hatálya és elfogadása</h4>
+          <ul>
+            <li>Az ÁSZF a Szolgáltató és az icemine.hu weboldalt használó, ott regisztráló vagy vásárló személy (a továbbiakban: Felhasználó) közötti jogviszonyra vonatkozik.</li>
+            <li>A Felhasználó a regisztrációkor, a megfelelő jelölőnégyzet bejelölésével fogadja el az ÁSZF-et és a <a href="#szabalyzat">Szabályzatot</a>.</li>
+            <li>A szerződés elektronikus úton jön létre, nem minősül írásba foglalt szerződésnek, nyelve magyar. A vásárlások adatait a Szolgáltató elektronikusan rögzíti, és a jogszabályokban előírt ideig megőrzi.</li>
+            <li>Az IceMine nem hivatalos Minecraft szolgáltatás. Nem a Mojang vagy a Microsoft jóváhagyásával készült, és nem áll kapcsolatban velük. (NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.) A Minecraft játékot a Felhasználónak külön kell beszereznie.</li>
+          </ul>
+
+          <h4>3. Regisztráció és felhasználói fiók</h4>
+          <ul>
+            <li>A regisztrációhoz felhasználónév, e-mail cím és jelszó szükséges. A fiókot az e-mailben kapott kóddal vagy linkkel kell megerősíteni.</li>
+            <li>A Felhasználó köteles valós, saját e-mail címet megadni, és jelszavát titokban tartani. A fiókjával végzett műveletekért a Felhasználó felel.</li>
+            <li>A felhasználónév a Beállítások oldalon 2550 IceCoinért módosítható.</li>
+            <li>A Felhasználó bármikor kérheti fiókja törlését a <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a> címen. Törléskor a fiókhoz tartozó virtuális javak (IceCoin, rang, skin) megszűnnek, pénzben nem téríthetők meg.</li>
+          </ul>
+
+          <h4>4. Kiskorú Felhasználók</h4>
+          <p>16 év alatti személy csak a törvényes képviselője (szülője) hozzájárulásával regisztrálhat. 18 év alatti személy csak a törvényes képviselője hozzájárulásával vásárolhat. A hozzájárulás nélküli vásárlással kapcsolatban a törvényes képviselő a <a href="#visszaterites">Visszatérítési feltételek</a> szerint fordulhat a Szolgáltatóhoz.</p>
+
+          <h4>5. Az IceCoin</h4>
+          <ul>
+            <li>Az IceCoin az IceMine szerveren és weboldalon használható virtuális egység, amellyel például rangot lehet vásárolni, felhasználónevet módosítani vagy szerencsekereket pörgetni.</li>
+            <li>Az IceCoin nem pénz és nem elektronikus pénz. Valós pénzértéke nincs, pénzre nem váltható vissza, és nem kamatozik.</li>
+            <li>Az IceCoin játékosok között kizárólag a weboldal utalás funkciójával adható át. Valódi pénzért vagy más ellenértékért történő átadása tilos.</li>
+          </ul>
+
+          <h4>6. Termékek és árak</h4>
+          <ul>
+            <li>Megvásárolható termékek: IceCoin csomagok (Vásárlás oldal) és rangok (Rangok oldal), az ott feltüntetett áron. A rangok IceCoinért is megvásárolhatók.</li>
+            <li>Az árak magyar forintban értendők. <mark class="todo">[ÁFA: „Az árak az áfát tartalmazzák.” VAGY „A Szolgáltató alanyi adómentes.”]</mark></li>
+            <li>A megvásárolt rang lejárat nélküli, a szerver működéséig érvényes. A rangokhoz tartozó játékbeli jutalmak a Rangok oldalon olvashatók. A Szolgáltató a játékmódokat és a jutalmakat módosíthatja, de a már megvásárolt rang lényeges előnyeit indokolatlanul nem csökkenti.</li>
+            <li>Ha a weboldalon nyilvánvalóan hibás ár jelenik meg (pl. 0 Ft vagy a valós ár töredéke), a Szolgáltató nem köteles a hibás áron teljesíteni. Ilyenkor felajánlja a helyes áron történő teljesítést, vagy visszatéríti a kifizetett összeget.</li>
+          </ul>
+
+          <h4>7. A vásárlás menete és a fizetés</h4>
+          <ol>
+            <li>A Felhasználó kiválasztja a terméket, és bejelöli a nyilatkozatot a teljesítés azonnali megkezdéséről (8. pont).</li>
+            <li>A <b>Tovább a fizetéshez</b> gomb a Stripe biztonságos fizetési oldalára visz. Itt bankkártyával, illetve a Stripe által felkínált egyéb módon (pl. Apple Pay, Google Pay) lehet fizetni.</li>
+            <li>A szerződés a sikeres fizetéssel jön létre. A Szolgáltató a terméket a fizetés után azonnal jóváírja a Felhasználó fiókján, és a vásárlásról visszaigazoló e-mailt küld.</li>
+          </ol>
+          <p>A bankkártyaadatokat a Szolgáltató nem látja és nem tárolja, azokat a Stripe kezeli. Ha a sikeres fizetés után a jóváírás nem történik meg, a Felhasználó a <a href="#visszaterites">Visszatérítési feltételek</a> szerint jelezheti.</p>
+
+          <h4>8. Elállási jog</h4>
+          <p>A fogyasztót a távollévők között kötött szerződésnél főszabályként 14 napos elállási jog illeti meg. Az IceCoin és a rang nem tárgyi adathordozón nyújtott digitális tartalom, amelyet a Szolgáltató a fizetés után azonnal teljesít. A Felhasználó a vásárlás előtt kifejezetten kéri a teljesítés azonnali megkezdését, és egyidejűleg tudomásul veszi, hogy a teljesítés megkezdésével elveszíti elállási jogát. Erről a Szolgáltató visszaigazolást küld. Ezért a jóváírás után elállásnak nincs helye (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont). A jogszabályban biztosított szavatossági jogokat ez nem érinti.</p>
+
+          <h4>9. Szerencsekerék</h4>
+          <ul>
+            <li>Minden Felhasználó hetente egy ingyenes pörgetésre jogosult. A hét hétfő 0:00-tól vasárnap 24:00-ig tart, magyar idő szerint. Ezen felül további pörgetés 50 IceCoinért vásárolható.</li>
+            <li>A nyeremény (IceCoin vagy rang) véletlenszerű, és azonnal jóváírásra kerül. A nyeremények valós pénzértékkel nem rendelkeznek, pénzre nem válthatók.</li>
+            <li>Ha a Felhasználó a nyert ranggal vagy annál magasabb ranggal már rendelkezik, a rang helyett annak IceCoin-árát kapja meg.</li>
+            <li>A Szolgáltató a nyereményeket és a pörgetés árát módosíthatja. Visszaélés (pl. több fiók használata) esetén a nyeremény visszavonható.</li>
+          </ul>
+
+          <h4>10. Skin feltöltés</h4>
+          <p>A Felhasználó csak olyan skint tölthet fel, amelynek felhasználására jogosult, és amely nem sértő, obszcén vagy jogsértő. A feltöltött skin a játékbeli beállíthatóság érdekében nyilvános címen (icemine.hu/skin/felhasználónév.png) érhető el. A Szolgáltató a szabályt sértő skint eltávolíthatja.</p>
+
+          <h4>11. Szabályszegés és kitiltás</h4>
+          <p>A Felhasználó köteles betartani a <a href="#szabalyzat">Szabályzatot</a>. Ideiglenes kitiltás alatt a fiókhoz tartozó virtuális javak nem használhatók. Súlyos vagy ismételt szabályszegés miatti végleges kitiltás esetén a virtuális javak megszűnnek, és visszatérítés nem jár, kivéve, ha a kitiltás alaptalannak bizonyul.</p>
+
+          <h4>12. Elérhetőség és felelősség</h4>
+          <ul>
+            <li>A Szolgáltató törekszik a szerver és a weboldal folyamatos működésére, de karbantartás, hiba vagy rajta kívül álló ok (pl. tárhely- vagy internetszolgáltatói hiba) miatt átmeneti kimaradás előfordulhat.</li>
+            <li>A Szolgáltató nem felel a Felhasználó eszközéből, internetkapcsolatából vagy a jelszó Felhasználónak felróható kiszivárgásából eredő károkért.</li>
+            <li>Ha a Szolgáltató a szolgáltatást véglegesen megszünteti, erről legalább 30 nappal korábban értesíti a Felhasználókat a weboldalon. A megvásárolt virtuális javak a megszűnésig használhatók.</li>
+          </ul>
+
+          <h4>13. Panaszkezelés és jogorvoslat</h4>
+          <ul>
+            <li>Panaszt a <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a> címen lehet tenni. Az írásbeli panaszra a Szolgáltató 30 napon belül érdemben válaszol.</li>
+            <li>Ha a panaszt a Szolgáltató elutasítja, a fogyasztó a lakóhelye szerinti fogyasztóvédelmi hatósághoz (vármegyei kormányhivatal) vagy a lakóhelye, illetve a Szolgáltató székhelye szerint illetékes békéltető testülethez fordulhat (elérhetőségek: <a href="https://bekeltetes.hu" target="_blank" rel="noopener">bekeltetes.hu</a>), illetve bírósághoz fordulhat.</li>
+          </ul>
+
+          <h4>14. Az ÁSZF módosítása, irányadó jog</h4>
+          <p>A Szolgáltató az ÁSZF-et módosíthatja. A módosítás a weboldalon történő közzététellel lép hatályba, és a korábban megkötött vásárlásokat nem érinti. Az ÁSZF-ben nem szabályozott kérdésekben a magyar jog az irányadó, különösen a Polgári Törvénykönyv (2013. évi V. törvény), az elektronikus kereskedelemről szóló 2001. évi CVIII. törvény, a fogyasztóvédelemről szóló 1997. évi CLV. törvény és a 45/2014. (II. 26.) Korm. rendelet.</p>
+        </div>
+
+        <div class="card doc" data-doc="adatvedelem">
+          <h3>Adatkezelési tájékoztató</h3>
+          <p class="upd">Hatályos: 2026. október 12-től</p>
+          <p>Ez a tájékoztató leírja, milyen személyes adatokat kezelünk az icemine.hu weboldalon és az IceMine szolgáltatásban, milyen célból és meddig, valamint hogy milyen jogaid vannak. Az adatkezelés az Európai Unió általános adatvédelmi rendelete (GDPR) és a 2011. évi CXII. törvény (Infotv.) szerint történik.</p>
+
+          <h4>1. Az adatkezelő</h4>
+          <ul class="dl">
+            <li><b>Név / cégnév:</b> <mark class="todo">[ÜZEMELTETŐ NEVE]</mark></li>
+            <li><b>Székhely / cím:</b> <mark class="todo">[CÍM]</mark></li>
+            <li><b>E-mail:</b> <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a></li>
+          </ul>
+
+          <h4>2. Milyen adatokat, miért és meddig kezelünk?</h4>
+          <p><b>a) Felhasználói fiók.</b> Felhasználónév, e-mail cím, jelszó (csak visszafejthetetlen, titkosított formában, így a jelszavadat senki sem ismeri), a regisztráció időpontja, a fiók belső azonosítója, valamint az ÁSZF elfogadásának időpontja. <i>Cél:</i> a fiók létrehozása és a szolgáltatás nyújtása. <i>Jogalap:</i> szerződés teljesítése (GDPR 6. cikk (1) b) pont). <i>Időtartam:</i> a fiók törléséig.</p>
+          <p><b>b) Fiók megerősítése és jelszó-visszaállítás.</b> E-mail cím, egyszer használatos kódok (titkosított formában) és kiküldésük ideje. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a megerősítő kód 24 óra, a jelszó-visszaállító kód 1 óra után érvénytelen.</p>
+          <p><b>c) Bejelentkezés.</b> A belépéskor egy véletlen azonosítót (tokent) kapsz, amelyet a böngésződ helyi tárhelye (localStorage) tárol, a szerveren pedig csak titkosított formában szerepel. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> kilépésig, legfeljebb 30 napig.</p>
+          <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, valamint a feltöltött skin (amely nyilvános címen érhető el). <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
+          <p><b>e) Vásárlás.</b> Fiókazonosító, felhasználónév, e-mail cím, a megvásárolt termék, az összeg, az időpont, a Stripe fizetési azonosító, valamint az azonnali teljesítésről tett nyilatkozatod. <i>Cél:</i> a vásárlás teljesítése, visszaigazolás, könyvelés, panaszkezelés. <i>Jogalap:</i> szerződés teljesítése és jogi kötelezettség (GDPR 6. cikk (1) c) pont; a számvitelről szóló 2000. évi C. törvény 169. §). <i>Időtartam:</i> 8 év. Bankkártyaadatokat nem kezelünk, azokat kizárólag a Stripe kezeli.</p>
+          <p><b>f) Biztonság.</b> Az IP-címedet a túl sok kérés kiszűrésére használjuk, csak a szerver memóriájában, legfeljebb 1 óráig. A szerver és a webszerver naplójában hibák és egyes események (pl. sikeres fizetés, nyeremény) szerepelhetnek, esetenként felhasználónévvel vagy IP-címmel. <i>Jogalap:</i> jogos érdek a szolgáltatás biztonságos működéséhez (GDPR 6. cikk (1) f) pont). <i>Időtartam:</i> a napló a tárhelykorlát elérésekor automatikusan törlődik.</p>
+          <p><b>g) Kapcsolatfelvétel és panasz.</b> Az e-mailben küldött adataid. <i>Jogalap:</i> jogos érdek, illetve panasz esetén jogi kötelezettség (1997. évi CLV. törvény 17/A. §). <i>Időtartam:</i> az ügy lezárásáig, panasz esetén 3 évig.</p>
+
+          <h4>3. Kik férhetnek hozzá az adatokhoz? (adatfeldolgozók)</h4>
+          <ul>
+            <li><b>Rackhost Zrt.</b> (6722 Szeged, Tisza Lajos krt. 41.): szerver és tárhely. Az adatokat Magyarországon tároljuk.</li>
+            <li><b>Sendinblue SAS (Brevo)</b> (9-17 rue Salneuve, 75017 Párizs, Franciaország): e-mailek kiküldése (megerősítő, jelszó-visszaállító és visszaigazoló levelek). Hozzáfér: e-mail cím, felhasználónév, a levél tartalma.</li>
+            <li><b>Stripe Payments Europe, Limited</b> (1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Írország): a fizetés lebonyolítása. A kártyaadatokat a Stripe önálló adatkezelőként, a saját <a href="https://stripe.com/privacy" target="_blank" rel="noopener">adatvédelmi tájékoztatója</a> szerint kezeli.</li>
+            <li><b>mc-heads.net</b>: ha nem töltöttél fel saját skint, a Karakter oldalon a figurád képe erről a szolgáltatásról töltődik be a felhasználóneved alapján. Ilyenkor a böngésződ IP-címe a szolgáltatóhoz kerül.</li>
+          </ul>
+          <p>Az adatfeldolgozók egyes adatokat az Európai Gazdasági Térségen kívülre is továbbíthatnak, megfelelő garanciák (pl. az Európai Bizottság általános szerződési feltételei, EU–USA adatvédelmi keretrendszer) mellett. Az adataidat nem adjuk el, és reklámcélra nem használjuk.</p>
+
+          <h4>4. Sütik</h4>
+          <p>A weboldal nem használ követő vagy reklám célú sütiket, és nem használ látogatottságmérőt. A bejelentkezés megőrzéséhez a böngésző helyi tárhelyén egy azonosítót tárolunk. Erre a szolgáltatás működéséhez feltétlenül szükség van, ezért nem igényel hozzájárulást. A betűtípusokat a saját szerverünkről töltjük be.</p>
+
+          <h4>5. Adatbiztonság</h4>
+          <p>A weboldal titkosított (HTTPS) kapcsolaton keresztül működik. A jelszavakat és a belépési azonosítókat csak titkosított formában tároljuk, az adatokhoz csak az üzemeltető fér hozzá.</p>
+
+          <h4>6. A jogaid</h4>
+          <p>Kérheted, hogy tájékoztassunk a rólad kezelt adatokról, és másolatot adjunk róluk (hozzáférés). Kérheted az adataid helyesbítését, törlését, kezelésük korlátozását, illetve géppel olvasható formában történő kiadását (adathordozhatóság). A jogos érdeken alapuló adatkezelés ellen tiltakozhatsz. Kérésedet a <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a> címre küldheted. Legkésőbb egy hónapon belül válaszolunk.</p>
+
+          <h4>7. Jogorvoslat</h4>
+          <p>Ha úgy érzed, hogy megsértettük az adatvédelmi jogaidat, panaszt tehetsz a Nemzeti Adatvédelmi és Információszabadság Hatóságnál (NAIH, postacím: 1363 Budapest, Pf. 9., telefon: +36 1 391 1400, e-mail: ugyfelszolgalat@naih.hu, <a href="https://naih.hu" target="_blank" rel="noopener">naih.hu</a>), vagy bírósághoz fordulhatsz. Kérjük, előbb keress minket, hátha gyorsan meg tudjuk oldani.</p>
+
+          <h4>8. Kiskorúak</h4>
+          <p>16 év alatti személy csak a törvényes képviselője (szülője) hozzájárulásával regisztrálhat. Ha szülőként úgy látod, hogy gyermeked a hozzájárulásod nélkül regisztrált, írj nekünk, és töröljük a fiókot.</p>
+
+          <h4>9. Módosítás</h4>
+          <p>A tájékoztatót módosíthatjuk. A hatályos változat mindig ezen az oldalon olvasható.</p>
+        </div>
+
+        <div class="card doc" data-doc="visszaterites">
+          <h3>Visszatérítési feltételek</h3>
+          <p class="upd">Hatályos: 2026. október 12-től</p>
+          <p>Az IceCoin és a rang digitális termék, amelyet a sikeres fizetés után azonnal jóváírunk. A vásárlás előtt kifejezetten kéred az azonnali teljesítést, és tudomásul veszed, hogy ezzel elveszíted a 14 napos elállási jogodat (<a href="#aszf">ÁSZF</a> 8. pont). Ezért a puszta meggondolás nem ad alapot a visszatérítésre. Az alábbi esetekben azonban segítünk.</p>
+
+          <h4>1. Mikor jár visszatérítés vagy pótlás?</h4>
+          <ul>
+            <li><b>Nem érkezett meg a vásárlás:</b> a fizetés sikeres volt, de az IceCoin vagy a rang nem jelent meg a fiókodon. Ilyenkor pótoljuk a jóváírást, vagy ha ez nem lehetséges, a teljes összeget visszatérítjük.</li>
+            <li><b>Kétszeres terhelés:</b> ugyanazért a vásárlásért többször vonták le az összeget. A felesleges terhelést visszatérítjük.</li>
+            <li><b>Technikai hiba:</b> a megvásárolt termék a mi hibánkból nem használható, és észszerű határidőn belül nem tudjuk kijavítani.</li>
+            <li><b>Kiskorú vásárlása szülői hozzájárulás nélkül:</b> a szülő (törvényes képviselő) kérésére a még fel nem használt IceCoinnak megfelelő összeget visszatérítjük.</li>
+          </ul>
+          <p>A jogszabályban biztosított szavatossági jogaidat ezek a feltételek nem korlátozzák.</p>
+
+          <h4>2. Mikor nem jár visszatérítés?</h4>
+          <ul>
+            <li>Ha már felhasználtad a megvásárolt IceCoint (pl. rangra, pörgetésre, névváltásra, utalásra).</li>
+            <li>Ha egyszerűen meggondoltad magad a jóváírás után.</li>
+            <li>A szerencsekerék eredménye miatt.</li>
+            <li>Ha a fiókot a <a href="#szabalyzat">Szabályzat</a> súlyos megsértése miatt kitiltottuk.</li>
+            <li>Ha a fiókhoz a saját hibádból (pl. jelszó kiadása) vesztetted el a hozzáférést.</li>
+          </ul>
+
+          <h4>3. Hogyan kérheted?</h4>
+          <p>Írj a <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a> címre, és add meg:</p>
+          <ul>
+            <li>a felhasználónevedet,</li>
+            <li>a vásárlás idejét és összegét,</li>
+            <li>a visszaigazoló e-mailt vagy a Stripe nyugta azonosítóját,</li>
+            <li>röviden, hogy mi történt.</li>
+          </ul>
+          <p>14 napon belül válaszolunk. Jóváhagyott visszatérítéskor az összeget ugyanarra a fizetési módra (bankkártyára) utaljuk vissza a Stripe-on keresztül. A bankodtól függően ez általában 5–10 munkanap alatt jelenik meg a számládon. A visszatérített vásárlással kapott IceCoint vagy rangot visszavonjuk.</p>
+
+          <h4>4. Visszaterhelés (chargeback)</h4>
+          <p>Kérjük, mielőtt a bankodnál visszaterhelést kérsz, keress minket, mert a legtöbb problémát gyorsan meg tudjuk oldani. Visszaterhelés esetén a fiókot az ügy rendezéséig felfüggeszthetjük, és a vitatott vásárlással kapott javakat visszavonhatjuk.</p>
+        </div>
+        </div>
       </section>
 
       <section class="page" data-page="beallitasok">
@@ -662,6 +917,13 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
     </main>
   </div>
   <div id="scrim"></div>
+</div>
+
+<div id="docView" class="docview" role="dialog" aria-modal="true" aria-label="Dokumentumok" hidden>
+  <div class="dvin">
+    <div class="dvhead"><img class="lg" alt="IceMine"><h2>Dokumentumok</h2><button type="button" class="x" id="dvClose" aria-label="Bezárás">×</button></div>
+    <div id="dvSlot"></div>
+  </div>
 </div>
 
 <script>
@@ -726,7 +988,7 @@ function setMode(r){
   $("#aSub").textContent=r?"Hozd létre az IceMine fiókodat.":"Lépj be az IceMine fiókodba.";
   $("#swLogin").hidden=r;$("#swReg").hidden=!r;$("#uHint").hidden=!r;$("#aMeterW").hidden=!r;
   $("#mailRow").hidden=!r;$("#pass2Row").hidden=!r;$("#forgotBtn").hidden=r;
-  $("#mailRow input").required=r;$("#pass2Row input").required=r;
+  $("#mailRow input").required=r;$("#pass2Row input").required=r;$("#accRow").hidden=!r;
   $("#aBtn").textContent=r?"Fiók létrehozása":"Belépés";
   $("#aform").pass.autocomplete=r?"new-password":"current-password";
   msg("#aMsg","");
@@ -747,8 +1009,9 @@ $("#aform").onsubmit=async e=>{
   e.preventDefault();
   const f=e.target,name=f.user.value.trim(),pw=f.pass.value;
   if(reg&&pw!==f.pass2.value) return msg("#aMsg","A két jelszó nem egyezik.","e");
+  if(reg&&!f.accept.checked) return msg("#aMsg","A regisztrációhoz fogadd el az ÁSZF-et és a Szabályzatot.","e");
   const btn=$("#aBtn");btn.disabled=true;msg("#aMsg","Egy pillanat...");
-  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw}:{name,password:pw});
+  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw,accept:true}:{name,password:pw});
   btn.disabled=false;
   if(d.error) return msg("#aMsg",d.error,"e");
   f.reset();
@@ -801,6 +1064,11 @@ $("#logout").onclick=async()=>{
 const PAGES=["kezdolap","karakter","webshop","rangok","vasarlas","szerencsekerek","kliens","dokumentumok","beallitasok"];
 function route(){
   let p=location.hash.replace("#","");
+  if(DOCS.includes(p)){
+    selDoc(p);
+    if(!user){showDocView();return}
+    hideDocView();p="dokumentumok";
+  }else hideDocView();
   if(!PAGES.includes(p))p="kezdolap";
   $$(".page").forEach(e=>e.classList.toggle("on",e.dataset.page===p));
   $$("#side a.si").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+p));
@@ -1088,8 +1356,9 @@ $("#rankGrid").onclick=async e=>{
   const id=b.dataset.buy||b.dataset.ft,r=RANKS.find(x=>x.id===id);if(!r)return;
   const m=$(`[data-msg="${id}"]`);
   if(b.dataset.ft){
+    if(!$("#rkConsent").checked){$("#rkConsentRow").classList.add("need");$("#rkConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});m.textContent="A forintos vásárláshoz jelöld be a nyilatkozatot az oldal tetején.";m.className="msg e";return}
     b.disabled=true;m.textContent="Átirányítás a biztonságos fizetési oldalra…";m.className="msg";$("#rankNote").innerHTML="";
-    const d=await api("/api/checkout",{rank:r.id});
+    const d=await api("/api/checkout",{rank:r.id,consent:true});
     if(d.error||!d.url){b.disabled=false;m.textContent=d.error||"Nem sikerült elindítani a fizetést.";m.className="msg e";return}
     location.href=d.url;return;
   }
@@ -1124,9 +1393,10 @@ $("#packs").addEventListener("change",e=>{
 $("#coBtn").onclick=async()=>{
   const r=$("#packs input:checked");if(!r)return;
   $("#payNote").innerHTML="";
+  if(!$("#coConsent").checked){$("#coConsentRow").classList.add("need");$("#coConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});return msg("#buyMsg","A vásárláshoz jelöld be a fenti nyilatkozatot.","e")}
   const b=$("#coBtn"),c=PACKS[+r.value][0];
   b.disabled=true;msg("#buyMsg","Átirányítás a biztonságos fizetési oldalra…");
-  const d=await api("/api/checkout",{ic:c});
+  const d=await api("/api/checkout",{ic:c,consent:true});
   if(d.error||!d.url){b.disabled=false;return msg("#buyMsg",d.error||"Nem sikerült elindítani a fizetést.","e")}
   location.href=d.url;
 };
@@ -1152,10 +1422,28 @@ async function payResult(id,rang){
   }
   pNote(box,"A fizetésed feldolgozás alatt van","Pár percen belül megérkezik a fiókodra, utána frissítsd az oldalt.");
 }
+$("#coConsent").onchange=e=>{if(e.target.checked){$("#coConsentRow").classList.remove("need");msg("#buyMsg","")}};
+$("#rkConsent").onchange=e=>{if(e.target.checked)$("#rkConsentRow").classList.remove("need")};
+const DOCS=["szabalyzat","aszf","adatvedelem","visszaterites"];
+function selDoc(id){
+  $$(".dtabs button").forEach(x=>x.classList.toggle("on",x.dataset.d===id));
+  $$(".doc").forEach(x=>x.classList.toggle("on",x.dataset.doc===id));
+}
+function showDocView(){
+  const v=$("#docView");
+  if(v.hidden){$("#dvSlot").appendChild($("#docsBox"));v.hidden=false;document.body.style.overflow="hidden"}
+  v.scrollTop=0;
+}
+function hideDocView(){
+  const v=$("#docView");if(v.hidden)return;
+  v.hidden=true;document.body.style.overflow="";
+  $('[data-page="dokumentumok"]').appendChild($("#docsBox"));
+}
 $$(".dtabs button").forEach(b=>b.onclick=()=>{
-  $$(".dtabs button").forEach(x=>x.classList.toggle("on",x===b));
-  $$(".doc").forEach(x=>x.classList.toggle("on",x.dataset.doc===b.dataset.d));
+  selDoc(b.dataset.d);
+  if(!$("#docView").hidden){try{history.replaceState(null,"","#"+b.dataset.d)}catch(e){}$("#docView").scrollTop=0}
 });
+$("#dvClose").onclick=()=>{try{history.replaceState(null,"",location.pathname)}catch(e){}hideDocView()};
 
 function tUpdate(){
   const f=$("#tform"),bal=user?user.coins||0:0,a=Number(f.amount.value)||0,el=$("#tAfter");

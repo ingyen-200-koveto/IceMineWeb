@@ -74,6 +74,10 @@ const limit = (max, ms) => (req, res, next) => {
   if (hits[k].length >= max) return fail(res, 429, "Túl sok kérés. Próbáld később.");
   hits[k].push(n); next();
 };
+setInterval(() => {
+  const n = Date.now();
+  for (const k of Object.keys(hits)) { hits[k] = hits[k].filter(t => n - t < 36e5); if (!hits[k].length) delete hits[k]; }
+}, 3e5).unref();
 
 const BREVO_KEY = String(process.env.BREVO_API_KEY || "").replace(/[^\w-]/g, "");
 const MAIL_FROM = (String(process.env.MAIL_FROM || "").match(/[^\s<>"'“”„]+@[^\s<>"'“”„]+\.[^\s<>"'“”„]+/) || [""])[0];
@@ -145,7 +149,7 @@ function fulfill(s) {
   const u = m.uid ? Object.values(db.users).find(x => x.id === m.uid) : null;
   const okItem = m.rank ? ri >= 0 : Number.isInteger(ic) && ic > 0 && ic <= 1e6;
   if (!u || !okItem) { if (m.uid) console.error("Fizetés: nem sikerült jóváírni, nincs ilyen fiók vagy termék (" + s.id + ")."); return false; }
-  const rec = { t: Date.now(), uid: u.id, user: u.name, huf: (s.amount_total || 0) / 100 };
+  const rec = { t: Date.now(), uid: u.id, user: u.name, huf: (s.amount_total || 0) / 100, consent: Number(m.consent) || null, pi: s.payment_intent || null };
   if (m.rank) {
     const r = RANKS[ri], cur = RANKS.findIndex(x => x.name === u.rank);
     rec.rank = r.name;
@@ -157,7 +161,19 @@ function fulfill(s) {
   }
   db.payments[s.id] = rec;
   save();
+  sendReceipt(u, rec, s.id).catch(e => console.error("Visszaigazoló e-mail hiba: " + e.message));
   return true;
+}
+async function sendReceipt(u, rec, sid) {
+  const site = process.env.BASE_URL || "https://icemine.hu", when = new Date(rec.t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest" });
+  const item = rec.rank ? rec.rank + " rang" : rec.ic.toLocaleString("hu-HU") + " IceCoin";
+  const got = rec.rank && rec.ic ? "Mivel már " + rec.rank + " vagy magasabb rangod volt, helyette " + rec.ic.toLocaleString("hu-HU") + " IceCoint írtunk jóvá." : rec.rank ? "A(z) " + rec.rank + " rangot jóváírtuk a fiókodon." : rec.ic.toLocaleString("hu-HU") + " IceCoint jóváírtunk a fiókodon.";
+  const consent = "A vásárlás előtt kifejezetten kérted a teljesítés azonnali megkezdését, és tudomásul vetted, hogy a teljesítés megkezdésével elveszíted a 14 napos elállási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont).";
+  const rows = [["Termék", item], ["Ár", rec.huf.toLocaleString("hu-HU") + " Ft"], ["Időpont", when], ["Fiók", u.name], ["Azonosító", rec.pi || sid]];
+  const text = `Kedves ${u.name}!\nKöszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.\n\n${rows.map(r => r[0] + ": " + r[1]).join("\n")}\n\n${got}\n\n${consent}\n\nÁSZF: ${site}/#aszf\nVisszatérítési feltételek: ${site}/#visszaterites\nKérdés esetén írj nekünk: icemine2026@gmail.com\n\nÜdvözlettel, IceMine csapata!`;
+  const esc = v => String(v).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;background:#f2f8fc;color:#0a1e2b"><h2 style="margin:0 0 16px;color:#0b3a5b">IceMine</h2><p>Kedves <b>${esc(u.name)}</b>!</p><p>Köszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.</p><table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px">${rows.map(r => `<tr><td style="padding:10px 14px;color:#587184">${esc(r[0])}</td><td style="padding:10px 14px;font-weight:bold;text-align:right">${esc(r[1])}</td></tr>`).join("")}</table><p>${esc(got)}</p><p style="font-size:13px;color:#587184">${esc(consent)}</p><p style="font-size:13px"><a href="${site}/#aszf">ÁSZF</a> · <a href="${site}/#visszaterites">Visszatérítési feltételek</a> · <a href="mailto:icemine2026@gmail.com">icemine2026@gmail.com</a></p><p>Üdvözlettel,<br>IceMine csapata!</p></div>`;
+  await sendMail({ to: u.email, subject: "IceMine – visszaigazolás a vásárlásodról", text, html });
 }
 function stripeHook(req, res) {
   const raw = Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === "string" ? req.body : "");
@@ -223,7 +239,8 @@ function authUser(req) {
 const taken = (u) => u && (u.verified || (u.v && u.v.exp > Date.now()));
 
 app.post("/api/register", limit(10, 36e5), async (req, res) => {
-  const { name = "", email = "", password = "" } = req.body || {};
+  const { name = "", email = "", password = "", accept } = req.body || {};
+  if (accept !== true) return fail(res, 400, "A regisztrációhoz el kell fogadnod az ÁSZF-et és a Szabályzatot.");
   if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return fail(res, 400, "A felhasználónév 3–16 karakter lehet: betű, szám, aláhúzás.");
   if (typeof email !== "string" || email.length > 100 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail(res, 400, "Adj meg érvényes e-mail címet.");
   if (typeof password !== "string" || password.length < 6 || password.length > 100) return fail(res, 400, "A jelszó legalább 6 karakter legyen.");
@@ -231,7 +248,7 @@ app.post("/api/register", limit(10, 36e5), async (req, res) => {
   if (taken(db.users[key])) return fail(res, 409, "Ez a felhasználónév már foglalt.");
   if (Object.values(db.users).some(x => x.email === mail && taken(x))) return fail(res, 409, "Ezzel az e-mail címmel már van fiók.");
   const salt = crypto.randomBytes(16).toString("hex");
-  const u = db.users[key] = { name, email: mail, salt, hash: hashPw(password, salt), verified: false, coins: Number(process.env.START_COINS) || 0, created: Date.now() };
+  const u = db.users[key] = { name, email: mail, salt, hash: hashPw(password, salt), verified: false, coins: Number(process.env.START_COINS) || 0, created: Date.now(), accepted: { t: Date.now(), v: TERMS_VERSION } };
   try { await issue(req, u); }
   catch (e) { delete db.users[key]; save(); console.error("E-mail hiba: " + e.message); return fail(res, 502, "Nem sikerült elküldeni az e-mailt. Ellenőrizd a címet, vagy próbáld később."); }
   res.json({ ok: true, mail: mask(u.email) });
@@ -368,6 +385,7 @@ const RANKS = [
   { id: "iceking", name: "IceKing", ic: 4850, ft: 4150 },
   { id: "yeti", name: "Yeti", ic: 8000, ft: 9990 }
 ];
+const TERMS_VERSION = "2026-10-12";
 const SKIN_DIR = path.join(__dirname, "skins"), PNG_SIG = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
 const skinLimit = limit(30, 6e5);
 function cleanPng(buf) {
@@ -418,6 +436,7 @@ app.post("/api/checkout", limit(20, 6e5), async (req, res) => {
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
   if (!STRIPE_KEY) return fail(res, 503, "A fizetés jelenleg nem elérhető. Próbáld később.");
   const body = req.body || {};
+  if (body.consent !== true) return fail(res, 400, "A vásárláshoz jelöld be a nyilatkozatot az azonnali teljesítésről.");
   let item;
   if (body.rank !== undefined) {
     const ri = RANKS.findIndex(r => r.id === String(body.rank)), cur = RANKS.findIndex(r => r.name === u.rank);
@@ -430,7 +449,7 @@ app.post("/api/checkout", limit(20, 6e5), async (req, res) => {
     item = { name: pack[0].toLocaleString("hu-HU") + " IceCoin", huf: pack[1], meta: { ic: pack[0] }, back: "" };
   }
   if (!u.id) { u.id = crypto.randomBytes(9).toString("hex"); save(); }
-  const b = base(req), meta = Object.assign({ uid: u.id, user: u.name }, item.meta);
+  const b = base(req), meta = Object.assign({ uid: u.id, user: u.name, consent: String(Date.now()) }, item.meta);
   try {
     const s = await stripe("POST", "/checkout/sessions", {
       mode: "payment",
@@ -488,6 +507,11 @@ app.get("/api/me", (req, res) => { const u = authUser(req); u ? res.json({ user:
 app.post("/api/logout", (req, res) => { const t = (req.headers.authorization || "").slice(7); if (t) { delete db.sessions[sha(t)]; save(); } res.json({ ok: true }); });
 app.get("/api/status", (req, res) => res.json({ online: null }));
 
+app.get("/fonts/:file", (req, res) => {
+  if (!/^(sora|manrope)\.woff$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen fájl.");
+  res.set({ "Content-Type": "font/woff", "Cache-Control": "public, max-age=2592000", "Access-Control-Allow-Origin": "*" });
+  res.sendFile(path.join(__dirname, "fonts", req.params.file));
+});
 app.get(["/favicon.png", "/favicon.ico"], (req, res) => res.sendFile(path.join(__dirname, "favicon.png")));
 app.get("/robots.txt", (req, res) => res.type("text/plain").send("User-agent: *\nAllow: /\nDisallow: /api/\n"));
 app.get("/", (req, res) => res.sendFile(path.join(__dirname, "index.html")));
