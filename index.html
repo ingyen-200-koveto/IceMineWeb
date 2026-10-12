@@ -300,6 +300,75 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .checkout b{display:block;font:800 17px Sora,sans-serif}
 #coPrice{display:block;font:800 15px Sora,sans-serif;color:var(--ice)}
 .checkout .btn{flex:none}
+.qtyw{flex:none;display:grid;justify-items:center;gap:3px}
+.qtyw small{font-size:11.5px}
+.qty{display:flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:var(--bg2);box-shadow:inset 0 0 0 1px var(--line)}
+.qty button{width:34px;height:34px;border:0;border-radius:50%;background:var(--solid);color:var(--ink);font:800 19px/1 Sora,sans-serif;cursor:pointer;box-shadow:0 2px 6px -3px #0b3a5b66}
+.qty button:disabled{opacity:.35;cursor:not-allowed}
+.qty output{min-width:28px;text-align:center;font:800 16px Sora,sans-serif}
+#coSub{display:block;color:var(--mute);font-size:12.5px;font-weight:700}
+@media (max-width:520px){.checkout{flex-wrap:wrap;row-gap:10px}.checkout .sel{flex:1 1 0}.checkout .btn{flex:1 1 100%}}
+.page[data-page="kitiltas"]{max-width:900px}
+.ubstat{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:16px;overflow:hidden}
+.ubstat>div{display:flex;align-items:center;gap:12px;padding:16px 18px;border-right:1px solid var(--line)}
+.ubstat>div:last-child{border-right:0}
+.ubstat .ubi{flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:var(--bg2);color:var(--ice)}
+.ubstat .ubi svg{width:20px;height:20px}
+.ubstat small{display:block;color:var(--mute);font-size:12.5px;font-weight:700}
+.ubstat b{display:block;font:800 15px Sora,sans-serif;line-height:1.3}
+.ubstat b.bad{color:var(--bad)}.ubstat b.ok{color:var(--ok)}
+.ubnote{margin:0 0 16px;color:var(--mute);font-weight:600;font-size:14px;line-height:1.5}
+.ubwarn{display:flex;gap:14px;align-items:flex-start;margin:0 0 18px;padding:16px 18px;border-radius:18px;background:color-mix(in srgb,var(--bad) 10%,var(--solid));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--bad) 40%,transparent)}
+.ubwarn svg{flex:none;width:26px;height:26px;color:var(--bad)}
+.ubwarn b{display:block;font:800 16px Sora,sans-serif;color:var(--bad);margin-bottom:2px}
+.ubwarn span{font-weight:600;font-size:14px;line-height:1.5}
+.ubgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px}
+.ubcard{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.ubcard.big{box-shadow:inset 0 0 0 2px #ffb02e,var(--sh)}
+.ubtop{display:flex;align-items:center;gap:12px}
+.ubtop .ubi{flex:none;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;color:#fff;background:linear-gradient(135deg,#3fb4ff,#1c6fd6)}
+.ubcard.big .ubtop .ubi{background:linear-gradient(135deg,#ffe08a,#d48a0c);color:#3a2200}
+.ubtop .ubi svg{width:24px;height:24px}
+.page .ubcard h3{margin:0;font-size:17.5px;line-height:1.25}
+.ubcard p{margin:0;color:var(--mute);font-size:14px;line-height:1.5;flex:1}
+.ubprice{font:800 24px Sora,sans-serif;letter-spacing:-.02em}
+.ubprice span{color:var(--mute);font:700 14px Manrope,sans-serif;letter-spacing:0}
+.ubcard .btn{width:100%}
+.ubcard .msg:empty{display:none}
+.win.long .wa{font-size:21px}
+.win .wi{flex:none;display:grid;place-items:center;width:48px;height:48px;border-radius:14px;color:#fff;background:linear-gradient(135deg,#3fb4ff,#1c6fd6)}
+.win .wi svg{width:26px;height:26px}
+@media (max-width:640px){.ubstat{grid-template-columns:1fr}.ubstat>div{border-right:0;border-bottom:1px solid var(--line)}.ubstat>div:last-child{border-bottom:0}}
+.newshead{margin-bottom:18px}
+.newshead p{margin:4px 0 0;color:var(--mute);font-weight:600}
+.nfeat{position:relative;display:grid;grid-template-columns:1.05fr 1fr;overflow:hidden;border-radius:26px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.nfeat .nart{position:relative;min-height:250px;overflow:hidden;background:#0b3a5b}
+.nfeat .nart svg{position:absolute;inset:0;width:100%;height:100%;display:block}
+.nfeat .nart .lg{position:absolute;left:50%;top:44%;width:56%;max-width:240px;height:auto;transform:translate(-50%,-50%);filter:drop-shadow(0 14px 18px #0008)}
+.nfeat .nbody{padding:26px 26px 24px}
+.page .nfeat h3{margin:8px 0 10px;font-size:24px;line-height:1.2}
+.nfeat p{margin:0 0 18px;color:var(--mute);line-height:1.6;font-size:15px}
+.nmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px;font-weight:700;color:var(--mute)}
+.ntag{padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--ice) 15%,transparent);color:var(--ice)}
+.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:18px}
+.ncard{display:flex;flex-direction:column;overflow:hidden;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh);color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
+.ncard:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1px var(--line),0 22px 40px -22px #0b3a5b99}
+.ncard .nart{position:relative;height:104px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.ncard .nart::after{content:"";position:absolute;right:-30px;top:-40px;width:130px;height:130px;border-radius:30px;transform:rotate(22deg);background:#ffffff22}
+.ncard .nart svg{position:relative;width:46px;height:46px;color:#fff;filter:drop-shadow(0 6px 8px #0004)}
+.ncard .nbody{display:flex;flex-direction:column;gap:8px;flex:1;padding:16px 18px 18px}
+.page .ncard h3{margin:0;font-size:18px;line-height:1.25}
+.ncard p{margin:0;flex:1;color:var(--mute);font-size:14.5px;line-height:1.55}
+.ncard .nmore{font-weight:800;font-size:14px;color:var(--ice)}
+.ncomm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding:18px 22px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#1c6fd6,#0b3a5b)}
+.ncomm b{display:block;font:800 18px Sora,sans-serif}
+.ncomm span{opacity:.85;font-weight:600;font-size:14px}
+.ncomm .nbtns{display:flex;flex-wrap:wrap;gap:8px}
+.ncomm a{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:999px;background:#ffffff1f;color:#fff;font-weight:800;font-size:14px;text-decoration:none;box-shadow:inset 0 0 0 1px #ffffff40;transition:background .15s}
+.ncomm a:hover{background:#ffffff33}
+.ncomm a svg{width:18px;height:18px}
+.nfeat .btn{display:inline-flex;text-decoration:none}
+@media (max-width:700px){.nfeat{grid-template-columns:1fr}.nfeat .nart{min-height:190px}.nfeat .nbody{padding:20px}.page .nfeat h3{font-size:21px}}
 .checkout .btn:disabled{cursor:not-allowed}
 .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
 .howto div{display:flex;align-items:center;gap:12px;background:var(--solid);border-radius:18px;padding:14px 16px;box-shadow:inset 0 0 0 1px var(--line);font-weight:700;font-size:14.5px;line-height:1.35}
@@ -506,6 +575,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
       <a class="si" href="#webshop"><svg class="i" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/></svg>WebShop</a>
       <a class="si" href="#rangok"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Rangok</a>
       <a class="si" href="#vasarlas"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg>Vásárlás</a>
+      <a class="si" href="#kitiltas"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>Kitiltás csökkentése</a>
       <a class="si" href="#szerencsekerek"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>Szerencsekerék</a>
       <a class="si" href="#kliens"><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Kliens letöltése</a>
       <a class="si" href="#dokumentumok"><svg class="i" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg>Dokumentumok</a>
@@ -524,7 +594,8 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
     <main id="content">
 
       <section class="page" data-page="kezdolap">
-        <h2>Hírek</h2>
+        <div class="newshead"><h2>Hírek</h2><p>Az IceMine legfrissebb újdonságai.</p></div>
+        <div id="news"></div>
       </section>
 
       <section class="page char" data-page="karakter">
@@ -605,7 +676,8 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         <div class="packs" id="packs" role="radiogroup" aria-label="IceCoin csomagok"></div>
         <label class="chk consent" id="coConsentRow"><input type="checkbox" id="coConsent"><span>Kérem az IceCoin azonnali jóváírását, és tudomásul veszem, hogy ezzel elveszítem a 14 napos elállási jogomat. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
         <div class="checkout">
-          <div class="sel"><small>Kiválasztott csomag</small><b id="coSel">Válassz egy csomagot</b><span id="coPrice"></span></div>
+          <div class="sel"><small>Kiválasztott csomag</small><b id="coSel">Válassz egy csomagot</b><span id="coSub"></span><span id="coPrice"></span></div>
+          <div class="qtyw" id="coQtyW" hidden><small>Mennyiség</small><div class="qty" role="group" aria-label="Mennyiség"><button type="button" data-q="-1" aria-label="Kevesebb">−</button><output id="coQty" aria-live="polite">1</output><button type="button" data-q="1" aria-label="Több">+</button></div></div>
           <button class="btn" type="button" id="coBtn" disabled>Tovább a fizetéshez</button>
         </div>
         <div class="msg" id="buyMsg" aria-live="polite" style="margin-top:12px"></div>
@@ -615,6 +687,24 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <div><b>3</b>Az IceCoin a fiókodra kerül</div>
         </div>
         <p class="legal">A vásárlásra az <a href="#aszf">ÁSZF</a> és a <a href="#visszaterites">visszatérítési feltételek</a> vonatkoznak. A fizetést a Stripe bonyolítja, a kártyaadataidat nem látjuk.</p>
+      </section>
+
+      <section class="page" data-page="kitiltas">
+        <div class="shophero">
+          <div><h2>Kitiltás csökkentése</h2><p>Csökkentsd a kitiltásod, vagy oldd fel a némításod.</p></div>
+          <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="ubBal">0</b></div>
+        </div>
+        <div id="unbanNote" role="status" aria-live="polite"></div>
+        <div class="card ubstat">
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M14 4l6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6M8 13l-5 5 2 2 5-5"/></svg></span><div><small>Kitiltás</small><b id="ubBan">–</b></div></div>
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 9l4 6M21 9l-4 6"/></svg></span><div><small>Némítás</small><b id="ubMute">–</b></div></div>
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><small>Vásárlás</small><b id="ubNext">–</b></div></div>
+        </div>
+        <p class="ubnote" id="ubInfo"></p>
+        <div class="ubwarn"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.5"/></svg><div><b>Kliens ban esetén nincs feloldás</b><span>Ha csaló kliens (pl. hack, X-Ray, KillAura) használata miatt tiltottak ki, a kitiltás nem csökkenthető és nem oldható fel. Ha mégis megvásárolod, a vételárat visszatérítjük.</span></div></div>
+        <label class="chk consent" id="ubConsentRow" style="margin:0 0 16px"><input type="checkbox" id="ubConsent"><span>Forintos vásárlásnál: kérem a feloldás azonnali teljesítését, és tudomásul veszem, hogy a teljesítés után elveszítem a felmondási jogomat, valamint hogy kliens ban esetén nincs feloldás. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
+        <div class="ubgrid" id="ubGrid"></div>
+        <p class="legal">Az itt felsoroltak közül 6 hónaponta egyet vásárolhatsz. A fizetés után a kérésed azonnal a staffhoz kerül, és legkésőbb 24 órán belül elvégzik.</p>
       </section>
 
       <section class="page" data-page="szerencsekerek">
@@ -745,7 +835,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
 
           <h4>6. Termékek és árak</h4>
           <ul>
-            <li>Megvásárolható termékek: IceCoin csomagok (Vásárlás oldal) és rangok (Rangok oldal), az ott feltüntetett áron. A rangok IceCoinért is megvásárolhatók.</li>
+            <li>Megvásárolható termékek: IceCoin csomagok (Vásárlás oldal, csomagonként legfeljebb 10 darab egyszerre), rangok (Rangok oldal), valamint a büntetés csökkentése vagy feloldása (Kitiltás csökkentése oldal), az ott feltüntetett áron. A rangok és a némítás feloldása IceCoinért is megvásárolhatók.</li>
             <li>Az árak magyar forintban értendők. <mark class="todo">[ÁFA: „Az árak az áfát tartalmazzák.” VAGY „A Szolgáltató alanyi adómentes.”]</mark></li>
             <li>A megvásárolt rang lejárat nélküli, a szerver működéséig érvényes. A rangokhoz tartozó játékbeli jutalmak a Rangok oldalon olvashatók. A Szolgáltató a játékmódokat és a jutalmakat módosíthatja, de a már megvásárolt rang lényeges előnyeit indokolatlanul nem csökkenti.</li>
             <li>Ha a weboldalon nyilvánvalóan hibás ár jelenik meg (pl. 0 Ft vagy a valós ár töredéke), a Szolgáltató nem köteles a hibás áron teljesíteni. Ilyenkor felajánlja a helyes áron történő teljesítést, vagy visszatéríti a kifizetett összeget.</li>
@@ -760,7 +850,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <p>A bankkártyaadatokat a Szolgáltató nem látja és nem tárolja, azokat a Stripe kezeli. Ha a sikeres fizetés után a jóváírás nem történik meg, a Felhasználó a <a href="#visszaterites">Visszatérítési feltételek</a> szerint jelezheti.</p>
 
           <h4>8. Elállási jog</h4>
-          <p>A fogyasztót a távollévők között kötött szerződésnél főszabályként 14 napos elállási jog illeti meg. Az IceCoin és a rang nem tárgyi adathordozón nyújtott digitális tartalom, amelyet a Szolgáltató a fizetés után azonnal teljesít. A Felhasználó a vásárlás előtt kifejezetten kéri a teljesítés azonnali megkezdését, és egyidejűleg tudomásul veszi, hogy a teljesítés megkezdésével elveszíti elállási jogát. Erről a Szolgáltató visszaigazolást küld. Ezért a jóváírás után elállásnak nincs helye (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont). A jogszabályban biztosított szavatossági jogokat ez nem érinti.</p>
+          <p>A fogyasztót a távollévők között kötött szerződésnél főszabályként 14 napos elállási jog illeti meg. Az IceCoin és a rang nem tárgyi adathordozón nyújtott digitális tartalom, amelyet a Szolgáltató a fizetés után azonnal teljesít. A Felhasználó a vásárlás előtt kifejezetten kéri a teljesítés azonnali megkezdését, és egyidejűleg tudomásul veszi, hogy a teljesítés megkezdésével elveszíti elállási jogát. Erről a Szolgáltató visszaigazolást küld. Ezért a jóváírás után elállásnak nincs helye (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont). A Kitiltás csökkentése szolgáltatásnál a Felhasználó kifejezetten kéri a szolgáltatás azonnali teljesítését, és tudomásul veszi, hogy a szolgáltatás teljesítése (a feloldás) után elveszíti felmondási jogát (29. § (1) bekezdés a) pont). A jogszabályban biztosított szavatossági jogokat ez nem érinti.</p>
 
           <h4>9. Szerencsekerék</h4>
           <ul>
@@ -770,26 +860,34 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
             <li>A Szolgáltató a nyereményeket és a pörgetés árát módosíthatja. Visszaélés (pl. több fiók használata) esetén a nyeremény visszavonható.</li>
           </ul>
 
-          <h4>10. Skin feltöltés</h4>
+          <h4>10. Kitiltás csökkentése</h4>
+          <ul>
+            <li>A Kitiltás csökkentése oldalon megvásárolható: némítás feloldása, kitiltás csökkentése 10 vagy 20 nappal, illetve a teljes kitiltás feloldása. A termékek közül Felhasználónként 6 hónaponta egy vásárolható meg.</li>
+            <li>A feloldást a fizetés után a staff végzi el a Felhasználó weboldalas felhasználónevével azonos nevű játékoson, legkésőbb 24 órán belül.</li>
+            <li>Csaló kliens (pl. hack, X-Ray, KillAura) használata miatti kitiltás (kliens ban) nem csökkenthető és nem oldható fel.</li>
+            <li>Ha a feloldás nem teljesíthető (pl. kliens ban, a vásárláskor nem volt aktív büntetés, vagy a 6 hónapos korlát miatt), a Szolgáltató a vételárat visszatéríti, IceCoinos fizetésnél az IceCoint visszaírja.</li>
+          </ul>
+
+          <h4>11. Skin feltöltés</h4>
           <p>A Felhasználó csak olyan skint tölthet fel, amelynek felhasználására jogosult, és amely nem sértő, obszcén vagy jogsértő. A feltöltött skin a játékbeli beállíthatóság érdekében nyilvános címen (icemine.hu/skin/felhasználónév.png) érhető el. A Szolgáltató a szabályt sértő skint eltávolíthatja.</p>
 
-          <h4>11. Szabályszegés és kitiltás</h4>
+          <h4>12. Szabályszegés és kitiltás</h4>
           <p>A Felhasználó köteles betartani a <a href="#szabalyzat">Szabályzatot</a>. Ideiglenes kitiltás alatt a fiókhoz tartozó virtuális javak nem használhatók. Súlyos vagy ismételt szabályszegés miatti végleges kitiltás esetén a virtuális javak megszűnnek, és visszatérítés nem jár, kivéve, ha a kitiltás alaptalannak bizonyul.</p>
 
-          <h4>12. Elérhetőség és felelősség</h4>
+          <h4>13. Elérhetőség és felelősség</h4>
           <ul>
             <li>A Szolgáltató törekszik a szerver és a weboldal folyamatos működésére, de karbantartás, hiba vagy rajta kívül álló ok (pl. tárhely- vagy internetszolgáltatói hiba) miatt átmeneti kimaradás előfordulhat.</li>
             <li>A Szolgáltató nem felel a Felhasználó eszközéből, internetkapcsolatából vagy a jelszó Felhasználónak felróható kiszivárgásából eredő károkért.</li>
             <li>Ha a Szolgáltató a szolgáltatást véglegesen megszünteti, erről legalább 30 nappal korábban értesíti a Felhasználókat a weboldalon. A megvásárolt virtuális javak a megszűnésig használhatók.</li>
           </ul>
 
-          <h4>13. Panaszkezelés és jogorvoslat</h4>
+          <h4>14. Panaszkezelés és jogorvoslat</h4>
           <ul>
             <li>Panaszt a <a href="mailto:support@icemine.hu">support@icemine.hu</a> címen lehet tenni. Az írásbeli panaszra a Szolgáltató 30 napon belül érdemben válaszol.</li>
             <li>Ha a panaszt a Szolgáltató elutasítja, a fogyasztó a lakóhelye szerinti fogyasztóvédelmi hatósághoz (vármegyei kormányhivatal) vagy a lakóhelye, illetve a Szolgáltató székhelye szerint illetékes békéltető testülethez fordulhat (elérhetőségek: <a href="https://bekeltetes.hu" target="_blank" rel="noopener">bekeltetes.hu</a>), illetve bírósághoz fordulhat.</li>
           </ul>
 
-          <h4>14. Az ÁSZF módosítása, irányadó jog</h4>
+          <h4>15. Az ÁSZF módosítása, irányadó jog</h4>
           <p>A Szolgáltató az ÁSZF-et módosíthatja. A módosítás a weboldalon történő közzététellel lép hatályba, és a korábban megkötött vásárlásokat nem érinti. Az ÁSZF-ben nem szabályozott kérdésekben a magyar jog az irányadó, különösen a Polgári Törvénykönyv (2013. évi V. törvény), az elektronikus kereskedelemről szóló 2001. évi CVIII. törvény, a fogyasztóvédelemről szóló 1997. évi CLV. törvény és a 45/2014. (II. 26.) Korm. rendelet.</p>
         </div>
 
@@ -809,7 +907,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <p><b>a) Felhasználói fiók.</b> Felhasználónév, e-mail cím, jelszó (csak visszafejthetetlen, titkosított formában, így a jelszavadat senki sem ismeri), a regisztráció időpontja, a fiók belső azonosítója, valamint az ÁSZF elfogadásának időpontja. <i>Cél:</i> a fiók létrehozása és a szolgáltatás nyújtása. <i>Jogalap:</i> szerződés teljesítése (GDPR 6. cikk (1) b) pont). <i>Időtartam:</i> a fiók törléséig.</p>
           <p><b>b) Fiók megerősítése és jelszó-visszaállítás.</b> E-mail cím, egyszer használatos kódok (titkosított formában) és kiküldésük ideje. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a megerősítő kód 24 óra, a jelszó-visszaállító kód 1 óra után érvénytelen.</p>
           <p><b>c) Bejelentkezés.</b> A belépéskor egy véletlen azonosítót (tokent) kapsz, amelyet a böngésződ helyi tárhelye (localStorage) tárol, a szerveren pedig csak titkosított formában szerepel. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> kilépésig, legfeljebb 30 napig.</p>
-          <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, valamint a feltöltött skin (amely nyilvános címen érhető el). <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
+          <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, a Kitiltás csökkentése vásárlások (termék, időpont, fizetési mód), valamint a feltöltött skin (amely nyilvános címen érhető el). A feloldási kéréseket a felhasználóneveddel együtt e-mailben továbbítjuk a staffnak. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
           <p><b>e) Vásárlás.</b> Fiókazonosító, felhasználónév, e-mail cím, a megvásárolt termék, az összeg, az időpont, a Stripe fizetési azonosító, valamint az azonnali teljesítésről tett nyilatkozatod. <i>Cél:</i> a vásárlás teljesítése, visszaigazolás, könyvelés, panaszkezelés. <i>Jogalap:</i> szerződés teljesítése és jogi kötelezettség (GDPR 6. cikk (1) c) pont; a számvitelről szóló 2000. évi C. törvény 169. §). <i>Időtartam:</i> 8 év. Bankkártyaadatokat nem kezelünk, azokat kizárólag a Stripe kezeli.</p>
           <p><b>f) Biztonság.</b> Az IP-címedet a túl sok kérés kiszűrésére használjuk, csak a szerver memóriájában, legfeljebb 1 óráig. A szerver és a webszerver naplójában hibák és egyes események (pl. sikeres fizetés, nyeremény) szerepelhetnek, esetenként felhasználónévvel vagy IP-címmel. <i>Jogalap:</i> jogos érdek a szolgáltatás biztonságos működéséhez (GDPR 6. cikk (1) f) pont). <i>Időtartam:</i> a napló a tárhelykorlát elérésekor automatikusan törlődik.</p>
           <p><b>g) Kapcsolatfelvétel és panasz.</b> Az e-mailben küldött adataid. <i>Jogalap:</i> jogos érdek, illetve panasz esetén jogi kötelezettség (1997. évi CLV. törvény 17/A. §). <i>Időtartam:</i> az ügy lezárásáig, panasz esetén 3 évig.</p>
@@ -852,6 +950,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
             <li><b>Nem érkezett meg a vásárlás:</b> a fizetés sikeres volt, de az IceCoin vagy a rang nem jelent meg a fiókodon. Ilyenkor pótoljuk a jóváírást, vagy ha ez nem lehetséges, a teljes összeget visszatérítjük.</li>
             <li><b>Kétszeres terhelés:</b> ugyanazért a vásárlásért többször vonták le az összeget. A felesleges terhelést visszatérítjük.</li>
             <li><b>Technikai hiba:</b> a megvásárolt termék a mi hibánkból nem használható, és észszerű határidőn belül nem tudjuk kijavítani.</li>
+            <li><b>Kitiltás csökkentése, ha nem teljesíthető:</b> kliens ban esetén, ha a vásárláskor nem volt aktív kitiltásod vagy némításod, illetve ha 6 hónapon belül már vásároltál ilyet, a vételárat visszatérítjük (IceCoinos fizetésnél az IceCoint visszaírjuk).</li>
             <li><b>Kiskorú vásárlása szülői hozzájárulás nélkül:</b> a szülő (törvényes képviselő) kérésére a még fel nem használt IceCoinnak megfelelő összeget visszatérítjük.</li>
           </ul>
           <p>A jogszabályban biztosított szavatossági jogaidat ezek a feltételek nem korlátozzák.</p>
@@ -859,7 +958,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <h4>2. Mikor nem jár visszatérítés?</h4>
           <ul>
             <li>Ha már felhasználtad a megvásárolt IceCoint (pl. rangra, pörgetésre, névváltásra, utalásra).</li>
-            <li>Ha egyszerűen meggondoltad magad a jóváírás után.</li>
+            <li>Ha egyszerűen meggondoltad magad a jóváírás után, vagy a feloldás már megtörtént.</li>
             <li>A szerencsekerék eredménye miatt.</li>
             <li>Ha a fiókot a <a href="#szabalyzat">Szabályzat</a> súlyos megsértése miatt kitiltottuk.</li>
             <li>Ha a fiókhoz a saját hibádból (pl. jelszó kiadása) vesztetted el a hozzáférést.</li>
@@ -1061,7 +1160,7 @@ $("#logout").onclick=async()=>{
   try{history.replaceState(null,"",location.pathname)}catch(e){}
   document.body.classList.remove("menu");backToLogin();render();
 };
-const PAGES=["kezdolap","karakter","webshop","rangok","vasarlas","szerencsekerek","kliens","dokumentumok","beallitasok"];
+const PAGES=["kezdolap","karakter","webshop","rangok","vasarlas","kitiltas","szerencsekerek","kliens","dokumentumok","beallitasok"];
 function route(){
   let p=location.hash.replace("#","");
   if(DOCS.includes(p)){
@@ -1193,7 +1292,7 @@ function render(){
     if(sk)skinData(user).then(u=>{if(skin.dataset.n===key)skin.src=u}).catch(()=>{});
     else skin.src="https://mc-heads.net/body/"+encodeURIComponent(user.name)+"/260";
   }
-  tUpdate();sUpdate();renderRanks();spinState();
+  tUpdate();sUpdate();renderRanks();spinState();renderUnban();
 }
 
 const COIN="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cdefs%3E%3ClinearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e2f7ff%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%2362c4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%230d4f8a%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22f%22 x1=%22.25%22 y1=%220%22 x2=%22.75%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%239be2ff%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%232b90e2%22/%3E%3Cstop offset=%221%22 stop-color=%22%2314529e%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2219.6%22 fill=%22%230a3354%22/%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2218.2%22 fill=%22url%28%23r%29%22/%3E%3Cpath d=%22M20 5.2 32.8 12.6v14.8L20 34.8 7.2 27.4V12.6z%22 fill=%22url%28%23f%29%22 stroke=%22%230a3354%22 stroke-opacity=%22.45%22 stroke-width=%221%22/%3E%3Cpath d=%22M20 5.2V20L7.2 12.6M20 20l12.8-7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.16%22 stroke-width=%221%22 fill=%22none%22/%3E%3Cg stroke=%22%23f4fcff%22 stroke-width=%222.3%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 fill=%22none%22%3E%3Cg transform=%22rotate%280 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%2860 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%28120 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3C/g%3E%3Cpath d=%22M8.6 14.2A12.6 12.6 0 0 1 16.8 7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.75%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E";
@@ -1384,35 +1483,65 @@ $("#packs").innerHTML=PACKS.map(([c,p],i)=>{
   const pct=Math.round((1-(p/c)/BASE)*100),tag=TAGS[c];
   return `<label class="pack"><input type="radio" name="pack" value="${i}" aria-label="${fmtN(c)} IceCoin, ${fmtN(p)} forint"><div class="art">${tag?`<span class="badge ${tag[1]}">${tag[0]}</span>`:""}${pct>0?`<span class="save">−${pct}%</span>`:""}${coinStack(i+1)}<span class="check">${CHECK}</span></div><div class="info"><div class="amt">${fmtN(c)}</div><div class="unit">IceCoin</div><div class="price">${fmtN(p)} Ft</div><div class="per">${fmtN(Math.round(p/c*1000))} Ft / 1000 IceCoin</div></div></label>`;
 }).join("");
+let coQty=1;
+const MAXQ=10;
+function coUpdate(){
+  const r=$("#packs input:checked");if(!r)return;
+  const [c,p]=PACKS[+r.value];
+  $("#coSel").textContent=fmtN(c*coQty)+" IceCoin";
+  $("#coSub").textContent=coQty>1?coQty+" × "+fmtN(c)+" IceCoin":"";
+  $("#coPrice").textContent=fmtN(p*coQty)+" Ft";
+  $("#coQty").textContent=coQty;
+  $$(".qty button").forEach(b=>b.disabled=(+b.dataset.q<0&&coQty<=1)||(+b.dataset.q>0&&coQty>=MAXQ));
+}
 $("#packs").addEventListener("change",e=>{
-  const i=+e.target.value,[c,p]=PACKS[i];
+  const i=+e.target.value;
   $$(".pack").forEach((el,k)=>el.classList.toggle("on",k===i));
-  $("#coSel").textContent=fmtN(c)+" IceCoin";$("#coPrice").textContent=fmtN(p)+" Ft";
+  coQty=1;$("#coQtyW").hidden=false;coUpdate();
   $("#coBtn").disabled=false;msg("#buyMsg","");
 });
+$(".qty").onclick=e=>{const b=e.target.closest("button");if(!b)return;coQty=Math.min(MAXQ,Math.max(1,coQty+ +b.dataset.q));coUpdate()};
 $("#coBtn").onclick=async()=>{
   const r=$("#packs input:checked");if(!r)return;
   $("#payNote").innerHTML="";
   if(!$("#coConsent").checked){$("#coConsentRow").classList.add("need");$("#coConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});return msg("#buyMsg","A vásárláshoz jelöld be a fenti nyilatkozatot.","e")}
   const b=$("#coBtn"),c=PACKS[+r.value][0];
   b.disabled=true;msg("#buyMsg","Átirányítás a biztonságos fizetési oldalra…");
-  const d=await api("/api/checkout",{ic:c,consent:true});
+  const d=await api("/api/checkout",{ic:c,qty:coQty,consent:true});
   if(d.error||!d.url){b.disabled=false;return msg("#buyMsg",d.error||"Nem sikerült elindítani a fizetést.","e")}
   location.href=d.url;
 };
-addEventListener("pageshow",e=>{if(e.persisted){$("#coBtn").disabled=!$("#packs input:checked");msg("#buyMsg","");renderRanks()}});
+addEventListener("pageshow",e=>{if(e.persisted){$("#coBtn").disabled=!$("#packs input:checked");msg("#buyMsg","");renderRanks();renderUnban()}});
+const NEWS=[
+ {d:"2026-10-12",tag:"Bejelentés",t:"Elindult az IceMine új weboldala!",x:"Mostantól egy helyen intézhetsz mindent: a fiókodat, az IceCoin egyenlegedet, a rangjaidat és a vásárlásaidat. Nézz körül, és írd meg a Discordon, mit gondolsz!",href:"https://discord.gg/YJV2HNqTMc",more:"Írj nekünk a Discordon"},
+ {d:"2026-10-12",tag:"Újdonság",t:"Pörgess a Szerencsekeréken",x:"Hetente egy pörgetés ingyen jár, utána 50 IceCoinért pörgethetsz újra. A fődíj a Bronz rang!",href:"#szerencsekerek",more:"Irány a kerék",a:["#3fb4ff","#1c6fd6"],ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>'},
+ {d:"2026-10-12",tag:"Újdonság",t:"Töltsd fel a saját skined",x:"A Karakter oldalon saját skint állíthatsz be, és egy paranccsal a játékban is viselheted.",href:"#karakter",more:"Skin feltöltése",a:["#7fd3ff","#2192dc"],ico:'<svg class="i" viewBox="0 0 24 24"><path d="M8 3L3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-1 2-2.4 3-4 3S9 5 8 3z"/></svg>'},
+ {d:"2026-10-12",tag:"Bolt",t:"Rangok forintért is",x:"A Bronz, Abyss, IceKing és Yeti rangot IceCoin mellett már bankkártyával is megveheted.",href:"#rangok",more:"Rangok megtekintése",a:["#f3b783","#a4592a"],ico:'<svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>'},
+ {d:"2026-10-12",tag:"Bolt",t:"Több IceCoin egyszerre",x:"A Vásárlás oldalon most már egy csomagból egyszerre akár 10 darabot is megvehetsz.",href:"#vasarlas",more:"IceCoin vásárlás",a:["#62c4ff","#0d4f8a"],ico:'<span class="pcoin" style="width:46px;height:46px"></span>'},
+ {d:"2026-10-12",tag:"Újdonság",t:"Kitiltás csökkentése",x:"Ha kitiltottak vagy lenémítottak, a weboldalon csökkentheted a büntetésed. Kliens ban esetén nincs feloldás.",href:"#kitiltas",more:"Részletek",a:["#a593ff","#33238a"],ico:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>'}
+];
+const HUMON=["január","február","március","április","május","június","július","augusztus","szeptember","október","november","december"];
+const ndate=s=>{const [y,m,d]=s.split("-").map(Number);return y+". "+HUMON[m-1]+" "+d+"."};
+(function(){
+  const [f,...rest]=NEWS,land=$("#auth svg.land"),art=land?land.outerHTML.replace(/id="lsky"/,'id="nsky"').replace(/url\(#lsky\)/g,"url(#nsky)"):"";
+  const ext=h=>/^https?:/.test(h)?' target="_blank" rel="noopener"':"";
+  $("#news").innerHTML=`<article class="nfeat"><div class="nart">${art}<img class="lg" alt="IceMine" src="${LOGO}"></div><div class="nbody"><div class="nmeta"><span class="ntag">${f.tag}</span><span>${ndate(f.d)}</span></div><h3>${f.t}</h3><p>${f.x}</p><a class="btn mc" href="${f.href}"${ext(f.href)}>${f.more}</a></div></article>`
+   +`<div class="ngrid">${rest.map(n=>`<a class="ncard" href="${n.href}"${ext(n.href)} style="--a1:${n.a[0]};--a2:${n.a[1]}"><div class="nart">${n.ico}</div><div class="nbody"><div class="nmeta"><span class="ntag">${n.tag}</span><span>${ndate(n.d)}</span></div><h3>${n.t}</h3><p>${n.x}</p><span class="nmore">${n.more} →</span></div></a>`).join("")}</div>`
+   +`<div class="ncomm"><div><b>Csatlakozz a közösséghez!</b><span>Hírek, események és nyereményjátékok elsőként.</span></div><div class="nbtns"><a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Discord</a><a href="https://youtube.com/@icemine_1?si=AdKZdLQsWEK8M_tw" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg>YouTube</a><a href="https://www.instagram.com/icemine_1" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg>Instagram</a></div></div>`;
+})();
 function pNote(box,t,s,ring){
   box.innerHTML='<div class="pnote">'+(ring?'<i class="ring"></i>':'')+'<div><b></b><span></span></div></div>';
   box.querySelector("b").textContent=t;box.querySelector(".pnote div span").textContent=s;
 }
-async function payResult(id,rang){
-  const box=$(rang?"#rankNote":"#payNote");
+async function payResult(id,kind){
+  const box=$(kind==="rang"?"#rankNote":kind==="unban"?"#unbanNote":"#payNote");
   if(id==="megszakitva")return pNote(box,"A fizetés megszakadt","Nem történt terhelés, bármikor újrapróbálhatod.");
   pNote(box,"Fizetés ellenőrzése…","Egy pillanat, máris jóváírjuk a vásárlásod.",true);
   for(let k=0;k<8;k++){
     const d=await api("/api/checkout-status",{id});
     if(d.user){user=d.user;render()}
     if(d.paid){
+      if(d.unban){const x=UNBANS.find(z=>z.name===d.unban);box.innerHTML='<div class="win long"><span class="wi">'+(x?x.ico:"")+'</span><div><div class="wt">Sikeres fizetés! A staff 24 órán belül elvégzi:</div><div class="wa">'+escH(d.unban)+'</div></div></div>';return}
       if(d.rank&&!d.ic){const r=RANKS.find(x=>x.name===d.rank);box.innerHTML='<div class="win r-'+(r?r.id:"bronz")+'">'+gem()+'<div><div class="wt">Sikeres fizetés! Mostantól a rangod:</div><div class="wa">'+escH(d.rank)+'</div></div></div>'}
       else box.innerHTML='<div class="win"><span class="pcoin"></span><div><div class="wt">'+(d.rank?"Már volt ilyen rangod, ezért helyette:":"Sikeres fizetés!")+'</div><div class="wa">+'+fmtN(d.ic)+' IceCoin</div></div></div>';
       confetti();return;
@@ -1422,6 +1551,52 @@ async function payResult(id,rang){
   }
   pNote(box,"A fizetésed feldolgozás alatt van","Pár percen belül megérkezik a fiókodra, utána frissítsd az oldalt.");
 }
+const UNBANS=[
+ {id:"mute",name:"Némítás feloldása",ft:2000,ic:2500,desc:"A némításod megszűnik, és újra írhatsz a chatbe.",ico:'<svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM16 9a4 4 0 010 6M18.5 6.5a8 8 0 010 11"/></svg>'},
+ {id:"ban10",name:"Kitiltás csökkentése 10 nappal",ft:4990,desc:"A kitiltásod 10 nappal hamarabb jár le.",ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6"/></svg>'},
+ {id:"ban20",name:"Kitiltás csökkentése 20 nappal",ft:9990,desc:"A kitiltásod 20 nappal hamarabb jár le.",ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M4.5 6.5L3 5M19.5 6.5L21 5"/></svg>'},
+ {id:"banfull",name:"Teljes kitiltás feloldása",ft:30000,desc:"A kitiltásod teljesen megszűnik, legyen az ideiglenes vagy végleges.",big:1,ico:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>'}
+];
+const dayHu=t=>{const d=new Date(t);return d.getFullYear()+". "+pad(d.getMonth()+1)+". "+pad(d.getDate())+"."};
+function renderUnban(){
+  if(!user)return;
+  const bal=user.coins||0,next=user.unbanNext||0,locked=next>Date.now(),pu=user.punish;
+  $("#ubBal").textContent=fmtN(bal);
+  const st=(el,v,kind)=>{el.textContent=v;el.className=kind||""};
+  if(pu===undefined){st($("#ubBan"),"Hamarosan látható");st($("#ubMute"),"Hamarosan látható")}
+  else{
+    st($("#ubBan"),pu&&pu.ban?(pu.ban.until>0?"Aktív, lejár: "+dayHu(pu.ban.until):"Aktív, végleges"):"Nincs",pu&&pu.ban?"bad":"ok");
+    st($("#ubMute"),pu&&pu.mute?(pu.mute.until>0?"Aktív, lejár: "+dayHu(pu.mute.until):"Aktív, végleges"):"Nincs",pu&&pu.mute?"bad":"ok");
+  }
+  st($("#ubNext"),locked?"Legközelebb "+dayHu(next)+" után":"Most vásárolhatsz",locked?"bad":"ok");
+  $("#ubInfo").innerHTML=(pu===undefined?"A büntetésed állapotát a szerverrel való összekötés után itt is látni fogod. Addig a játékba belépve látod. ":"")+"A feloldás a <b>"+escH(user.name)+"</b> nevű játékosra szól."+(user.unbanLast?" Legutóbbi vásárlásod: "+escH(user.unbanLast.item)+" ("+dayHu(user.unbanLast.t)+").":"");
+  $("#ubGrid").innerHTML=UNBANS.map(x=>{
+    let act;
+    if(locked)act=`<div class="rown dim">Legközelebb ${dayHu(next)} után</div>`;
+    else act=(x.ic?`<button class="btn mc" type="button" data-ubic="${x.id}"${bal<x.ic?" disabled":""}>Megveszem ${fmtN(x.ic)} IC-ért</button>`:"")+`<button class="btn mc${x.ic?" alt":""}" type="button" data-ubft="${x.id}">${x.ic?"Fizetés forintban: ":"Megveszem: "}${fmtN(x.ft)} Ft</button>`;
+    return `<article class="ubcard${x.big?" big":""}"><div class="ubtop"><span class="ubi">${x.ico}</span><h3>${x.name}</h3></div><p>${x.desc}</p><div class="ubprice">${fmtN(x.ft)} Ft${x.ic?` <span>vagy ${fmtN(x.ic)} IceCoin</span>`:""}</div>${act}<div class="msg" data-ubmsg="${x.id}" aria-live="polite"></div></article>`;
+  }).join("");
+}
+$("#ubGrid").onclick=async e=>{
+  const b=e.target.closest("button");if(!b)return;
+  const id=b.dataset.ubic||b.dataset.ubft,x=UNBANS.find(z=>z.id===id);if(!x)return;
+  const m=$(`[data-ubmsg="${id}"]`);$("#unbanNote").innerHTML="";
+  if(b.dataset.ubic){
+    if(!confirm(x.name+" "+fmtN(x.ic)+" IceCoinért. Folytatod?"))return;
+    b.disabled=true;
+    const d=await api("/api/unban-ic",{item:x.id});
+    if(d.error){b.disabled=false;m.textContent=d.error;m.className="msg e";return}
+    user=d.user;render();
+    $("#unbanNote").innerHTML='<div class="win long"><span class="wi">'+x.ico+'</span><div><div class="wt">Kérés elküldve! A staff 24 órán belül elvégzi:</div><div class="wa">'+escH(x.name)+'</div></div></div>';
+    $("#unbanNote").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});return;
+  }
+  if(!$("#ubConsent").checked){$("#ubConsentRow").classList.add("need");$("#ubConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});m.textContent="A forintos vásárláshoz jelöld be a nyilatkozatot fent.";m.className="msg e";return}
+  b.disabled=true;m.textContent="Átirányítás a biztonságos fizetési oldalra…";m.className="msg";
+  const d=await api("/api/checkout",{unban:x.id,consent:true});
+  if(d.error||!d.url){b.disabled=false;m.textContent=d.error||"Nem sikerült elindítani a fizetést.";m.className="msg e";return}
+  location.href=d.url;
+};
+$("#ubConsent").onchange=e=>{if(e.target.checked)$("#ubConsentRow").classList.remove("need")};
 $("#coConsent").onchange=e=>{if(e.target.checked){$("#coConsentRow").classList.remove("need");msg("#buyMsg","")}};
 $("#rkConsent").onchange=e=>{if(e.target.checked)$("#rkConsentRow").classList.remove("need")};
 const DOCS=["szabalyzat","aszf","adatvedelem","visszaterites"];
@@ -1522,14 +1697,14 @@ $("#pwform").onsubmit=async e=>{
     $("#rInfo").textContent="Add meg az új jelszavad.";
     return;
   }
-  const fz=location.search.match(/fizetes=(cs_(?:test|live)_[A-Za-z0-9]+|megszakitva)/),fzRang=/[?&]rang=1(&|$)/.test(location.search);
-  if(fz){try{history.replaceState(null,"",location.pathname+(fzRang?"#rangok":"#vasarlas"))}catch(e){}}
+  const fz=location.search.match(/fizetes=(cs_(?:test|live)_[A-Za-z0-9]+|megszakitva)/),fzKind=/[?&]rang=1(&|$)/.test(location.search)?"rang":/[?&]tipus=unban(&|$)/.test(location.search)?"unban":"ic";
+  if(fz){try{history.replaceState(null,"",location.pathname+(fzKind==="rang"?"#rangok":fzKind==="unban"?"#kitiltas":"#vasarlas"))}catch(e){}}
   if(token){
     const d=await api("/api/me");
     if(d.user){user=d.user}else if(d.s===401){saveTok(null)}
   }
   render();route();
-  if(fz&&user)payResult(fz[1],fzRang);
+  if(fz&&user)payResult(fz[1],fzKind);
 })();
 })();
 </script>
