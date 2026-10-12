@@ -17,6 +17,18 @@ const SZIN_VALASZTEK = [
 
 module.exports = [
   new SlashCommandBuilder()
+    .setName("osszekotes")
+    .setDescription("A weboldalas fiókod összekötése a Discorddal")
+    .addStringOption((o) => o.setName("kod").setDescription("A 6 jegyű kód a weboldal Karakter oldaláról").setRequired(true).setMinLength(6).setMaxLength(6)),
+  new SlashCommandBuilder()
+    .setName("fiok")
+    .setDescription("A weboldalas fiókod (vagy másé)")
+    .addUserOption((o) => tag(o, false)),
+  new SlashCommandBuilder()
+    .setName("rangok-letrehozas")
+    .setDescription("Létrehozza a weboldal rangjait a Discordon, és kiosztja őket")
+    .setDefaultMemberPermissions(P.ManageRoles),
+  new SlashCommandBuilder()
     .setName("8ball")
     .setDescription("Kérdezd meg a varázsgömböt")
     .addStringOption((o) => o.setName("kerdes").setDescription("Mit szeretnél tudni?").setRequired(true).setMaxLength(200)),
@@ -289,7 +301,40 @@ module.exports = [
     .addSubcommand((s) => s.setName("udvozlo").setDescription("Ide köszönti a bot az új tagokat").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna")))
     .addSubcommand((s) => s.setName("otletek").setDescription("Ide kerülnek az ötletek").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna")))
     .addSubcommand((s) =>
-      s.setName("naplo").setDescription("Ide kerül a moderálás, a ticketek és a törölt üzenetek naplója").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna")),
+      s
+        .setName("naplo")
+        .setDescription("Naplócsatorna beállítása (fő napló vagy egy-egy témának külön)")
+        .addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna"))
+        .addStringOption((o) =>
+          o
+            .setName("tipus")
+            .setDescription("Melyik napló menjen ide (alapból a fő napló)")
+            .addChoices(
+              { name: "Fő napló", value: "fo" },
+              { name: "Üzenetek (törlés, szerkesztés)", value: "uzenet" },
+              { name: "Tagok (be/kilépés, rangok, ban)", value: "tag" },
+              { name: "Hangcsatornák", value: "hang" },
+              { name: "Szerver (csatornák, rangok, meghívók)", value: "szerver" },
+              { name: "Weboldal (regisztráció, utalás)", value: "web" },
+              { name: "Parancshasználat", value: "parancs" },
+            ),
+        ),
+    )
+    .addSubcommand((s) =>
+      s.setName("vasarlasok").setDescription("Ide küldöm a weboldalas vásárlásokat").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")),
+    )
+    .addSubcommand((s) =>
+      s
+        .setName("webrang")
+        .setDescription("Melyik Discord rang tartozzon egy weboldal ranghoz")
+        .addStringOption((o) =>
+          o
+            .setName("weboldal_rang")
+            .setDescription("A weboldal rangja")
+            .setRequired(true)
+            .addChoices({ name: "Bronz", value: "bronz" }, { name: "Abyss", value: "abyss" }, { name: "IceKing", value: "iceking" }, { name: "Yeti", value: "yeti" }),
+        )
+        .addRoleOption((o) => o.setName("discord_rang").setDescription("A Discord rang (ha üresen hagyod, törli)")),
     )
     .addSubcommand((s) =>
       s

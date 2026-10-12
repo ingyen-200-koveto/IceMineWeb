@@ -1,6 +1,6 @@
 const path = require("path");
 const { ModalBuilder, TextInputBuilder, TextInputStyle, AttachmentBuilder, MessageFlags, StringSelectMenuBuilder } = require("discord.js");
-const { K, kartya, sor, linkGomb, rejtett, valasz, hiba, csatorna, tudIrni, naplo, embed, staffE, adat, unix, vagas, avatar } = require("../kozos");
+const { K, kartya, sor, linkGomb, rejtett, valasz, hiba, csatorna, tudIrni, naplo, embed, staffE, adat, unix, vagas, avatar, jelol } = require("../kozos");
 const szintek = require("./szintek");
 
 const fuggoBejelentesek = new Map();
@@ -29,6 +29,8 @@ const SUGO = {
       ["toplista", "a legaktívabbak"],
       ["napi", "napi XP jutalom"],
       ["otlet", "ötlet beküldése"],
+      ["osszekotes", "weboldal fiók összekötése"],
+      ["fiok", "a weboldalas fiókod"],
     ],
   },
   szorakozas: {
@@ -86,6 +88,7 @@ const SUGO = {
     emoji: "⚙️",
     sorok: [
       ["beallitas", "minden beállítás"],
+      ["rangok-letrehozas", "weboldal rangok a Discordon"],
       ["info-panel", "információs panel"],
       ["szabalyzat-panel", "szabályzat panel elfogadás gombbal"],
       ["ticket-panel", "ticket panel"],
@@ -230,6 +233,7 @@ const parancsok = {
     const n = i.options.getInteger("mennyiseg");
     const tag = i.options.getUser("tag");
     await i.deferReply({ flags: MessageFlags.Ephemeral });
+    jelol(`bulk:${i.channel.id}`);
     let torolt;
     if (tag) {
       const uzenetek = await i.channel.messages.fetch({ limit: 100 });

@@ -1,7 +1,17 @@
 const { P, ment, beall, kartya, rejtett, hiba, siker, tudIrni } = require("../kozos");
 const statusz = require("./statusz");
+const weboldal = require("./weboldal");
 
-const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", naplo: "Napló" };
+const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások" };
+const NAPLO_TIPUSOK = {
+  fo: "📒 Fő napló (moderálás, ticketek és minden, aminek nincs külön csatornája)",
+  uzenet: "💬 Üzenetek (törlés, szerkesztés, automod)",
+  tag: "👥 Tagok (belépés, kilépés, rangok, becenevek, boost, kitiltások)",
+  hang: "🔊 Hangcsatornák",
+  szerver: "🏰 Szerver (csatornák, rangok, meghívók)",
+  web: "🌐 Weboldal (regisztrációk, utalások, összekötések, rangok)",
+  parancs: "⌨️ Parancshasználat (csak ha külön csatornát adsz meg)",
+};
 
 function rangHiba(i, rang) {
   if (rang.managed || rang.id === i.guild.id) return `Ezt a rangot nem lehet kiosztani: ${rang}`;
@@ -29,9 +39,21 @@ async function beallitas(i) {
         "**📍 Csatornák**",
         `👋 Üdvözlés: ${cs(b.udvozlo)}`,
         `💡 Ötletek: ${cs(b.otletek)}`,
-        `📒 Napló: ${cs(b.naplo)}`,
+        `🛒 Vásárlások: ${cs(b.vasarlasok)}`,
         `📊 Státusz panel: ${b.statuszPanel ? cs(b.statuszPanel.csatorna) : "`nincs`"}`,
         `🔢 Online számláló: ${cs(b.szamlalo)}`,
+      )
+      .elvalaszto()
+      .szoveg(
+        "**📒 Naplók**",
+        ...Object.entries(NAPLO_TIPUSOK).map(([t, nev]) => `${nev.split(" (")[0]}: ${t === "fo" ? cs(b.naplo) : b.naplok && b.naplok[t] ? cs(b.naplok[t]) : t === "parancs" ? "`ki`" : "→ fő napló"}`),
+      )
+      .elvalaszto()
+      .szoveg(
+        "**🎖️ Weboldal rangok**",
+        ...(b.webRangok && Object.keys(b.webRangok).length
+          ? weboldal.RANG_ALAP.map((r) => `${(weboldal.RANG_STILUS[r.id] || {}).emoji || "🎖️"} ${r.nev} → ${rg(b.webRangok[r.id])}`)
+          : ["-# Még nincsenek beállítva: `/rangok-letrehozas`"]),
       )
       .elvalaszto()
       .szoveg("**🎫 Ticketek és rangok**", `📁 Ticket kategória: ${cs(b.ticketKategoria)}`, `🛡️ Staff rang: ${rg(b.staffRang)}`, `🎭 Autorang: ${rg(b.autorang)}`)
@@ -44,6 +66,33 @@ async function beallitas(i) {
       )
       .lab("Módosítás: /beallitas • 🧊 IceMine");
     return rejtett(i, k);
+  }
+
+  if (sub === "naplo") {
+    const ch = i.options.getChannel("csatorna");
+    const tipus = i.options.getString("tipus") || "fo";
+    if (!tudIrni(ch)) return hiba(i, `Ide nem tudok írni: ${ch}. Adj jogot a botnak ehhez a csatornához.`);
+    if (tipus === "fo") b.naplo = ch.id;
+    else (b.naplok ||= {})[tipus] = ch.id;
+    ment();
+    return siker(i, `${NAPLO_TIPUSOK[tipus].split(" (")[0]} ide megy: ${ch}`);
+  }
+
+  if (sub === "webrang") {
+    const rangId = i.options.getString("weboldal_rang");
+    const szerep = i.options.getRole("discord_rang");
+    b.webRangok ||= {};
+    if (!szerep) {
+      delete b.webRangok[rangId];
+      ment();
+      return siker(i, "Kész, ehhez a weboldal ranghoz most nem tartozik Discord rang.");
+    }
+    const h = rangHiba(i, szerep);
+    if (h) return hiba(i, h);
+    b.webRangok[rangId] = szerep.id;
+    ment();
+    weboldal.szinkron(i.client).catch(() => {});
+    return siker(i, `Aki a weboldalon ${(weboldal.RANG_ALAP.find((r) => r.id === rangId) || { nev: rangId }).nev} rangú, itt ezt kapja: ${szerep}`);
   }
 
   if (CSATORNA_NEVEK[sub]) {

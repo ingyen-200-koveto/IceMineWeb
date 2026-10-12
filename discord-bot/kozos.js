@@ -212,9 +212,27 @@ function tudIrni(ch) {
   return !!p && p.has([P.ViewChannel, P.SendMessages, P.EmbedLinks]);
 }
 
-async function naplo(guild, e, files) {
-  const ch = await csatorna(guild, beall(guild.id).naplo);
+async function naploCsatorna(guild, tipus) {
+  const b = beall(guild.id);
+  const sajat = b.naplok && tipus && b.naplok[tipus];
+  if (sajat) return csatorna(guild, sajat);
+  if (tipus === "parancs") return null;
+  return csatorna(guild, b.naplo);
+}
+
+async function naplo(guild, e, files, tipus) {
+  const ch = await naploCsatorna(guild, tipus);
   if (ch) await ch.send({ embeds: [e], files: files || [], allowedMentions: { parse: [] } }).catch(() => {});
+}
+
+const sajatMuveletek = new Map();
+function jelol(kulcs) {
+  sajatMuveletek.set(kulcs, Date.now());
+  if (sajatMuveletek.size > 500) sajatMuveletek.delete(sajatMuveletek.keys().next().value);
+}
+function sajatE(kulcs) {
+  const t = sajatMuveletek.get(kulcs);
+  return !!t && Date.now() - t < 15000;
 }
 
 async function dm(user, szoveg, szin) {
@@ -326,6 +344,9 @@ module.exports = {
   csatorna,
   tudIrni,
   naplo,
+  naploCsatorna,
+  jelol,
+  sajatE,
   dm,
   staffE,
   idoErtelmez,

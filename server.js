@@ -56,6 +56,9 @@ async function boot() {
   const server = tls ? require("https").createServer({ cert: fs.readFileSync(certFile), key: fs.readFileSync(keyFile) }, app) : require("http").createServer(app);
   const ready = () => { console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); (async () => { await checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); await checkStripe().catch(e => console.log("Fizetés: ellenőrzési hiba – " + e.message)); })(); };
   host ? server.listen(port, host, ready) : server.listen(port, ready);
+  const bport = Number(process.env.INTERNAL_PORT) || 3001, bs = require("http").createServer((req, res) => belso(req, res));
+  bs.on("error", e => console.error("Bot kapcsolat: nem indult el a belső API (" + e.message + ")."));
+  bs.listen(bport, "127.0.0.1", () => console.log("Bot kapcsolat: belső API a 127.0.0.1:" + bport + " címen."));
 }
 
 const sha = s => crypto.createHash("sha256").update(s).digest("hex");
@@ -64,8 +67,16 @@ const same = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.
 const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const makeCode = () => Array.from({ length: 12 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
-const pub = u => ({ name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null });
+const pub = u => ({ name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null });
 const fail = (res, code, error) => res.status(code).json({ error });
+function esemeny(tipus, adat) {
+  db.esemenyek = db.esemenyek || [];
+  db.esemenySeq = (db.esemenySeq || 0) + 1;
+  db.esemenyek.push(Object.assign({ seq: db.esemenySeq, t: Date.now(), tipus }, adat));
+  if (db.esemenyek.length > 2000) db.esemenyek.splice(0, db.esemenyek.length - 2000);
+}
+const rendelesId = () => "IC-" + Array.from({ length: 10 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
+const dcId = u => (u && u.discord && u.discord.id) || null;
 
 const hits = {};
 const limit = (max, ms) => (req, res, next) => {
@@ -188,6 +199,11 @@ function fulfill(s) {
     recordUnban(u, c.unban, "ft", { huf: c.unban.ft, pi: rec.pi, sid: s.id });
   }
   db.payments[s.id] = rec;
+  const tetelek = [];
+  for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) tetelek.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin");
+  if (rec.rank) tetelek.push(rec.rank + " rang" + (rec.rankComp ? " (helyette " + rec.rankComp + " IceCoin)" : ""));
+  if (rec.unban) tetelek.push(rec.unban);
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ft", huf: rec.huf, tetelek, rendeles: rec.pi || s.id, rang: rec.rank && !rec.rankComp ? rec.rank : null });
   save();
   sendReceipt(u, rec, s.id).catch(e => console.error("Visszaigazoló e-mail hiba: " + e.message));
   return true;
@@ -294,6 +310,7 @@ app.post("/api/verify", limit(30, 6e5), (req, res) => {
   const key = String(name).toLowerCase(), err = verifyCode(key, code);
   if (err) return fail(res, 400, err);
   const u = db.users[key];
+  esemeny("regisztracio", { user: u.name });
   res.json({ ok: true, token: session(u), user: pub(u) });
 });
 
@@ -342,6 +359,7 @@ app.post("/api/change-username", limit(10, 6e5), (req, res) => {
   if (newKey !== oldKey && taken(db.users[newKey])) return fail(res, 409, "Ez a felhasználónév már foglalt.");
   if ((u.coins || 0) < NAME_COST) return fail(res, 402, "Nincs elég IceCoinod. A felhasználónév-váltás " + NAME_COST + " IceCoinba kerül.");
   u.coins -= NAME_COST;
+  esemeny("vasarlas", { user: newName, discord: dcId(u), fizetes: "ic", ic: NAME_COST, tetelek: ["Felhasználónév-váltás: " + u.name + " → " + newName], rendeles: rendelesId() });
   u.name = newName;
   if (newKey !== oldKey) {
     delete db.users[oldKey]; db.users[newKey] = u;
@@ -365,6 +383,7 @@ app.post("/api/transfer", limit(30, 6e5), (req, res) => {
   u.coins -= n; r.coins = (r.coins || 0) + n;
   db.transfers = db.transfers || [];
   db.transfers.push({ t: Date.now(), from: u.name, to: r.name, amount: n, msg: message.trim() });
+  esemeny("utalas", { user: u.name, cimzett: r.name, ic: n, uzenet: message.trim() });
   if (db.transfers.length > 1000) db.transfers.splice(0, db.transfers.length - 1000);
   save();
   res.json({ ok: true, user: pub(u), to: r.name });
@@ -410,6 +429,8 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
     console.log("Szerencsekerék: " + u.name + " " + rank + " rangot nyert" + (granted ? "." : ", de már megvolt, helyette +" + prize + " IceCoin."));
   }
   if (prize > 0) u.coins = (u.coins || 0) + prize;
+  if (!free) esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: SPIN_COST, tetelek: ["Szerencsekerék pörgetés"], eredmeny: granted ? rank + " rang" : prize > 0 ? prize + " IceCoin" : "nem nyert", rendeles: rendelesId() });
+  if (granted) esemeny("rang", { user: u.name, discord: dcId(u), rang: rank, forras: "Szerencsekerék" });
   save();
   res.json({ ok: true, slot, win: prize > 0 || granted, prize, rank, granted, free, spun: true, user: pub(u) });
 });
@@ -613,6 +634,7 @@ app.post("/api/unban-ic", limit(20, 6e5), (req, res) => {
   if (!u.id) u.id = crypto.randomBytes(9).toString("hex");
   u.coins = bal - x.ic;
   recordUnban(u, x, "ic", {});
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: x.ic, tetelek: [x.name], rendeles: rendelesId() });
   save();
   res.json({ ok: true, user: pub(u) });
 });
@@ -628,11 +650,69 @@ app.post("/api/buy-rank", limit(20, 6e5), (req, res) => {
   if (bal < r.ic) return fail(res, 402, "Nincs elég IceCoinod. Még " + (r.ic - bal) + " IceCoin hiányzik.");
   u.coins = bal - r.ic; u.rank = r.name; u.rankSince = Date.now();
   db.purchases = db.purchases || [];
-  db.purchases.push({ t: Date.now(), user: u.name, rank: r.name, ic: r.ic });
+  const rid = rendelesId();
+  db.purchases.push({ t: Date.now(), user: u.name, rank: r.name, ic: r.ic, id: rid });
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: r.ic, tetelek: [r.name + " rang"], rendeles: rid, rang: r.name });
   if (db.purchases.length > 2000) db.purchases.splice(0, db.purchases.length - 2000);
   save();
   res.json({ ok: true, user: pub(u) });
 });
+
+app.post("/api/discord-code", limit(10, 6e5), (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const code = String(crypto.randomInt(100000, 1000000));
+  u.dcKod = { h: sha(code), exp: Date.now() + 6e5 };
+  save();
+  res.json({ ok: true, code });
+});
+
+app.post("/api/discord-unlink", limit(10, 6e5), (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  if (u.discord) { esemeny("levalasztas", { user: u.name, discord: u.discord.id, discordNev: u.discord.nev }); delete u.discord; save(); }
+  res.json({ ok: true, user: pub(u) });
+});
+
+function belso(req, res) {
+  const kuld = (k, o) => { res.writeHead(k, { "Content-Type": "application/json; charset=utf-8" }); res.end(JSON.stringify(o)); };
+  let url;
+  try { url = new URL(req.url, "http://belso"); } catch (e) { return kuld(400, { error: "Hibás kérés." }); }
+  if (req.method === "GET" && url.pathname === "/esemenyek") {
+    const utan = Number(url.searchParams.get("utan")) || 0;
+    return kuld(200, { utolso: db.esemenySeq || 0, esemenyek: (db.esemenyek || []).filter(e => e.seq > utan).slice(0, 100) });
+  }
+  if (req.method === "GET" && url.pathname === "/rangok") {
+    const tagok = Object.values(db.users).filter(u => u.verified && u.discord).map(u => ({ nev: u.name, rang: u.rank || "default", discord: u.discord.id }));
+    return kuld(200, { rangok: RANKS.map(r => ({ id: r.id, nev: r.name })), tagok });
+  }
+  if (req.method === "GET" && url.pathname === "/fiok") {
+    const id = url.searchParams.get("discord"), u = id && Object.values(db.users).find(x => x.discord && x.discord.id === id);
+    if (!u) return kuld(404, { error: "Nincs összekötött fiók." });
+    return kuld(200, { nev: u.name, rang: u.rank || "default", coins: u.coins || 0, created: u.created || null, skin: !!u.skin });
+  }
+  if (req.method === "POST" && url.pathname === "/osszekotes") {
+    let body = "";
+    req.on("data", c => { body += c; if (body.length > 2000) req.destroy(); });
+    req.on("end", () => {
+      let d;
+      try { d = JSON.parse(body); } catch (e) { return kuld(400, { error: "Hibás kérés." }); }
+      const kod = String(d.kod || "").replace(/\D/g, ""), id = String(d.discordId || ""), nev = String(d.discordNev || "").slice(0, 40);
+      if (!/^\d{6}$/.test(kod) || !/^\d{17,20}$/.test(id)) return kuld(400, { error: "Hibás kód. A kód 6 számjegyből áll." });
+      const h = sha(kod), most = Date.now(), talalat = Object.values(db.users).filter(u => u.dcKod && u.dcKod.exp > most && same(u.dcKod.h, h));
+      if (talalat.length !== 1) return kuld(404, { error: "Hibás vagy lejárt kód. Kérj újat a weboldalon, a Karakter oldalon." });
+      const u = talalat[0];
+      for (const x of Object.values(db.users)) if (x !== u && x.discord && x.discord.id === id) { esemeny("levalasztas", { user: x.name, discord: id, discordNev: x.discord.nev }); delete x.discord; }
+      u.discord = { id, nev, t: most };
+      delete u.dcKod;
+      esemeny("osszekotes", { user: u.name, discord: id, discordNev: nev });
+      save();
+      kuld(200, { ok: true, nev: u.name, rang: u.rank || "default" });
+    });
+    return;
+  }
+  kuld(404, { error: "Nincs ilyen." });
+}
 
 app.get("/api/me", (req, res) => { const u = authUser(req); u ? res.json({ user: pub(u) }) : fail(res, 401, "Nem vagy bejelentkezve."); });
 app.post("/api/logout", (req, res) => { const t = (req.headers.authorization || "").slice(7); if (t) { delete db.sessions[sha(t)]; save(); } res.json({ ok: true }); });

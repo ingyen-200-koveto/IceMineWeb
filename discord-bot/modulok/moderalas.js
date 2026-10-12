@@ -1,4 +1,4 @@
-const { K, adat, ment, embed, kartya, valasz, hiba, rejtett, naplo, dm, idoErtelmez, idoSzoveg, unix, avatar } = require("../kozos");
+const { K, adat, ment, embed, kartya, valasz, hiba, rejtett, naplo, dm, idoErtelmez, idoSzoveg, unix, avatar, jelol } = require("../kozos");
 
 const BOT_RANG_TIPP = "Húzd feljebb a bot rangját a Szerverbeállítások > Rangok listában, mint az övé.";
 const MAX_NEMITAS = 28 * 86400000;
@@ -35,6 +35,7 @@ const parancsok = {
     if (h) return hiba(i, h);
     if (!cel.kickable) return hiba(i, "Őt nem tudom kirúgni. " + BOT_RANG_TIPP);
     await dm(cel.user, `### 👢 Ki lettél rúgva\nAz IceMine Discordjáról.\n📝 **Indok:** ${ok}`, K.SARGA);
+    jelol(`kick:${i.guild.id}:${cel.id}`);
     await cel.kick(`${ok} | ${i.user.username}`);
     await valasz(i, modKartya("👢 Kirúgás", K.SARGA, cel.user, i.user, [`**${cel.user.username}** ki lett rúgva.`, `📝 **Indok:** ${ok}`]));
     return naplo(i.guild, naploEmbed("👢 Kirúgás", K.SARGA, cel.user, i.user, ok));
@@ -59,6 +60,7 @@ const parancsok = {
     } else if (user.id === i.user.id || user.id === i.client.user.id) {
       return hiba(i, "Ezt nem lehet.");
     }
+    jelol(`ban:${i.guild.id}:${user.id}`);
     await i.guild.bans.create(user.id, { reason: `${ok} | ${i.user.username}`, deleteMessageSeconds: napok * 86400 });
     adat.ideiglenesBanok = adat.ideiglenesBanok.filter((b) => !(b.gid === i.guild.id && b.uid === user.id));
     if (ido) adat.ideiglenesBanok.push({ gid: i.guild.id, uid: user.id, lejar: Date.now() + ido, nev: user.username });
@@ -75,6 +77,7 @@ const parancsok = {
   async "kitiltas-feloldas"(i) {
     const id = String(i.options.getString("felhasznalo_id")).replace(/\D/g, "");
     if (!/^\d{17,20}$/.test(id)) return hiba(i, "Ez nem felhasználó ID. Az ID egy 17–20 jegyű szám.");
+    jelol(`unban:${i.guild.id}:${id}`);
     const sikerult = await i.guild.bans
       .remove(id, `Feloldotta: ${i.user.username}`)
       .then(() => true)
@@ -94,6 +97,7 @@ const parancsok = {
     const h = rangEllenor(i, cel);
     if (h) return hiba(i, h);
     if (!cel.moderatable) return hiba(i, "Őt nem tudom lenémítani. " + BOT_RANG_TIPP);
+    jelol(`timeout:${i.guild.id}:${cel.id}`);
     if (ido === 0) {
       await cel.timeout(null, `${ok} | ${i.user.username}`);
       await valasz(i, modKartya("🔊 Némítás feloldva", K.ZOLD, cel.user, i.user, [`**${cel.user.username}** újra írhat.`]));
@@ -163,6 +167,7 @@ function indit(client) {
     for (const b of lejart) {
       const g = client.guilds.cache.get(b.gid);
       if (!g) continue;
+      jelol(`unban:${g.id}:${b.uid}`);
       const ok = await g.bans
         .remove(b.uid, "Lejárt az ideiglenes kitiltás")
         .then(() => true)

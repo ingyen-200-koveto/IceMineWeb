@@ -731,6 +731,14 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
             <button class="btn wide" type="submit" id="tBtn"><svg class="i" viewBox="0 0 24 24"><path d="M21 3L10 14M21 3l-7 18-4-7-7-4z"/></svg>Küldés</button>
           </form>
         </div>
+        <div class="card tcard" id="dcCard"><form id="dcform" autocomplete="off">
+          <div class="thead"><div class="px" style="font-size:19px">Discord összekötés</div><span class="avail" id="dcState">Nincs összekötve</span></div>
+          <p class="hint" id="dcHint" style="margin:-6px 0 0">Kösd össze a fiókodat az IceMine Discorddal, és a bot magától megadja ott is a rangodat.</p>
+          <div class="spgame" id="dcBox" style="margin-top:0" hidden><small>Írd be ezt az IceMine Discordon:</small><code id="dcCmd"></code><button class="btn glass" type="button" id="dcCopy">Másolás</button></div>
+          <div class="msg" id="dcMsg" aria-live="polite"></div>
+          <button class="btn wide" type="button" id="dcBtn"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Kód kérése</button>
+          <button class="btn alt wide" type="button" id="dcUnlink" hidden>Leválasztás</button>
+        </form></div>
       </section>
 
       <section class="page" data-page="webshop">
@@ -991,7 +999,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <p><b>a) Felhasználói fiók.</b> Felhasználónév, e-mail cím, jelszó (csak visszafejthetetlen, titkosított formában, így a jelszavadat senki sem ismeri), a regisztráció időpontja, a fiók belső azonosítója, valamint az ÁSZF elfogadásának időpontja. <i>Cél:</i> a fiók létrehozása és a szolgáltatás nyújtása. <i>Jogalap:</i> szerződés teljesítése (GDPR 6. cikk (1) b) pont). <i>Időtartam:</i> a fiók törléséig.</p>
           <p><b>b) Fiók megerősítése és jelszó-visszaállítás.</b> E-mail cím, egyszer használatos kódok (titkosított formában) és kiküldésük ideje. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a megerősítő kód 24 óra, a jelszó-visszaállító kód 1 óra után érvénytelen.</p>
           <p><b>c) Bejelentkezés.</b> A belépéskor egy véletlen azonosítót (tokent) kapsz, amelyet a böngésződ helyi tárhelye (localStorage) tárol, a szerveren pedig csak titkosított formában szerepel. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> kilépésig, legfeljebb 30 napig.</p>
-          <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, a Kitiltás csökkentése vásárlások (termék, időpont, fizetési mód), valamint a feltöltött skin (amely nyilvános címen érhető el). A feloldási kéréseket a felhasználóneveddel együtt e-mailben továbbítjuk a staffnak. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
+          <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, a Kitiltás csökkentése vásárlások (termék, időpont, fizetési mód), valamint a feltöltött skin (amely nyilvános címen érhető el). Ha összekötöd a fiókodat a Discorddal, a Discord felhasználói azonosítódat és nevedet is tároljuk, hogy a rangodat a Discordon is beállíthassuk; ezt a Karakter oldalon bármikor megszüntetheted. A feloldási kéréseket a felhasználóneveddel együtt e-mailben továbbítjuk a staffnak. A vásárlások, regisztrációk és IceCoin utalások adatai (felhasználónév, termék, összeg, időpont, azonosító) az IceMine Discord szerver csak a staff számára látható naplócsatornájába is bekerülnek. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
           <p><b>e) Vásárlás.</b> Fiókazonosító, felhasználónév, e-mail cím, a megvásárolt termék, az összeg, az időpont, a Stripe fizetési azonosító, valamint az azonnali teljesítésről tett nyilatkozatod. <i>Cél:</i> a vásárlás teljesítése, visszaigazolás, könyvelés, panaszkezelés. <i>Jogalap:</i> szerződés teljesítése és jogi kötelezettség (GDPR 6. cikk (1) c) pont; a számvitelről szóló 2000. évi C. törvény 169. §). <i>Időtartam:</i> 8 év. Bankkártyaadatokat nem kezelünk, azokat kizárólag a Stripe kezeli.</p>
           <p><b>f) Biztonság.</b> Az IP-címedet a túl sok kérés kiszűrésére használjuk, csak a szerver memóriájában, legfeljebb 1 óráig. A szerver és a webszerver naplójában hibák és egyes események (pl. sikeres fizetés, nyeremény) szerepelhetnek, esetenként felhasználónévvel vagy IP-címmel. <i>Jogalap:</i> jogos érdek a szolgáltatás biztonságos működéséhez (GDPR 6. cikk (1) f) pont). <i>Időtartam:</i> a napló a tárhelykorlát elérésekor automatikusan törlődik.</p>
           <p><b>g) Kapcsolatfelvétel és panasz.</b> Az e-mailben küldött adataid. <i>Jogalap:</i> jogos érdek, illetve panasz esetén jogi kötelezettség (1997. évi CLV. törvény 17/A. §). <i>Időtartam:</i> az ügy lezárásáig, panasz esetén 3 évig.</p>
@@ -1486,7 +1494,7 @@ function render(){
    $("#cMail").innerHTML=k>0?esc(m.slice(0,k))+"<wbr>"+esc(m.slice(k)):esc(m);}
   const sk=user.skin,key=sk?"c:"+user.name+":"+sk.v+":"+(sk.slim?1:0):"n:"+user.name;
   if(heroView.key!==key){heroView.key=key;const u=user;skinTexture(u).then(([cv,sl])=>{if(heroView.key===key)heroView.set(cv,sl)})}
-  tUpdate();sUpdate();renderRanks();spinState();renderUnban();renderCart();
+  tUpdate();sUpdate();renderRanks();spinState();renderUnban();renderCart();dcUpdate();
 }
 
 const COIN="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cdefs%3E%3ClinearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e2f7ff%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%2362c4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%230d4f8a%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22f%22 x1=%22.25%22 y1=%220%22 x2=%22.75%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%239be2ff%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%232b90e2%22/%3E%3Cstop offset=%221%22 stop-color=%22%2314529e%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2219.6%22 fill=%22%230a3354%22/%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2218.2%22 fill=%22url%28%23r%29%22/%3E%3Cpath d=%22M20 5.2 32.8 12.6v14.8L20 34.8 7.2 27.4V12.6z%22 fill=%22url%28%23f%29%22 stroke=%22%230a3354%22 stroke-opacity=%22.45%22 stroke-width=%221%22/%3E%3Cpath d=%22M20 5.2V20L7.2 12.6M20 20l12.8-7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.16%22 stroke-width=%221%22 fill=%22none%22/%3E%3Cg stroke=%22%23f4fcff%22 stroke-width=%222.3%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 fill=%22none%22%3E%3Cg transform=%22rotate%280 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%2860 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%28120 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3C/g%3E%3Cpath d=%22M8.6 14.2A12.6 12.6 0 0 1 16.8 7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.75%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E";
@@ -1828,6 +1836,44 @@ function tUpdate(){
   else if(a>bal){el.textContent="Nincs elég IceCoinod";el.style.color="var(--bad)"}
   else{el.textContent=fmtN(bal-a)+" IceCoin";el.style.color=""}
 }
+let dcPoll=null;
+function dcStop(){if(dcPoll){clearInterval(dcPoll);dcPoll=null}}
+function dcUpdate(){
+  if(!user)return;
+  const d=user.discord,st=$("#dcState");
+  st.textContent=d?"Összekötve":"Nincs összekötve";st.style.color=d?"var(--ok)":"";
+  $("#dcHint").textContent=d?"Összekötve ezzel a Discord fiókkal: "+d.nev+". A rangodat a bot magától beállítja a Discordon.":"Kösd össze a fiókodat az IceMine Discorddal, és a bot magától megadja ott is a rangodat.";
+  $("#dcBtn").hidden=!!d;$("#dcUnlink").hidden=!d;
+  if(d){$("#dcBox").hidden=true;dcStop()}
+}
+$("#dcform").onsubmit=e=>e.preventDefault();
+$("#dcBtn").onclick=async()=>{
+  const b=$("#dcBtn");b.disabled=true;
+  const d=await api("/api/discord-code",{});
+  b.disabled=false;
+  if(d.error)return msg("#dcMsg",d.error,"e");
+  $("#dcCmd").textContent="/osszekotes kod:"+d.code;$("#dcBox").hidden=false;
+  msg("#dcMsg","A kód 10 percig érvényes. Amint beírod a Discordon, itt is látni fogod.","o");
+  dcStop();const vege=Date.now()+6e5;
+  dcPoll=setInterval(async()=>{
+    if(Date.now()>vege||!user){dcStop();return}
+    const r=await api("/api/me");
+    if(r.user&&r.user.discord){user=r.user;render();msg("#dcMsg","Sikeres összekötés! A rangodat a bot pár percen belül beállítja.","o")}
+  },4000);
+};
+$("#dcCopy").onclick=async()=>{
+  const t=$("#dcCmd").textContent;
+  try{await navigator.clipboard.writeText(t);msg("#dcMsg","A parancsot kimásoltuk.","o")}
+  catch(e){const r=document.createRange();r.selectNodeContents($("#dcCmd"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);msg("#dcMsg","Jelöld ki és másold ki a parancsot.","")}
+};
+$("#dcUnlink").onclick=async()=>{
+  if(!confirm("Biztosan leválasztod a Discord fiókodat? A Discordon a rangod is lekerül."))return;
+  const b=$("#dcUnlink");b.disabled=true;
+  const d=await api("/api/discord-unlink",{});
+  b.disabled=false;
+  if(d.error)return msg("#dcMsg",d.error,"e");
+  user=d.user;render();msg("#dcMsg","Leválasztva.","o");
+};
 $("#tform").addEventListener("input",tUpdate);
 $("#tform").addEventListener("reset",()=>setTimeout(tUpdate));
 $("#tQuick").onclick=e=>{

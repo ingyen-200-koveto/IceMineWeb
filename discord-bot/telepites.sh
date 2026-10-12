@@ -6,7 +6,7 @@ APP_USER=icemine-bot
 APP_HOME=/var/lib/icemine-bot
 BOT_DIR=$APP_DIR/discord-bot
 REPO=https://github.com/ingyen-200-koveto/IceMineWeb
-JOGOK=1099780582486
+JOGOK=1099780582614
 
 piros(){ printf '\033[1;31m%s\033[0m\n' "$*"; }
 zold(){ printf '\033[1;32m%s\033[0m\n' "$*"; }

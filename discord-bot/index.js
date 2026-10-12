@@ -17,8 +17,9 @@ const szorakozas = require("./modulok/szorakozas");
 const kozosseg = require("./modulok/kozosseg");
 const staff = require("./modulok/staff");
 const panelek = require("./modulok/panelek");
+const weboldal = require("./modulok/weboldal");
 
-const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek];
+const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek, weboldal];
 
 const parancsok = {};
 const komponensek = {};
@@ -51,10 +52,19 @@ const JOGOK = [
   P.KickMembers,
   P.BanMembers,
   P.ModerateMembers,
+  P.ViewAuditLog,
 ];
 
 const client = new Client({
-  intents: [GatewayIntentBits.Guilds, GatewayIntentBits.GuildMembers, GatewayIntentBits.GuildMessages, GatewayIntentBits.MessageContent],
+  intents: [
+    GatewayIntentBits.Guilds,
+    GatewayIntentBits.GuildMembers,
+    GatewayIntentBits.GuildMessages,
+    GatewayIntentBits.MessageContent,
+    GatewayIntentBits.GuildVoiceStates,
+    GatewayIntentBits.GuildModeration,
+    GatewayIntentBits.GuildInvites,
+  ],
 });
 allapot.client = client;
 
@@ -88,12 +98,14 @@ client.once(Events.ClientReady, async () => {
   nyeremeny.indit(client);
   moderalas.indit(client);
   kozosseg.indit(client);
+  weboldal.indit(client);
 });
 
 async function kezel(i) {
   if (i.isChatInputCommand()) {
     if (!i.inGuild() || !i.guild) return hiba(i, "Ezt csak az IceMine Discordján tudod használni.");
     const f = parancsok[i.commandName];
+    naplozas.parancsNaplo(i).catch(() => {});
     return f ? f(i) : hiba(i, "Ezt a parancsot már nem ismerem.");
   }
   if (i.isModalSubmit()) {
@@ -130,10 +142,30 @@ client.on(Events.InteractionCreate, async (i) => {
 
 const vedett = (nev, f) => (...a) => f(...a).catch((e) => console.error(nev + ":", e.message));
 
-client.on(Events.GuildMemberAdd, vedett("Belépés", naplozas.belepes));
+client.on(
+  Events.GuildMemberAdd,
+  vedett("Belépés", async (m) => {
+    await naplozas.belepes(m);
+    await weboldal.szinkron(client, m.id);
+  }),
+);
 client.on(Events.GuildMemberRemove, vedett("Kilépés", naplozas.kilepes));
+client.on(Events.GuildMemberUpdate, vedett("Tag módosítás", naplozas.tagFrissites));
+client.on(Events.GuildBanAdd, vedett("Kitiltás napló", naplozas.banUj));
+client.on(Events.GuildBanRemove, vedett("Feloldás napló", naplozas.banTorolve));
 client.on(Events.MessageDelete, vedett("Törlés napló", naplozas.torles));
+client.on(Events.MessageBulkDelete, vedett("Tömeges törlés napló", naplozas.tomegesTorles));
 client.on(Events.MessageUpdate, vedett("Szerkesztés napló", naplozas.szerkesztes));
+client.on(Events.ChannelCreate, vedett("Csatorna napló", naplozas.csatornaUj));
+client.on(Events.ChannelDelete, vedett("Csatorna napló", naplozas.csatornaTorolve));
+client.on(Events.ChannelUpdate, vedett("Csatorna napló", naplozas.csatornaFrissites));
+client.on(Events.GuildRoleCreate, vedett("Rang napló", naplozas.rangUj));
+client.on(Events.GuildRoleDelete, vedett("Rang napló", naplozas.rangTorolve));
+client.on(Events.GuildRoleUpdate, vedett("Rang napló", naplozas.rangFrissites));
+client.on(Events.InviteCreate, vedett("Meghívó napló", naplozas.meghivoUj));
+client.on(Events.InviteDelete, vedett("Meghívó napló", naplozas.meghivoTorolve));
+client.on(Events.VoiceStateUpdate, vedett("Hang napló", naplozas.hang));
+client.on(Events.GuildUpdate, vedett("Szerver napló", naplozas.szerverFrissites));
 client.on(
   Events.MessageCreate,
   vedett("Üzenet", async (m) => {
