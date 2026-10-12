@@ -463,7 +463,18 @@ body.cartopen{overflow:hidden}
 .sphead .x{flex:none;width:38px;height:38px;border:0;border-radius:50%;background:var(--bg2);color:var(--ink);font:700 22px/1 Sora,sans-serif;cursor:pointer}
 .spgrid{display:grid;grid-template-columns:160px 1fr;gap:22px;align-items:start}
 .spprev{display:grid;place-items:center;height:250px;border-radius:18px;background:radial-gradient(closest-side,color-mix(in srgb,var(--glow) 38%,transparent),transparent),var(--bg2);box-shadow:inset 0 0 0 1px var(--line)}
-.spprev img{height:210px;width:auto;image-rendering:pixelated;filter:drop-shadow(0 12px 14px #0b3a5b55)}
+.spprev{position:relative}
+#skinPrev3d{position:absolute;inset:0}
+.mv{position:relative;width:100%;height:100%;perspective:1100px;touch-action:none;cursor:grab;user-select:none;-webkit-user-select:none;outline:none}
+.mv:focus-visible{box-shadow:0 0 0 3px #7fd3ff;border-radius:18px}
+.mv.drag{cursor:grabbing}
+.mvm{position:absolute;left:50%;top:50%;width:0;height:0;transform-style:preserve-3d}
+.mvp,.mvo{position:absolute;transform-style:preserve-3d}
+.mvo{left:0;top:0;width:100%;height:100%}
+.mvf{position:absolute;display:block;background-image:var(--tex);background-repeat:no-repeat;backface-visibility:hidden;-webkit-backface-visibility:hidden;image-rendering:crisp-edges;image-rendering:pixelated}
+.mvhint{position:absolute;left:calc(50% + 42px);bottom:10px;display:flex;align-items:center;gap:4px;padding:3px 8px 3px 6px;border-radius:999px;background:#0b3a5bcc;box-shadow:inset 0 0 0 1px #ffffff2e;color:#fff;font:800 11px/1.2 Manrope,sans-serif;white-space:nowrap;pointer-events:none;transition:opacity .4s}.mvhint svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.mvhint.gone{opacity:0}
+.pfig #fig3d{position:absolute;inset:0 0 8px}
 .spprev span{padding:0 16px;text-align:center;color:var(--mute);font-weight:700;font-size:13.5px}
 .spside{display:grid;gap:12px;align-content:start}
 .spside .hint{margin:0}
@@ -672,7 +683,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
 
       <section class="page char" data-page="karakter">
         <div class="phero">
-          <div class="pfig"><div id="fig"></div><img id="skin" alt="Karakter" referrerpolicy="no-referrer" hidden></div>
+          <div class="pfig"><div id="fig3d"></div></div>
           <div class="pmeta">
             <span class="rankpill"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span id="cRank">default</span></span>
             <h2 class="cNick" id="cNick">–</h2>
@@ -684,7 +695,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         <div class="card skinpanel" id="skinPanel" hidden>
           <div class="sphead"><div class="px" style="font-size:19px">Skin kezelés</div><button class="x" type="button" id="skinClose" aria-label="Bezárás">×</button></div>
           <div class="spgrid">
-            <div class="spprev"><img id="skinPrev" alt="Skin előnézet" hidden><span id="skinPrevEmpty">Válassz egy skint, és itt látod, hogy fog kinézni.</span></div>
+            <div class="spprev"><div id="skinPrev3d" hidden></div><span id="skinPrevEmpty">Válassz egy skint, és itt látod, hogy fog kinézni.</span></div>
             <div class="spside">
               <label class="btn mc spfile"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Skin kiválasztása<input type="file" id="skinFile" accept="image/png" hidden></label>
               <p class="hint">64×64 pixeles PNG kép. Kész skint letölthetsz skin oldalakról, vagy rajzolhatsz sajátot.</p>
@@ -989,7 +1000,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
             <li><b>Rackhost Zrt.</b> (6722 Szeged, Tisza Lajos krt. 41.): szerver és tárhely. Az adatokat Magyarországon tároljuk.</li>
             <li><b>Sendinblue SAS (Brevo)</b> (9-17 rue Salneuve, 75017 Párizs, Franciaország): e-mailek kiküldése (megerősítő, jelszó-visszaállító és visszaigazoló levelek). Hozzáfér: e-mail cím, felhasználónév, a levél tartalma.</li>
             <li><b>Stripe Payments Europe, Limited</b> (1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Írország): a fizetés lebonyolítása. A kártyaadatokat a Stripe önálló adatkezelőként, a saját <a href="https://stripe.com/privacy" target="_blank" rel="noopener">adatvédelmi tájékoztatója</a> szerint kezeli.</li>
-            <li><b>mc-heads.net</b>: ha nem töltöttél fel saját skint, a Karakter oldalon a figurád képe erről a szolgáltatásról töltődik be a felhasználóneved alapján. Ilyenkor a böngésződ IP-címe a szolgáltatóhoz kerül.</li>
+            <li><b>mc-heads.net</b>: ha nem töltöttél fel saját skint, a szerverünk a felhasználóneved alapján innen kéri le a hozzá tartozó Minecraft skint, hogy a Karakter oldalon megjelenítse. Ehhez csak a felhasználónevet küldjük el, a te IP-címedet nem.</li>
           </ul>
           <p>Az adatfeldolgozók egyes adatokat az Európai Gazdasági Térségen kívülre is továbbíthatnak, megfelelő garanciák (pl. az Európai Bizottság általános szerződési feltételei, EU–USA adatvédelmi keretrendszer) mellett. Az adataidat nem adjuk el, és reklámcélra nem használjuk.</p>
 
@@ -1262,6 +1273,7 @@ function route(){
   window.scrollTo(0,0);
   if(!$("#cartPanel").hidden)closeCart();
   if(p==="szerencsekerek"&&user)loadWheel();
+  if(p==="karakter")setTimeout(()=>heroView.start(),0);
 }
 addEventListener("hashchange",route);
 $("#menuBtn").onclick=()=>{const o=document.body.classList.toggle("menu");$("#menuBtn").setAttribute("aria-expanded",o)};
@@ -1280,38 +1292,134 @@ function figure(n){
    +R(4,20,8,12,pants)+R(8,20,1,10,"rgba(0,0,0,.25)")+R(8,20,4,12,S2)+R(4,30,4,2,"#555")+R(8,30,4,2,"#474747")
    +`</svg>`;
 }
-const skin=$("#skin");
-skin.onload=()=>{skin.hidden=false;$("#fig").hidden=true};
-skin.onerror=()=>{skin.hidden=true;$("#fig").hidden=false};
 const pad=n=>String(n).padStart(2,"0");
 function fmt(t){if(!t)return "–";const d=new Date(t);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())}
 function maskMail(e){if(!e)return "–";const [l,dm]=e.split("@");return l[0]+"*".repeat(Math.max(l.length-2,1))+l.slice(-1)+"@"+dm}
 let skinLocal=null,skinPick=null,skinSlim=false;
 const loadImg=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
 const readURL=b=>new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.onerror=no;fr.readAsDataURL(b)});
-function skinFront(img,slim){
-  const k=16,c=document.createElement("canvas");c.width=16*k;c.height=32*k;
-  const g=c.getContext("2d");g.imageSmoothingEnabled=false;
-  const old=img.naturalHeight===32,aw=slim&&!old?3:4;
-  const d=(sx,sy,w,h,dx,dy,flip)=>{
-    if(!flip)return g.drawImage(img,sx,sy,w,h,dx*k,dy*k,w*k,h*k);
-    g.save();g.translate((dx+w)*k,dy*k);g.scale(-1,1);g.drawImage(img,sx,sy,w,h,0,0,w*k,h*k);g.restore();
-  };
-  d(8,8,8,8,4,0);d(20,20,8,12,4,8);d(44,20,aw,12,4-aw,8);d(4,20,4,12,4,20);
-  if(old){d(44,20,4,12,12,8,true);d(4,20,4,12,8,20,true)}else{d(36,52,aw,12,12,8);d(20,52,4,12,8,20)}
-  let hat=true;
-  if(old){const t=document.createElement("canvas");t.width=64;t.height=32;const tg=t.getContext("2d");tg.drawImage(img,0,0);const a=tg.getImageData(32,0,32,16).data;hat=false;for(let i=3;i<a.length;i+=4)if(a[i]<128){hat=true;break}}
-  if(hat)d(40,8,8,8,4,0);
-  if(!old){d(20,36,8,12,4,8);d(44,36,aw,12,4-aw,8);d(52,52,aw,12,12,8);d(4,36,4,12,4,20);d(4,52,4,12,8,20)}
-  return c.toDataURL("image/png");
-}
 function isSlim(img){
   if(img.naturalHeight!==64)return false;
   const t=document.createElement("canvas");t.width=64;t.height=64;const tg=t.getContext("2d");tg.drawImage(img,0,0);
   const a=tg.getImageData(54,20,2,12).data;for(let i=3;i<a.length;i+=4)if(a[i])return false;return true;
 }
 const skinURL=u=>"/skin/"+encodeURIComponent(u.name)+".png?v="+u.skin.v;
-async function skinData(u){return skinFront(await loadImg(skinLocal&&skinLocal.v===u.skin.v?skinLocal.src:skinURL(u)),u.skin.slim)}
+function skinCanvas(img){
+  const c=document.createElement("canvas");c.width=64;c.height=64;
+  const g=c.getContext("2d");g.imageSmoothingEnabled=false;g.drawImage(img,0,0);
+  if(img.naturalHeight===32){
+    const hat=g.getImageData(32,0,32,16).data;let opaque=true;for(let i=3;i<hat.length;i+=4)if(hat[i]<128){opaque=false;break}
+    if(opaque)g.clearRect(32,0,32,16);
+    const cp=(sx,sy,w,h,dx,dy)=>{const d=g.getImageData(sx,sy,w,h),o=g.createImageData(w,h);for(let y=0;y<h;y++)for(let x=0;x<w;x++)for(let k=0;k<4;k++)o.data[(y*w+x)*4+k]=d.data[(y*w+(w-1-x))*4+k];g.putImageData(o,dx,dy)};
+    cp(4,16,4,4,20,48);cp(8,16,4,4,24,48);cp(0,20,4,12,24,52);cp(4,20,4,12,20,52);cp(8,20,4,12,16,52);cp(12,20,4,12,28,52);
+    cp(44,16,4,4,36,48);cp(48,16,4,4,40,48);cp(40,20,4,12,40,52);cp(44,20,4,12,36,52);cp(48,20,4,12,32,52);cp(52,20,4,12,44,52);
+  }
+  return c;
+}
+function defaultSkin(n){
+  let h=0;for(const ch of n)h=(h*31+ch.charCodeAt(0))>>>0;
+  const r=()=>{h=(h*1664525+1013904223)>>>0;return h/4294967296};
+  const hue=Math.floor(r()*360),sk=`hsl(${22+Math.floor(r()*14)} 45% ${48+Math.floor(r()*26)}%)`,hair=`hsl(${hue} 35% ${14+Math.floor(r()*22)}%)`,shirt=`hsl(${(hue+150)%360} 55% 48%)`,pants=`hsl(${(hue+220)%360} 45% 32%)`;
+  const c=document.createElement("canvas");c.width=64;c.height=64;const g=c.getContext("2d");
+  const R=(x,y,w,hh,col)=>{g.fillStyle=col;g.fillRect(x,y,w,hh)};
+  R(0,0,32,16,sk);R(8,0,8,8,hair);R(0,8,32,3,hair);R(24,8,8,8,hair);R(8,8,8,2,hair);
+  R(9,12,2,1,"#fff");R(13,12,2,1,"#fff");R(10,12,1,1,"#2b3d8f");R(13,12,1,1,"#2b3d8f");R(11,14,2,1,"rgba(0,0,0,.28)");
+  R(16,16,24,16,shirt);R(40,16,16,16,sk);R(40,16,16,4,shirt);R(44,16,4,4,shirt);
+  R(32,48,16,16,sk);R(32,48,16,4,shirt);R(36,48,4,4,shirt);
+  R(0,16,16,16,pants);R(0,30,16,2,"#555");R(8,16,4,4,"#555");R(16,48,16,16,pants);R(16,62,16,2,"#555");R(24,48,4,4,"#555");
+  return c;
+}
+async function skinTexture(u){
+  if(u.skin){try{return [skinCanvas(await loadImg(skinLocal&&skinLocal.v===u.skin.v?skinLocal.src:skinURL(u))),!!u.skin.slim]}catch(e){}}
+  try{
+    const img=await loadImg("/mcskin/"+encodeURIComponent(u.name)+".png");
+    return [skinCanvas(img),isSlim(img)];
+  }catch(e){return [defaultSkin(u.name),false]}
+}
+function mcViewer(box,opt){
+  opt=opt||{};
+  box.classList.add("mv");box.setAttribute("role","img");
+  box.innerHTML='<div class="mvm"></div>'+(opt.hint?'<span class="mvhint" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M9 15.7C5.5 15.2 3 13.7 3 12c0-2.2 4-4 9-4s9 1.8 9 4c0 1.6-2.2 3-5.5 3.6"/><path d="M13 13.3l2.6 2.3-2.6 2.4"/></svg>360°</span>':"");
+  const model=box.querySelector(".mvm"),rm=matchMedia("(prefers-reduced-motion:reduce)").matches,Y0=opt.yaw==null?-28:opt.yaw,P0=-8;
+  let k=0,yaw=Y0,pitch=P0,tex=null,slim=false,faces=[],limbs=[],raf=0,idle=0,drag=null,t0=performance.now(),lt=0,last="";
+  const N={front:[0,0,1],back:[0,0,-1],right:[-1,0,0],left:[1,0,0],top:[0,-1,0],bottom:[0,1,0]};
+  const sizeK=()=>{const h=box.clientHeight;return h>=240?7:h>=200?6:5};
+  function build(){
+    k=sizeK();
+    if(!tex)return;
+    const aw=slim?3:4,S=64*k;
+    const parts=[
+      {uv:[0,0],ov:[32,0],s:[8,8,8],p:[0,-12,0],o:[1.125,1.125,1.125]},
+      {uv:[16,16],ov:[16,32],s:[8,12,4],p:[0,-2,0],o:[1.06,1.04,1.12]},
+      {uv:[40,16],ov:[40,32],s:[aw,12,4],p:[-4-aw/2,-2,0],o:[1.12,1.04,1.12],sw:1},
+      {uv:[32,48],ov:[48,48],s:[aw,12,4],p:[4+aw/2,-2,0],o:[1.12,1.04,1.12],sw:-1},
+      {uv:[0,16],ov:[0,32],s:[4,12,4],p:[-2,10,0],o:[1.12,1.04,1.12],sw:-1,leg:1},
+      {uv:[16,48],ov:[0,48],s:[4,12,4],p:[2,10,0],o:[1.12,1.04,1.12],sw:1,leg:1}
+    ];
+    const t=document.createElement("canvas");t.width=t.height=64;const tg=t.getContext("2d");tg.drawImage(tex,0,0);
+    for(const P of parts)for(const [u,v] of [P.uv,P.ov]){
+      const [w,,d]=P.s,x=u+d+w,a=tg.getImageData(x,v,w,d),o=tg.createImageData(w,d);
+      for(let y=0;y<d;y++)o.data.set(a.data.subarray((d-1-y)*w*4,(d-y)*w*4),y*w*4);
+      tg.putImageData(o,x,v);
+    }
+    const q=k*Math.min(3,Math.max(1,Math.round(devicePixelRatio||1))),c=document.createElement("canvas");c.width=c.height=64*q;
+    const g=c.getContext("2d");g.imageSmoothingEnabled=false;g.drawImage(t,0,0,64*q,64*q);
+    model.style.setProperty("--tex",`url(${c.toDataURL()})`);
+    faces=[];limbs=[];model.innerHTML="";
+    const cube=(el,[u,v],[w,h,d])=>{
+      const F={top:[u+d,v,w,d],bottom:[u+d+w,v,w,d],right:[u,v+d,d,h],front:[u+d,v+d,w,h],left:[u+d+w,v+d,d,h],back:[u+d+w+d,v+d,w,h]};
+      const T={front:`translateZ(${d*k/2}px)`,back:`rotateY(180deg) translateZ(${d*k/2}px)`,right:`rotateY(-90deg) translateZ(${w*k/2}px)`,left:`rotateY(90deg) translateZ(${w*k/2}px)`,top:`rotateX(90deg) translateZ(${h*k/2}px)`,bottom:`rotateX(-90deg) translateZ(${h*k/2}px)`};
+      for(const f in F){
+        const [fx,fy,fw,fh]=F[f],e=document.createElement("i");e.className="mvf";
+        const side=f==="right"||f==="left",flat=f==="top"||f==="bottom";
+        e.style.cssText=`width:${fw*k}px;height:${fh*k}px;left:${side?(w-d)*k/2:0}px;top:${flat?(h-d)*k/2:0}px;background-position:${-fx*k}px ${-fy*k}px;background-size:${S}px ${S}px;transform:${T[f]}`;
+        el.appendChild(e);faces.push([e,N[f],-1]);
+      }
+    };
+    for(const P of parts){
+      const [w,h]=P.s,el=document.createElement("div");el.className="mvp";
+      el.style.cssText=`width:${w*k}px;height:${h*k}px;left:${(P.p[0]-w/2)*k}px;top:${(P.p[1]-h/2)*k}px;transform-origin:50% ${P.leg?0:2*k}px`;
+      cube(el,P.uv,P.s);
+      const ov=document.createElement("div");ov.className="mvo";ov.style.transform=`scale3d(${P.o.join(",")})`;cube(ov,P.ov,P.s);el.appendChild(ov);
+      model.appendChild(el);if(P.sw)limbs.push([el,P.sw,P.leg]);
+    }
+    last="";paint(performance.now());
+  }
+  function shade(){
+    const a=yaw*Math.PI/180,b=pitch*Math.PI/180,ca=Math.cos(a),sa=Math.sin(a),cb=Math.cos(b),sb=Math.sin(b),L=[.28,-.55,.79];
+    for(const F of faces){
+      const [x,y,z]=F[1],x1=ca*x+sa*z,z1=-sa*x+ca*z,y2=cb*y-sb*z1,z2=sb*y+cb*z1,v=Math.round((.52+.55*Math.max(0,x1*L[0]+y2*L[1]+z2*L[2]))*50)/50;
+      if(v!==F[2]){F[2]=v;F[0].style.filter="brightness("+v+")"}
+    }
+  }
+  function paint(now){
+    model.style.transform=`rotateX(${pitch.toFixed(2)}deg) rotateY(${yaw.toFixed(2)}deg)`;
+    const sig=yaw.toFixed(1)+"|"+pitch.toFixed(1);if(sig!==last){last=sig;shade()}
+    if(!rm){const s=Math.sin((now-t0)/650);for(const [el,dir,leg] of limbs)el.style.transform=`rotateX(${((leg?14:10)*s*dir).toFixed(2)}deg)`}
+  }
+  function label(){box.setAttribute("aria-label","3D karakter, "+Math.round(((yaw%360)+360)%360)+" fokban elforgatva. Húzd vagy használd a nyilakat a forgatáshoz.")}
+  function loop(now){
+    raf=0;if(!box.offsetParent){lt=0;return}
+    const dt=lt?Math.min(now-lt,100):0;lt=now;
+    if(!drag&&!rm&&now>idle){yaw=(yaw+dt*.014)%360}
+    paint(now);raf=requestAnimationFrame(loop);
+  }
+  function start(){
+    if(!tex||!box.offsetParent)return;
+    if(sizeK()!==k)build();
+    if(!raf){lt=0;raf=requestAnimationFrame(loop)}
+  }
+  box.addEventListener("pointerdown",e=>{if(e.button)return;drag={x:e.clientX,y:e.clientY,yaw,pitch};box.classList.add("drag");try{box.setPointerCapture(e.pointerId)}catch(x){}const h=box.querySelector(".mvhint");if(h)h.classList.add("gone")});
+  box.addEventListener("pointermove",e=>{if(!drag)return;yaw=drag.yaw+(e.clientX-drag.x)*.6;pitch=Math.max(-40,Math.min(40,drag.pitch-(e.clientY-drag.y)*.4));paint(performance.now());start()});
+  const end=()=>{if(!drag)return;drag=null;idle=performance.now()+4000;box.classList.remove("drag");label()};
+  box.addEventListener("pointerup",end);box.addEventListener("pointercancel",end);
+  box.addEventListener("dblclick",()=>{yaw=Y0;pitch=P0;idle=performance.now()+4000;paint(performance.now());label()});
+  box.tabIndex=0;label();
+  box.addEventListener("keydown",e=>{const d={ArrowLeft:[-15,0],ArrowRight:[15,0],ArrowUp:[0,8],ArrowDown:[0,-8]}[e.key];if(!d)return;e.preventDefault();yaw+=d[0];pitch=Math.max(-40,Math.min(40,pitch+d[1]));idle=performance.now()+4000;paint(performance.now());label()});
+  addEventListener("resize",()=>{if(tex&&box.offsetParent&&sizeK()!==k)build()});
+  return {set(cv,sl){tex=cv;slim=!!sl;build();start()},start,get key(){return box.dataset.key},set key(v){box.dataset.key=v}};
+}
+let heroView=null,prevView=null;
 function skinSync(){
   const has=!!(user&&user.skin);
   $("#skinReset").hidden=!has;$("#skinGame").hidden=!has;
@@ -1319,10 +1427,11 @@ function skinSync(){
   $$(".spmodel button").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.slim==="1")===skinSlim)));
 }
 async function skinPreview(){
-  const im=$("#skinPrev"),em=$("#skinPrevEmpty");
-  if(!skinPick){im.hidden=true;em.hidden=false;return}
-  try{im.src=skinFront(await loadImg(skinPick),skinSlim);im.hidden=false;em.hidden=true}catch(e){im.hidden=true;em.hidden=false}
+  const box=$("#skinPrev3d"),em=$("#skinPrevEmpty");
+  if(!skinPick){box.hidden=true;em.hidden=false;return}
+  try{const cv=skinCanvas(await loadImg(skinPick));box.hidden=false;em.hidden=true;prevView.set(cv,skinSlim)}catch(e){box.hidden=true;em.hidden=false}
 }
+heroView=mcViewer($("#fig3d"),{hint:1});prevView=mcViewer($("#skinPrev3d"),{yaw:-35});
 $("#skinBtn").onclick=async()=>{
   const p=$("#skinPanel");p.hidden=!p.hidden;if(p.hidden)return;
   msg("#skinMsg","");skinPick=null;$("#skinSave").disabled=true;skinSlim=!!(user.skin&&user.skin.slim);
@@ -1374,13 +1483,8 @@ function render(){
   {const days=user.created?Math.floor((Date.now()-user.created)/864e5):0;$("#cSince").textContent=days<1?"Ma csatlakoztál":"Tag "+fmtN(days)+" napja";}
   {const esc=s=>s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]),m=maskMail(user.email),k=m.indexOf("@");
    $("#cMail").innerHTML=k>0?esc(m.slice(0,k))+"<wbr>"+esc(m.slice(k)):esc(m);}
-  $("#fig").innerHTML=figure(user.name);
   const sk=user.skin,key=sk?"c:"+user.name+":"+sk.v+":"+(sk.slim?1:0):"n:"+user.name;
-  if(skin.dataset.n!==key){
-    skin.dataset.n=key;skin.hidden=true;$("#fig").hidden=false;
-    if(sk)skinData(user).then(u=>{if(skin.dataset.n===key)skin.src=u}).catch(()=>{});
-    else skin.src="https://mc-heads.net/body/"+encodeURIComponent(user.name)+"/260";
-  }
+  if(heroView.key!==key){heroView.key=key;const u=user;skinTexture(u).then(([cv,sl])=>{if(heroView.key===key)heroView.set(cv,sl)})}
   tUpdate();sUpdate();renderRanks();spinState();renderUnban();renderCart();
 }
 

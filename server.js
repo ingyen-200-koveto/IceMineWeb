@@ -492,6 +492,35 @@ app.get("/skin/:file", (req, res) => {
   res.set({ "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff", "Access-Control-Allow-Origin": "*" });
   res.sendFile(path.join(SKIN_DIR, u.id + ".png"), err => { if (err && !res.headersSent) res.status(404).type("text/plain").send("Nincs ilyen skin."); });
 });
+const mcSkins = new Map(), mcWait = new Map();
+async function mcSkin(name) {
+  const key = name.toLowerCase(), hit = mcSkins.get(key);
+  if (hit && hit.exp > Date.now()) return hit.b;
+  if (mcWait.has(key)) return mcWait.get(key);
+  const job = (async () => {
+    let b = null;
+    try {
+      const r = await fetch("https://mc-heads.net/skin/" + encodeURIComponent(name), { signal: AbortSignal.timeout(6000), headers: { "User-Agent": "IceMine-web" } });
+      if (r.ok) {
+        const png = cleanPng(Buffer.from(await r.arrayBuffer()));
+        if (png && png.readUInt32BE(16) === 64 && [32, 64].includes(png.readUInt32BE(20))) b = png;
+      }
+    } catch (e) {}
+    if (mcSkins.size >= 500) mcSkins.delete(mcSkins.keys().next().value);
+    mcSkins.set(key, { b, exp: Date.now() + (b ? 6 * 3600e3 : 600e3) });
+    return b;
+  })();
+  mcWait.set(key, job);
+  try { return await job; } finally { mcWait.delete(key); }
+}
+app.get("/mcskin/:file", async (req, res) => {
+  const m = /^([A-Za-z0-9_]{3,16})\.png$/.exec(req.params.file || "");
+  const u = m && db.users[m[1].toLowerCase()];
+  if (!u || !u.verified) return res.status(404).type("text/plain").send("Nincs ilyen skin.");
+  const b = await mcSkin(u.name);
+  if (!b) return res.status(404).type("text/plain").send("Nincs ilyen skin.");
+  res.set({ "Content-Type": "image/png", "Cache-Control": "public, max-age=3600", "X-Content-Type-Options": "nosniff" }).send(b);
+});
 function buildCart(u, body) {
   const lines = Array.isArray(body.cart) ? body.cart : body.rank !== undefined ? [{ t: "rank", id: body.rank }] : body.unban !== undefined ? [{ t: "unban", id: body.unban }] : [{ t: "ic", ic: body.ic, qty: body.qty === undefined ? 1 : body.qty }];
   if (!lines.length) return { err: [400, "A kosár üres."] };
