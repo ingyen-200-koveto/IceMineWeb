@@ -1,7 +1,7 @@
 const net = require("net");
 const dns = require("dns").promises;
 const { ActivityType, MessageFlags } = require("discord.js");
-const { K, ment, beall, embed, rejtett, csatorna, tudIrni, naplo, unix, idoSzoveg } = require("../kozos");
+const { K, adat, ment, mentKesobb, beall, embed, kartya, linkGomb, valasz, hiba, csatorna, tudIrni, naplo, unix, idoSzoveg, csik, v2E } = require("../kozos");
 
 function varint(n) {
   const b = [];
@@ -100,19 +100,36 @@ async function statusz() {
     ertek = { online: false, jatekos: 0, max: 0 };
   }
   tar = { ido: Date.now(), ertek };
+  if (ertek.online && ertek.jatekos > ((adat.mcRekord && adat.mcRekord.jatekos) || 0)) {
+    adat.mcRekord = { jatekos: ertek.jatekos, ido: Date.now() };
+    mentKesobb();
+  }
   return ertek;
 }
 
-function panelEmbed(s) {
-  const sorok = s.online
-    ? [`**Állapot:** Online`, `**Játékosok:** ${s.jatekos} / ${s.max}`]
-    : [`**Állapot:** Offline`, `A szerver most nem válaszol, valószínűleg újraindul.`];
-  sorok.push(`**Cím:** \`${K.MC_HOST}\``);
-  if (K.BEDROCK_PORT) sorok.push(`**Bedrock port:** \`${K.BEDROCK_PORT}\``);
-  sorok.push(`**Verziók:** ${K.VERZIOK}`, "", `Frissítve <t:${unix(Date.now())}:R>`);
-  return embed(s.online ? K.ZOLD : K.PIROS)
-    .setTitle("IceMine szerver")
-    .setDescription(sorok.join("\n"));
+const cimSorok = () => [
+  `☕ **Java:** \`${K.MC_HOST}\``,
+  `📱 **Bedrock:** \`${K.MC_HOST}\`` + (K.BEDROCK_PORT ? ` · port \`${K.BEDROCK_PORT}\`` : ""),
+  `🧩 **Verziók:** ${K.VERZIOK}`,
+];
+
+function allapotSzoveg(s, nagy) {
+  const h = nagy ? "##" : "###";
+  if (!s.online) return [`${h} 🔴 Offline`, "A szerver most nem válaszol. Valószínűleg újraindul, nézz vissza pár perc múlva!"].join("\n");
+  const arany = s.max ? s.jatekos / s.max : 0;
+  return [`${h} 🟢 Online`, `👥 **${s.jatekos}** / ${s.max} játékos`, `${csik(arany)} ${Math.round(arany * 100)}%`].join("\n");
+}
+
+function panelKartya(s) {
+  const r = adat.mcRekord;
+  return kartya(s.online ? K.ZOLD : K.PIROS)
+    .banner("statusz")
+    .kepes(allapotSzoveg(s, true), K.LOGO)
+    .elvalaszto()
+    .szoveg(...cimSorok(), r ? `🏆 **Rekord:** ${r.jatekos} játékos egyszerre (<t:${unix(r.ido)}:d>)` : null)
+    .elvalaszto()
+    .sor(linkGomb("Weboldal", K.WEB, "🌐"))
+    .lab(`🔄 Frissítve <t:${unix(Date.now())}:R> • 🧊 IceMine`);
 }
 
 const figyelo = { megerositett: null, hibaSzam: 0, kiesesKezdete: 0 };
@@ -124,10 +141,7 @@ async function riasztas(client, s) {
       const kieses = Date.now() - figyelo.kiesesKezdete;
       figyelo.megerositett = true;
       for (const g of client.guilds.cache.values()) {
-        await naplo(
-          g,
-          embed(K.ZOLD).setTitle("A Minecraft szerver újra elérhető").setDescription(`Kiesés: kb. ${idoSzoveg(kieses)}.`),
-        );
+        await naplo(g, embed(K.ZOLD).setTitle("🟢 A Minecraft szerver újra elérhető").setDescription(`⏱️ Kiesés: kb. ${idoSzoveg(kieses)}`));
       }
     }
     figyelo.megerositett = true;
@@ -141,7 +155,7 @@ async function riasztas(client, s) {
       await naplo(
         g,
         embed(K.PIROS)
-          .setTitle("A Minecraft szerver nem válaszol")
+          .setTitle("🔴 A Minecraft szerver nem válaszol")
           .setDescription(`<t:${unix(figyelo.kiesesKezdete)}:t> óta nem érhető el. Ha visszajön, ide írok.`),
       );
     }
@@ -159,12 +173,22 @@ async function panelekFrissit(client, s) {
       ment();
       continue;
     }
-    await msg.edit({ embeds: [panelEmbed(s)] }).catch(() => {});
+    if (!v2E(msg)) {
+      const uj = await ch.send(panelKartya(s).uzenet()).catch(() => null);
+      if (uj) {
+        await msg.delete().catch(() => {});
+        b.statuszPanel = { csatorna: ch.id, uzenet: uj.id };
+        ment();
+      }
+      continue;
+    }
+    const { components, flags } = panelKartya(s).uzenet();
+    await msg.edit({ components, flags }).catch(() => {});
   }
 }
 
 async function jelenlet(client, s) {
-  const szoveg = s.online ? `${s.jatekos} játékos online | ${K.MC_HOST}` : K.MC_HOST;
+  const szoveg = s.online ? `🧊 ${s.jatekos} játékos online | ${K.MC_HOST}` : `🧊 ${K.MC_HOST}`;
   client.user.setPresence({ activities: [{ name: K.NEV, type: ActivityType.Custom, state: szoveg }], status: "online" });
 }
 
@@ -174,7 +198,7 @@ async function szamlaloFrissit(guild, kenyszer) {
   const ch = await csatorna(guild, b.szamlalo);
   if (!ch) return;
   const s = await statusz();
-  const nev = s.online ? `Online: ${s.jatekos} játékos` : "Szerver: offline";
+  const nev = s.online ? `🟢 Online: ${s.jatekos} játékos` : "🔴 Szerver: offline";
   if (kenyszer || ch.name !== nev) await ch.setName(nev).catch((e) => console.error("Számláló:", e.message));
 }
 
@@ -194,33 +218,38 @@ function indit(client) {
 
 const parancsok = {
   async ip(i) {
-    const sorok = [`**Java:** \`${K.MC_HOST}\``, `**Bedrock:** \`${K.MC_HOST}\`` + (K.BEDROCK_PORT ? `, port \`${K.BEDROCK_PORT}\`` : ""), `**Verziók:** ${K.VERZIOK}`];
-    return i.reply({ embeds: [embed().setTitle("Így jössz fel a szerverre").setDescription(sorok.join("\n"))] });
+    const k = kartya()
+      .banner("info")
+      .szoveg("### 🎮 Így jössz fel a szerverre", ...cimSorok())
+      .elvalaszto()
+      .sor(linkGomb("Regisztráció a weboldalon", K.WEB, "🌐"))
+      .lab();
+    return valasz(i, k);
   },
 
   async statusz(i) {
     await i.deferReply();
     const s = await statusz();
-    const e = s.online
-      ? embed(K.ZOLD).setTitle("A szerver fent van").setDescription(`**${s.jatekos}** játékos online (max. ${s.max})\nCím: \`${K.MC_HOST}\``)
-      : embed(K.PIROS).setTitle("A szerver most nem elérhető").setDescription("Valószínűleg épp újraindul, nézz vissza pár perc múlva.");
-    return i.editReply({ embeds: [e] });
+    const k = kartya(s.online ? K.ZOLD : K.PIROS)
+      .kepes(allapotSzoveg(s) + `\n📡 \`${K.MC_HOST}\``, K.LOGO)
+      .lab();
+    return valasz(i, k);
   },
 
   async "statusz-panel"(i) {
     const ch = i.options.getChannel("csatorna");
-    if (!tudIrni(ch)) return rejtett(i, `Ide nem tudok írni: ${ch}`);
+    if (!tudIrni(ch)) return hiba(i, `Ide nem tudok írni: ${ch}`);
     await i.deferReply({ flags: MessageFlags.Ephemeral });
     const b = beall(i.guild.id);
     if (b.statuszPanel) {
       const regi = await csatorna(i.guild, b.statuszPanel.csatorna);
       if (regi) await regi.messages.delete(b.statuszPanel.uzenet).catch(() => {});
     }
-    const msg = await ch.send({ embeds: [panelEmbed(await statusz())] });
+    const msg = await ch.send(panelKartya(await statusz()).uzenet());
     b.statuszPanel = { csatorna: ch.id, uzenet: msg.id };
     ment();
-    return i.editReply(`Kész, a panel kint van itt: ${ch}. Percenként frissül.`);
+    return valasz(i, kartya(K.ZOLD).szoveg(`✅ Kint van a panel: ${ch}`, "-# Percenként frissül magától."));
   },
 };
 
-module.exports = { statusz, indit, szamlaloFrissit, parancsok };
+module.exports = { statusz, indit, szamlaloFrissit, parancsok, cimSorok };

@@ -1,6 +1,23 @@
 const fs = require("fs");
 const path = require("path");
-const { EmbedBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle, MessageFlags, PermissionFlagsBits: P } = require("discord.js");
+const {
+  EmbedBuilder,
+  ActionRowBuilder,
+  ButtonBuilder,
+  ButtonStyle,
+  MessageFlags,
+  PermissionFlagsBits: P,
+  ContainerBuilder,
+  TextDisplayBuilder,
+  SectionBuilder,
+  SeparatorBuilder,
+  SeparatorSpacingSize,
+  ThumbnailBuilder,
+  MediaGalleryBuilder,
+  MediaGalleryItemBuilder,
+} = require("discord.js");
+
+const RAW = "https://raw.githubusercontent.com/ingyen-200-koveto/IceMineWeb/main/discord-bot";
 
 const K = {
   NEV: process.env.BOT_NEV || "IceMine",
@@ -8,6 +25,9 @@ const K = {
   ZOLD: 0x4fd18b,
   PIROS: 0xe5484d,
   SARGA: 0xf2b84b,
+  ARANY: 0xffc94d,
+  LILA: 0xa593ff,
+  ROZSA: 0xff8fb1,
   SZURKE: 0x8fa3b3,
   MC_HOST: process.env.MC_HOST || "play.icemine.hu",
   MC_PORT: parseInt(process.env.MC_PORT || "0", 10),
@@ -19,6 +39,9 @@ const K = {
   EMAIL: "support@icemine.hu",
   VERZIOK: "1.20 – 1.21.x",
   DATA_DIR: process.env.DATA_DIR || path.join(__dirname, "adatok"),
+  KEPEK: (process.env.KEPEK_URL || RAW + "/kepek").replace(/\/+$/, ""),
+  LOGO: process.env.LOGO_URL || RAW + "/logo.png",
+  INDULAS: Date.now(),
 };
 
 const ADAT_FAJL = path.join(K.DATA_DIR, "adatok.json");
@@ -33,6 +56,10 @@ const adat = {
   nyeremenyek: {},
   szintek: {},
   ideiglenesBanok: [],
+  afk: {},
+  emlekeztetok: [],
+  napi: {},
+  esemenyek: {},
 };
 try {
   Object.assign(adat, JSON.parse(fs.readFileSync(ADAT_FAJL, "utf8")));
@@ -67,20 +94,111 @@ const beall = (id) => (adat.szerverek[id] ||= {});
 
 const allapot = { client: null };
 
+const V2 = MessageFlags.IsComponentsV2;
+const LAB = `-# 🧊 IceMine • ${K.MC_HOST}`;
+const kep = (nev) => `${K.KEPEK}/${nev}.jpg`;
+
+class Kartya {
+  constructor(szin) {
+    this.c = new ContainerBuilder().setAccentColor(szin ?? K.SZIN);
+  }
+
+  banner(nev) {
+    return this.galeria(kep(nev));
+  }
+
+  galeria(...urlek) {
+    const g = new MediaGalleryBuilder().addItems(...urlek.slice(0, 10).map((u) => new MediaGalleryItemBuilder().setURL(u)));
+    this.c.addMediaGalleryComponents(g);
+    return this;
+  }
+
+  szoveg(...sorok) {
+    const t = sorok.filter((s) => s !== null && s !== undefined && s !== false).join("\n");
+    if (t) this.c.addTextDisplayComponents(new TextDisplayBuilder().setContent(t));
+    return this;
+  }
+
+  kepes(szoveg, url) {
+    const s = new SectionBuilder().addTextDisplayComponents(new TextDisplayBuilder().setContent(szoveg)).setThumbnailAccessory(new ThumbnailBuilder().setURL(url));
+    this.c.addSectionComponents(s);
+    return this;
+  }
+
+  gombos(szoveg, gomb) {
+    const s = new SectionBuilder().addTextDisplayComponents(new TextDisplayBuilder().setContent(szoveg)).setButtonAccessory(gomb);
+    this.c.addSectionComponents(s);
+    return this;
+  }
+
+  elvalaszto(nagy = false, vonal = true) {
+    this.c.addSeparatorComponents(new SeparatorBuilder().setDivider(vonal).setSpacing(nagy ? SeparatorSpacingSize.Large : SeparatorSpacingSize.Small));
+    return this;
+  }
+
+  sor(...elemek) {
+    if (elemek.length) this.c.addActionRowComponents(new ActionRowBuilder().addComponents(...elemek));
+    return this;
+  }
+
+  lab(szoveg) {
+    return this.szoveg(szoveg ? `-# ${szoveg}` : LAB);
+  }
+
+  uzenet(extra = {}) {
+    const { rejtett, ...tobbi } = extra;
+    return { components: [this.c], flags: rejtett ? V2 | MessageFlags.Ephemeral : V2, allowedMentions: { parse: [] }, ...tobbi };
+  }
+}
+
+const kartya = (szin) => new Kartya(szin);
+
+const sor = (...elemek) => new ActionRowBuilder().addComponents(...elemek);
+const linkGomb = (cimke, url, emoji) => {
+  const g = new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(cimke).setURL(url);
+  if (emoji) g.setEmoji(emoji);
+  return g;
+};
+const gomb = (id, cimke, stilus, emoji) => {
+  const g = new ButtonBuilder().setCustomId(id).setLabel(cimke).setStyle(stilus ?? ButtonStyle.Secondary);
+  if (emoji) g.setEmoji(emoji);
+  return g;
+};
+
+function rejtett(i, tartalom) {
+  const k = tartalom instanceof Kartya ? tartalom : kartya().szoveg(String(tartalom));
+  const v = k.uzenet({ rejtett: true });
+  if (i.deferred && !i.replied) {
+    const { flags, ...tobbi } = v;
+    return i.editReply({ ...tobbi, flags: V2 });
+  }
+  if (i.replied) return i.followUp(v);
+  return i.reply(v);
+}
+
+function valasz(i, k, opciok = {}) {
+  const v = k.uzenet(opciok);
+  if (i.deferred && !i.replied) {
+    const { flags, ...tobbi } = v;
+    return i.editReply({ ...tobbi, flags: V2 });
+  }
+  if (i.replied) return i.followUp(v);
+  return i.reply(v);
+}
+
+const hiba = (i, szoveg) => rejtett(i, kartya(K.PIROS).szoveg(`❌ ${szoveg}`));
+const siker = (i, szoveg) => rejtett(i, kartya(K.ZOLD).szoveg(`✅ ${szoveg}`));
+
+function v2E(msg) {
+  return !!(msg && msg.flags && typeof msg.flags.has === "function" && msg.flags.has(V2));
+}
+
 function embed(szin) {
   const u = allapot.client && allapot.client.user;
   return new EmbedBuilder()
     .setColor(szin ?? K.SZIN)
-    .setFooter({ text: `${K.NEV} | ${K.MC_HOST}`, iconURL: u ? u.displayAvatarURL() : undefined });
-}
-
-const sor = (...elemek) => new ActionRowBuilder().addComponents(...elemek);
-const linkGomb = (cimke, url) => new ButtonBuilder().setStyle(ButtonStyle.Link).setLabel(cimke).setURL(url);
-
-function rejtett(i, tartalom) {
-  const v = typeof tartalom === "string" ? { content: tartalom } : tartalom;
-  if (i.deferred || i.replied) return i.followUp({ ...v, flags: MessageFlags.Ephemeral });
-  return i.reply({ ...v, flags: MessageFlags.Ephemeral });
+    .setFooter({ text: `IceMine • ${K.MC_HOST}`, iconURL: u ? u.displayAvatarURL() : undefined })
+    .setTimestamp();
 }
 
 async function csatorna(guild, id) {
@@ -99,10 +217,11 @@ async function naplo(guild, e, files) {
   if (ch) await ch.send({ embeds: [e], files: files || [], allowedMentions: { parse: [] } }).catch(() => {});
 }
 
-async function dm(user, szoveg) {
+async function dm(user, szoveg, szin) {
   if (!user) return false;
+  const k = kartya(szin).szoveg(szoveg).lab();
   return user
-    .send({ embeds: [embed().setDescription(szoveg)] })
+    .send(k.uzenet())
     .then(() => true)
     .catch(() => false);
 }
@@ -175,18 +294,35 @@ const vagas = (s, n) => {
 
 const unix = (ms) => Math.floor(ms / 1000);
 
+function csik(arany, hossz = 12) {
+  const tele = Math.max(0, Math.min(hossz, Math.round(arany * hossz)));
+  return "▰".repeat(tele) + "▱".repeat(hossz - tele);
+}
+
+const avatar = (user) => user.displayAvatarURL({ extension: "png", size: 256 });
+
 module.exports = {
   K,
   P,
+  V2,
+  LAB,
   adat,
   ment,
   mentKesobb,
   beall,
   allapot,
-  embed,
+  kep,
+  Kartya,
+  kartya,
   sor,
   linkGomb,
+  gomb,
   rejtett,
+  valasz,
+  hiba,
+  siker,
+  v2E,
+  embed,
   csatorna,
   tudIrni,
   naplo,
@@ -197,4 +333,6 @@ module.exports = {
   uzenetId,
   vagas,
   unix,
+  csik,
+  avatar,
 };

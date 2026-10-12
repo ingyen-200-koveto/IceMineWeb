@@ -6,7 +6,130 @@ const indok = (o, kotelezo = false) => o.setName("ok").setDescription("Indok").s
 const szovegCsatorna = (o, nev, leiras, kotelezo = true) => o.setName(nev).setDescription(leiras).addChannelTypes(...SZOVEGES).setRequired(kotelezo);
 const uzenet = (o) => o.setName("uzenet").setDescription("Az üzenet linkje vagy ID-ja").setRequired(true);
 
+const SZIN_VALASZTEK = [
+  { name: "Kék", value: "kek" },
+  { name: "Zöld", value: "zold" },
+  { name: "Piros", value: "piros" },
+  { name: "Arany", value: "arany" },
+  { name: "Lila", value: "lila" },
+  { name: "Rózsaszín", value: "rozsa" },
+];
+
 module.exports = [
+  new SlashCommandBuilder()
+    .setName("8ball")
+    .setDescription("Kérdezd meg a varázsgömböt")
+    .addStringOption((o) => o.setName("kerdes").setDescription("Mit szeretnél tudni?").setRequired(true).setMaxLength(200)),
+  new SlashCommandBuilder()
+    .setName("fej-vagy-iras")
+    .setDescription("Pénzfeldobás")
+    .addStringOption((o) =>
+      o
+        .setName("tipp")
+        .setDescription("Mire tippelsz?")
+        .addChoices({ name: "Fej", value: "fej" }, { name: "Írás", value: "iras" }),
+    ),
+  new SlashCommandBuilder()
+    .setName("kocka")
+    .setDescription("Dobókocka")
+    .addIntegerOption((o) => o.setName("oldalak").setDescription("Hány oldalú (alapból 6)").setMinValue(2).setMaxValue(100))
+    .addIntegerOption((o) => o.setName("db").setDescription("Hány kockával (alapból 1)").setMinValue(1).setMaxValue(10)),
+  new SlashCommandBuilder().setName("kpo").setDescription("Kő, papír, olló a bot ellen"),
+  new SlashCommandBuilder()
+    .setName("szerelem")
+    .setDescription("Szerelemmérő két ember között")
+    .addUserOption((o) => o.setName("tag").setDescription("Az egyik fél").setRequired(true))
+    .addUserOption((o) => o.setName("masik").setDescription("A másik fél (alapból te)")),
+  new SlashCommandBuilder().setName("tipp").setDescription("Egy hasznos Minecraft tipp"),
+  new SlashCommandBuilder().setName("trivia").setDescription("Minecraft kvíz, jó válaszért XP jár"),
+  new SlashCommandBuilder()
+    .setName("avatar")
+    .setDescription("Valakinek a profilképe nagyban")
+    .addUserOption((o) => tag(o, false)),
+  new SlashCommandBuilder().setName("napi").setDescription("Napi XP jutalom, sorozat bónusszal"),
+  new SlashCommandBuilder().setName("szerverinfo").setDescription("A Discord szerver adatai"),
+  new SlashCommandBuilder()
+    .setName("emlekezteto")
+    .setDescription("Szólok, ha eljön az idő")
+    .addStringOption((o) => o.setName("ido").setDescription("Mikor, pl. 10p, 2ó, 1n").setRequired(true).setMaxLength(20))
+    .addStringOption((o) => o.setName("szoveg").setDescription("Mire emlékeztesselek?").setRequired(true).setMaxLength(500)),
+  new SlashCommandBuilder()
+    .setName("afk")
+    .setDescription("Jelezd, hogy nem vagy gépnél")
+    .addStringOption((o) => o.setName("ok").setDescription("Miért (pl. eszem)").setMaxLength(100)),
+  new SlashCommandBuilder()
+    .setName("szamol")
+    .setDescription("Számológép, pl. (64*3)+12")
+    .addStringOption((o) => o.setName("kifejezes").setDescription("Mit számoljak ki?").setRequired(true).setMaxLength(200)),
+  new SlashCommandBuilder()
+    .setName("skin")
+    .setDescription("Minecraft skin megtekintése")
+    .addStringOption((o) => o.setName("nev").setDescription("Minecraft név").setRequired(true).setMaxLength(16)),
+  new SlashCommandBuilder().setName("meghivo").setDescription("Meghívó link a Discordra"),
+  new SlashCommandBuilder().setName("botinfo").setDescription("Adatok a botról"),
+  new SlashCommandBuilder().setName("ping").setDescription("A bot válaszideje"),
+  new SlashCommandBuilder()
+    .setName("esemeny")
+    .setDescription("Esemény kiírása jelentkezéssel")
+    .setDefaultMemberPermissions(P.ManageMessages)
+    .addStringOption((o) => o.setName("cim").setDescription("Az esemény neve").setRequired(true).setMaxLength(200))
+    .addStringOption((o) => o.setName("mikor").setDescription("Mikor lesz, pl. szombat 18:00").setRequired(true).setMaxLength(100))
+    .addStringOption((o) => o.setName("leiras").setDescription("Pár sor az eseményről").setMaxLength(1500))
+    .addChannelOption((o) => szovegCsatorna(o, "csatorna", "Hova kerüljön (alapból ide)", false))
+    .addRoleOption((o) => o.setName("ping").setDescription("Melyik rangot pingelje")),
+  new SlashCommandBuilder()
+    .setName("lassitas")
+    .setDescription("Lassított mód ebben a csatornában")
+    .setDefaultMemberPermissions(P.ManageChannels)
+    .addIntegerOption((o) => o.setName("masodperc").setDescription("Hány másodpercenként írhatnak (0 = ki)").setMinValue(0).setMaxValue(21600).setRequired(true)),
+  new SlashCommandBuilder()
+    .setName("zarolas")
+    .setDescription("Csatorna lezárása vagy feloldása")
+    .setDefaultMemberPermissions(P.ManageChannels)
+    .addBooleanOption((o) => o.setName("be").setDescription("Lezárva legyen?").setRequired(true))
+    .addStringOption((o) => o.setName("ok").setDescription("Miért").setMaxLength(300)),
+  new SlashCommandBuilder()
+    .setName("becenev")
+    .setDescription("Becenév módosítása")
+    .setDefaultMemberPermissions(P.ManageNicknames)
+    .addUserOption(tag)
+    .addStringOption((o) => o.setName("nev").setDescription("Az új becenév (ha üres, törli)").setMaxLength(32)),
+  new SlashCommandBuilder()
+    .setName("rang")
+    .setDescription("Rang adása vagy elvétele")
+    .setDefaultMemberPermissions(P.ManageRoles)
+    .addSubcommand((s) =>
+      s
+        .setName("adas")
+        .setDescription("Rang adása")
+        .addUserOption(tag)
+        .addRoleOption((o) => o.setName("rang").setDescription("Melyik rang").setRequired(true)),
+    )
+    .addSubcommand((s) =>
+      s
+        .setName("elvetel")
+        .setDescription("Rang elvétele")
+        .addUserOption(tag)
+        .addRoleOption((o) => o.setName("rang").setDescription("Melyik rang").setRequired(true)),
+    ),
+  new SlashCommandBuilder()
+    .setName("mondd")
+    .setDescription("Üzenet a bot nevében")
+    .setDefaultMemberPermissions(P.ManageMessages)
+    .addChannelOption((o) => szovegCsatorna(o, "csatorna", "Hova (alapból ide)", false))
+    .addBooleanOption((o) => o.setName("kartya").setDescription("Szép kártyában menjen? (alapból igen)"))
+    .addStringOption((o) => o.setName("szin").setDescription("A kártya színe").addChoices(...SZIN_VALASZTEK)),
+  new SlashCommandBuilder()
+    .setName("info-panel")
+    .setDescription("Információs panel kirakása (IP, weboldal, szabályzat, segítség)")
+    .setDefaultMemberPermissions(P.ManageGuild)
+    .addChannelOption((o) => szovegCsatorna(o, "csatorna", "Hova kerüljön")),
+  new SlashCommandBuilder()
+    .setName("szabalyzat-panel")
+    .setDescription("Szabályzat panel, opcionálisan elfogadás gombbal")
+    .setDefaultMemberPermissions(P.ManageGuild)
+    .addChannelOption((o) => szovegCsatorna(o, "csatorna", "Hova kerüljön"))
+    .addRoleOption((o) => o.setName("rang").setDescription("Ezt kapja, aki elfogadja (ha üres, nincs gomb)")),
   new SlashCommandBuilder().setName("ip").setDescription("Szervercím és verziók"),
   new SlashCommandBuilder().setName("statusz").setDescription("Fent van-e a szerver, és hányan játszanak"),
   new SlashCommandBuilder().setName("weboldal").setDescription("Az IceMine weboldala"),

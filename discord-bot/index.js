@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { Client, Events, GatewayIntentBits, OAuth2Scopes, MessageFlags, PermissionFlagsBits: P } = require("discord.js");
-const { K, allapot, rejtett } = require("./kozos");
+const { K, allapot, hiba } = require("./kozos");
 const parancsLista = require("./parancsok");
 const statusz = require("./modulok/statusz");
 const alap = require("./modulok/alap");
@@ -13,8 +13,12 @@ const nyeremeny = require("./modulok/nyeremeny");
 const rangvalaszto = require("./modulok/rangvalaszto");
 const naplozas = require("./modulok/naplozas");
 const beallitas = require("./modulok/beallitas");
+const szorakozas = require("./modulok/szorakozas");
+const kozosseg = require("./modulok/kozosseg");
+const staff = require("./modulok/staff");
+const panelek = require("./modulok/panelek");
 
-const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas];
+const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek];
 
 const parancsok = {};
 const komponensek = {};
@@ -30,6 +34,7 @@ for (const m of MODULOK) {
 for (const p of parancsLista) {
   if (!parancsok[p.name]) throw new Error("Nincs kezelője ennek a parancsnak: " + p.name);
 }
+allapot.parancsSzam = parancsLista.length;
 
 const JOGOK = [
   P.ViewChannel,
@@ -82,13 +87,14 @@ client.once(Events.ClientReady, async () => {
   statusz.indit(client);
   nyeremeny.indit(client);
   moderalas.indit(client);
+  kozosseg.indit(client);
 });
 
 async function kezel(i) {
   if (i.isChatInputCommand()) {
-    if (!i.inGuild() || !i.guild) return rejtett(i, "Ezt csak az IceMine Discordján tudod használni.");
+    if (!i.inGuild() || !i.guild) return hiba(i, "Ezt csak az IceMine Discordján tudod használni.");
     const f = parancsok[i.commandName];
-    return f ? f(i) : rejtett(i, "Ezt a parancsot már nem ismerem.");
+    return f ? f(i) : hiba(i, "Ezt a parancsot már nem ismerem.");
   }
   if (i.isModalSubmit()) {
     const f = modalok[i.customId];
@@ -97,7 +103,7 @@ async function kezel(i) {
   if (i.isButton() || i.isStringSelectMenu()) {
     if (!i.guild) return null;
     const f = komponensek[i.customId] || Object.entries(elotagok).find(([e]) => i.customId.startsWith(e))?.[1];
-    return f ? f(i) : rejtett(i, "Ez a gomb már nem működik.");
+    return f ? f(i) : hiba(i, "Ez a gomb már nem működik.");
   }
   return null;
 }
@@ -112,9 +118,13 @@ client.on(Events.InteractionCreate, async (i) => {
         ? "Ehhez nincs jogom. Nézd meg a bot jogait, és hogy a rangja elég magasan van-e a Rangok listában."
         : "Valami hiba történt, próbáld újra kicsit később.";
     try {
-      if (i.deferred || i.replied) await i.followUp({ content: szoveg, flags: MessageFlags.Ephemeral });
-      else await i.reply({ content: szoveg, flags: MessageFlags.Ephemeral });
-    } catch {}
+      await hiba(i, szoveg);
+    } catch {
+      try {
+        if (i.deferred || i.replied) await i.followUp({ content: szoveg, flags: MessageFlags.Ephemeral });
+        else await i.reply({ content: szoveg, flags: MessageFlags.Ephemeral });
+      } catch {}
+    }
   }
 });
 
@@ -128,6 +138,7 @@ client.on(
   Events.MessageCreate,
   vedett("Üzenet", async (m) => {
     if (await naplozas.automod(m)) return;
+    await kozosseg.uzenet(m);
     await szintek.uzenet(m);
   }),
 );
