@@ -141,26 +141,51 @@ async function stripe(method, p, params) {
   if (!r.ok) throw new Error("Stripe " + r.status + ": " + String((d.error && d.error.message) || "ismeretlen hiba").slice(0, 200));
   return d;
 }
+function parseCart(code) {
+  const out = { ic: 0, packs: [], rank: null, unban: null };
+  for (const part of String(code || "").split(",")) {
+    let mm;
+    if ((mm = /^ic(\d+)x(\d+)$/.exec(part))) {
+      const pk = PACKS.find(p => p[0] === Number(mm[1])), q = Number(mm[2]);
+      if (!pk || q < 1 || q > MAX_QTY) return null;
+      out.ic += pk[0] * q; out.packs.push([pk[0], q]);
+    } else if ((mm = /^r:(\w+)$/.exec(part))) {
+      out.rank = RANKS.find(x => x.id === mm[1]) || null;
+      if (!out.rank) return null;
+    } else if ((mm = /^u:(\w+)$/.exec(part))) {
+      out.unban = UNBANS.find(z => z.id === mm[1]) || null;
+      if (!out.unban) return null;
+    } else return null;
+  }
+  return out.ic || out.rank || out.unban ? out : null;
+}
+function legacyCart(m) {
+  if (m.unban) { const x = UNBANS.find(z => z.id === m.unban); return x ? { ic: 0, packs: [], rank: null, unban: x } : null; }
+  if (m.rank) { const r = RANKS.find(x => x.id === m.rank); return r ? { ic: 0, packs: [], rank: r, unban: null } : null; }
+  const ic = Number(m.ic), q = Number(m.qty) || 1;
+  return Number.isInteger(ic) && ic > 0 && ic <= 1e6 ? { ic, packs: [[ic / q, q]], rank: null, unban: null } : null;
+}
 function fulfill(s) {
   if (!s || s.object !== "checkout.session" || s.payment_status !== "paid") return false;
   db.payments = db.payments || {};
   if (db.payments[s.id]) return true;
-  const m = s.metadata || {}, ic = Number(m.ic), ri = m.rank ? RANKS.findIndex(r => r.id === m.rank) : -1, ub = m.unban ? UNBANS.find(z => z.id === m.unban) : null;
+  const m = s.metadata || {}, c = m.cart ? parseCart(m.cart) : legacyCart(m);
   const u = m.uid ? Object.values(db.users).find(x => x.id === m.uid) : null;
-  const okItem = m.unban ? !!ub : m.rank ? ri >= 0 : Number.isInteger(ic) && ic > 0 && ic <= 1e6;
-  if (!u || !okItem) { if (m.uid) console.error("Fizetés: nem sikerült jóváírni, nincs ilyen fiók vagy termék (" + s.id + ")."); return false; }
+  if (!u || !c) { if (m.uid) console.error("Fizetés: nem sikerült jóváírni, nincs ilyen fiók vagy termék (" + s.id + ")."); return false; }
   const rec = { t: Date.now(), uid: u.id, user: u.name, huf: (s.amount_total || 0) / 100, consent: Number(m.consent) || null, pi: s.payment_intent || null };
-  if (ub) {
-    rec.unban = ub.name;
-    recordUnban(u, ub, "ft", { huf: rec.huf, pi: rec.pi, sid: s.id });
-  } else if (m.rank) {
-    const r = RANKS[ri], cur = RANKS.findIndex(x => x.name === u.rank);
-    rec.rank = r.name;
-    if (cur < ri) { u.rank = r.name; u.rankSince = Date.now(); console.log("Fizetés: " + u.name + " megkapta a(z) " + r.name + " rangot (" + s.id + ")."); }
-    else { rec.ic = r.ic; u.coins = (u.coins || 0) + r.ic; console.log("Fizetés: " + u.name + " már " + u.rank + " rangú volt, helyette +" + r.ic + " IceCoin (" + s.id + ")."); }
-  } else {
-    rec.ic = ic; rec.qty = Number(m.qty) || 1; u.coins = (u.coins || 0) + ic;
-    console.log("Fizetés: " + u.name + " +" + ic + " IceCoin jóváírva (" + s.id + ").");
+  if (c.ic) {
+    rec.ic = c.ic; rec.packs = c.packs; u.coins = (u.coins || 0) + c.ic;
+    console.log("Fizetés: " + u.name + " +" + c.ic + " IceCoin jóváírva (" + s.id + ").");
+  }
+  if (c.rank) {
+    const ri = RANKS.indexOf(c.rank), cur = RANKS.findIndex(x => x.name === u.rank);
+    rec.rank = c.rank.name;
+    if (cur < ri) { u.rank = c.rank.name; u.rankSince = Date.now(); console.log("Fizetés: " + u.name + " megkapta a(z) " + c.rank.name + " rangot (" + s.id + ")."); }
+    else { rec.rankComp = c.rank.ic; u.coins = (u.coins || 0) + c.rank.ic; console.log("Fizetés: " + u.name + " már " + u.rank + " rangú volt, helyette +" + c.rank.ic + " IceCoin (" + s.id + ")."); }
+  }
+  if (c.unban) {
+    rec.unban = c.unban.name;
+    recordUnban(u, c.unban, "ft", { huf: c.unban.ft, pi: rec.pi, sid: s.id });
   }
   db.payments[s.id] = rec;
   save();
@@ -169,14 +194,20 @@ function fulfill(s) {
 }
 async function sendReceipt(u, rec, sid) {
   const site = process.env.BASE_URL || "https://icemine.hu", when = new Date(rec.t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest" });
-  const hu = n => n.toLocaleString("hu-HU");
-  const item = rec.unban ? rec.unban : rec.rank ? rec.rank + " rang" : rec.qty > 1 ? rec.qty + " × " + hu(rec.ic / rec.qty) + " IceCoin (összesen " + hu(rec.ic) + " IceCoin)" : hu(rec.ic) + " IceCoin";
-  const got = rec.unban ? "A kérésedet továbbítottuk a staffnak, a feloldást legkésőbb 24 órán belül elvégzik. Kliens ban esetén nincs feloldás, ilyenkor a vételárat visszatérítjük." : rec.rank && rec.ic ? "Mivel már " + rec.rank + " vagy magasabb rangod volt, helyette " + rec.ic.toLocaleString("hu-HU") + " IceCoint írtunk jóvá." : rec.rank ? "A(z) " + rec.rank + " rangot jóváírtuk a fiókodon." : rec.ic.toLocaleString("hu-HU") + " IceCoint jóváírtunk a fiókodon.";
-  const consent = rec.unban ? "A vásárlás előtt kifejezetten kérted a szolgáltatás azonnali teljesítését, és tudomásul vetted, hogy a szolgáltatás teljesítése (a feloldás) után elveszíted a felmondási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés a) pont)." : "A vásárlás előtt kifejezetten kérted a teljesítés azonnali megkezdését, és tudomásul vetted, hogy a teljesítés megkezdésével elveszíted a 14 napos elállási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont).";
-  const rows = [["Termék", item], ["Ár", rec.huf.toLocaleString("hu-HU") + " Ft"], ["Időpont", when], ["Fiók", u.name], ["Azonosító", rec.pi || sid]];
-  const text = `Kedves ${u.name}!\nKöszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.\n\n${rows.map(r => r[0] + ": " + r[1]).join("\n")}\n\n${got}\n\n${consent}\n\nÁSZF: ${site}/#aszf\nVisszatérítési feltételek: ${site}/#visszaterites\nKérdés esetén írj nekünk: support@icemine.hu\n\nÜdvözlettel, IceMine csapata!`;
-  const esc = v => String(v).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
-  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;background:#f2f8fc;color:#0a1e2b"><h2 style="margin:0 0 16px;color:#0b3a5b">IceMine</h2><p>Kedves <b>${esc(u.name)}</b>!</p><p>Köszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.</p><table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px">${rows.map(r => `<tr><td style="padding:10px 14px;color:#587184">${esc(r[0])}</td><td style="padding:10px 14px;font-weight:bold;text-align:right">${esc(r[1])}</td></tr>`).join("")}</table><p>${esc(got)}</p><p style="font-size:13px;color:#587184">${esc(consent)}</p><p style="font-size:13px"><a href="${site}/#aszf">ÁSZF</a> · <a href="${site}/#visszaterites">Visszatérítési feltételek</a> · <a href="mailto:support@icemine.hu">support@icemine.hu</a></p><p>Üdvözlettel,<br>IceMine csapata!</p></div>`;
+  const hu = n => Number(n).toLocaleString("hu-HU");
+  const items = [], got = [], consent = [];
+  for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) items.push(q > 1 ? q + " × " + hu(ic) + " IceCoin" : hu(ic) + " IceCoin");
+  if (rec.rank) items.push(rec.rank + " rang");
+  if (rec.unban) items.push(rec.unban);
+  if (rec.ic) got.push(hu(rec.ic) + " IceCoint jóváírtunk a fiókodon.");
+  if (rec.rank) got.push(rec.rankComp ? "Mivel már " + rec.rank + " vagy magasabb rangod volt, a rang helyett " + hu(rec.rankComp) + " IceCoint írtunk jóvá." : "A(z) " + rec.rank + " rangot jóváírtuk a fiókodon.");
+  if (rec.unban) got.push("A(z) „" + rec.unban + "” kérésedet továbbítottuk a staffnak, legkésőbb 24 órán belül elvégzik. Kliens ban esetén nincs feloldás, ilyenkor a vételárat visszatérítjük.");
+  if (rec.ic || rec.rank) consent.push("A vásárlás előtt kifejezetten kérted a digitális tartalom (IceCoin, rang) azonnali jóváírását, és tudomásul vetted, hogy a teljesítés megkezdésével elveszíted a 14 napos elállási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont).");
+  if (rec.unban) consent.push("A vásárlás előtt kifejezetten kérted a szolgáltatás (feloldás) azonnali teljesítését, és tudomásul vetted, hogy a szolgáltatás teljesítése után elveszíted a felmondási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés a) pont).");
+  const rows = [...items.map(x => ["Termék", x]), ["Összesen", hu(rec.huf) + " Ft"], ["Időpont", when], ["Fiók", u.name], ["Azonosító", rec.pi || sid]];
+  const text = `Kedves ${u.name}!\nKöszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.\n\n${rows.map(r => r[0] + ": " + r[1]).join("\n")}\n\n${got.join("\n")}\n\n${consent.join("\n")}\n\nÁSZF: ${site}/#aszf\nVisszatérítési feltételek: ${site}/#visszaterites\nKérdés esetén írj nekünk: support@icemine.hu\n\nÜdvözlettel, IceMine csapata!`;
+  const esc = escHtml;
+  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;background:#f2f8fc;color:#0a1e2b"><h2 style="margin:0 0 16px;color:#0b3a5b">IceMine</h2><p>Kedves <b>${esc(u.name)}</b>!</p><p>Köszönjük a vásárlást! Ezzel az e-maillel visszaigazoljuk a megrendelésedet.</p><table style="width:100%;border-collapse:collapse;background:#fff;border-radius:10px">${rows.map(r => `<tr><td style="padding:10px 14px;color:#587184">${esc(r[0])}</td><td style="padding:10px 14px;font-weight:bold;text-align:right">${esc(r[1])}</td></tr>`).join("")}</table>${got.map(g => `<p>${esc(g)}</p>`).join("")}${consent.map(g => `<p style="font-size:13px;color:#587184">${esc(g)}</p>`).join("")}<p style="font-size:13px"><a href="${site}/#aszf">ÁSZF</a> · <a href="${site}/#visszaterites">Visszatérítési feltételek</a> · <a href="mailto:support@icemine.hu">support@icemine.hu</a></p><p>Üdvözlettel,<br>IceMine csapata!</p></div>`;
   await sendMail({ to: u.email, subject: "IceMine – visszaigazolás a vásárlásodról", text, html });
 }
 function stripeHook(req, res) {
@@ -461,42 +492,62 @@ app.get("/skin/:file", (req, res) => {
   res.set({ "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff", "Access-Control-Allow-Origin": "*" });
   res.sendFile(path.join(SKIN_DIR, u.id + ".png"), err => { if (err && !res.headersSent) res.status(404).type("text/plain").send("Nincs ilyen skin."); });
 });
+function buildCart(u, body) {
+  const lines = Array.isArray(body.cart) ? body.cart : body.rank !== undefined ? [{ t: "rank", id: body.rank }] : body.unban !== undefined ? [{ t: "unban", id: body.unban }] : [{ t: "ic", ic: body.ic, qty: body.qty === undefined ? 1 : body.qty }];
+  if (!lines.length) return { err: [400, "A kosár üres."] };
+  if (lines.length > 12) return { err: [400, "Túl sok tétel van a kosárban."] };
+  const ics = new Map();
+  let rank = null, unban = null;
+  for (const l of lines) {
+    const t = l && l.t;
+    if (t === "ic") {
+      const pack = PACKS.find(p => p[0] === Number(l.ic)), qty = Number(l.qty === undefined ? 1 : l.qty);
+      if (!pack) return { err: [400, "Ismeretlen csomag."] };
+      if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY || (ics.get(pack) || 0) + qty > MAX_QTY) return { err: [400, "Egy csomagból 1–" + MAX_QTY + " darabot vehetsz."] };
+      ics.set(pack, (ics.get(pack) || 0) + qty);
+    } else if (t === "rank") {
+      const ri = RANKS.findIndex(r => r.id === String(l.id)), cur = RANKS.findIndex(r => r.name === u.rank);
+      if (ri < 0) return { err: [400, "Ismeretlen rang."] };
+      if (rank) return { err: [400, "Egyszerre csak egy rangot vehetsz."] };
+      if (ri <= cur) return { err: [409, (ri === cur ? "Már ez a rangod: " : "Már magasabb rangod van, mint: ") + RANKS[ri].name + "."] };
+      rank = RANKS[ri];
+    } else if (t === "unban") {
+      const x = UNBANS.find(z => z.id === String(l.id));
+      if (!x) return { err: [400, "Ismeretlen termék."] };
+      if (unban) return { err: [400, "A Kitiltás csökkentése termékek közül egyszerre csak egyet vehetsz."] };
+      if (unbanNext(u) > Date.now()) return { err: [409, "A Kitiltás csökkentése termékek közül 6 hónaponta csak egyet vásárolhatsz. Legközelebb " + dayHu(unbanNext(u)) + " után."] };
+      unban = x;
+    } else return { err: [400, "Ismeretlen tétel a kosárban."] };
+  }
+  const items = [...ics].map(([p, q]) => ({ name: p[0].toLocaleString("hu-HU") + " IceCoin", huf: p[1], qty: q }));
+  if (rank) items.push({ name: rank.name + " rang", huf: rank.ft, qty: 1 });
+  if (unban) items.push({ name: unban.name, huf: unban.ft, qty: 1 });
+  const code = [...[...ics].map(([p, q]) => "ic" + p[0] + "x" + q), rank && "r:" + rank.id, unban && "u:" + unban.id].filter(Boolean).join(",");
+  const kinds = (ics.size ? 1 : 0) + (rank ? 1 : 0) + (unban ? 1 : 0);
+  return { items, code, back: kinds > 1 ? "&tipus=kosar" : rank ? "&rang=1" : unban ? "&tipus=unban" : "" };
+}
 app.post("/api/checkout", limit(20, 6e5), async (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
   if (!STRIPE_KEY) return fail(res, 503, "A fizetés jelenleg nem elérhető. Próbáld később.");
   const body = req.body || {};
   if (body.consent !== true) return fail(res, 400, "A vásárláshoz jelöld be a nyilatkozatot az azonnali teljesítésről.");
-  let item;
-  if (body.unban !== undefined) {
-    const x = UNBANS.find(z => z.id === String(body.unban));
-    if (!x) return fail(res, 400, "Ismeretlen termék.");
-    if (unbanNext(u) > Date.now()) return fail(res, 409, "Ezek közül 6 hónaponta csak egyet vásárolhatsz. Legközelebb " + dayHu(unbanNext(u)) + " után.");
-    item = { name: x.name, huf: x.ft, meta: { unban: x.id }, back: "&tipus=unban" };
-  } else if (body.rank !== undefined) {
-    const ri = RANKS.findIndex(r => r.id === String(body.rank)), cur = RANKS.findIndex(r => r.name === u.rank);
-    if (ri < 0) return fail(res, 400, "Ismeretlen rang.");
-    if (ri <= cur) return fail(res, 409, ri === cur ? "Már ez a rangod." : "Már magasabb rangod van.");
-    item = { name: RANKS[ri].name + " rang", huf: RANKS[ri].ft, meta: { rank: RANKS[ri].id }, back: "&rang=1" };
-  } else {
-    const pack = PACKS.find(p => p[0] === Number(body.ic)), qty = body.qty === undefined ? 1 : Number(body.qty);
-    if (!pack) return fail(res, 400, "Ismeretlen csomag.");
-    if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY) return fail(res, 400, "A mennyiség 1 és " + MAX_QTY + " között lehet.");
-    item = { name: pack[0].toLocaleString("hu-HU") + " IceCoin", huf: pack[1], qty, meta: { ic: pack[0] * qty, qty }, back: "" };
-  }
+  const cart = buildCart(u, body);
+  if (cart.err) return fail(res, cart.err[0], cart.err[1]);
   if (!u.id) { u.id = crypto.randomBytes(9).toString("hex"); save(); }
-  const b = base(req), meta = Object.assign({ uid: u.id, user: u.name, consent: String(Date.now()) }, item.meta);
+  const b = base(req), meta = { uid: u.id, user: u.name, consent: String(Date.now()), cart: cart.code };
+  const desc = cart.items.map(x => (x.qty > 1 ? x.qty + " × " : "") + x.name).join(", ");
   try {
     const s = await stripe("POST", "/checkout/sessions", {
       mode: "payment",
       locale: "hu",
       customer_email: u.email,
       client_reference_id: u.id,
-      success_url: b + "/?fizetes={CHECKOUT_SESSION_ID}" + item.back,
-      cancel_url: b + "/?fizetes=megszakitva" + item.back,
-      line_items: [{ quantity: item.qty || 1, price_data: { currency: "huf", unit_amount: item.huf * 100, product_data: { name: item.name, description: "IceMine – " + u.name + " fiókjára", images: b.startsWith("https://") ? [b + "/favicon.png"] : undefined } } }],
+      success_url: b + "/?fizetes={CHECKOUT_SESSION_ID}" + cart.back,
+      cancel_url: b + "/?fizetes=megszakitva" + cart.back,
+      line_items: cart.items.map(x => ({ quantity: x.qty, price_data: { currency: "huf", unit_amount: x.huf * 100, product_data: { name: x.name, description: "IceMine – " + u.name + " fiókjára", images: b.startsWith("https://") ? [b + "/favicon.png"] : undefined } } })),
       metadata: meta,
-      payment_intent_data: { description: item.name + " – " + u.name, metadata: meta }
+      payment_intent_data: { description: (desc + " – " + u.name).slice(0, 480), metadata: meta }
     });
     res.json({ url: s.url });
   } catch (e) {
@@ -519,7 +570,7 @@ app.post("/api/checkout-status", limit(60, 6e5), async (req, res) => {
     } catch (e) { console.error("Fizetés: ellenőrzési hiba – " + e.message); }
   }
   const p = db.payments[id], mine = !!(p && p.uid === u.id);
-  res.json({ paid: mine, pending, ic: mine ? p.ic || 0 : 0, qty: mine ? p.qty || 1 : 0, rank: mine ? p.rank || null : null, unban: mine ? p.unban || null : null, user: pub(u) });
+  res.json({ paid: mine, pending, ic: mine ? (p.rank && p.ic && !p.packs ? 0 : p.ic || 0) : 0, packs: mine ? p.packs || null : null, rank: mine ? p.rank || null : null, rankComp: mine ? p.rankComp || (p.rank && p.ic && !p.packs ? p.ic : 0) : 0, unban: mine ? p.unban || null : null, user: pub(u) });
 });
 
 app.post("/api/unban-ic", limit(20, 6e5), (req, res) => {

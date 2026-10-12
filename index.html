@@ -234,12 +234,20 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .r-abyss{--r1:#a593ff;--r2:#33238a;--rt:#fff}
 .r-iceking{--r1:#c9f3ff;--r2:#2192dc;--rt:#05253c}
 .r-yeti{--r1:#fff3c4;--r2:#d79a14;--rt:#3a2600}
-.rhead{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;padding:18px 20px;color:var(--rt);background:linear-gradient(135deg,var(--r1),var(--r2))}
+.rhead{position:relative;overflow:hidden;display:flex;align-items:center;gap:14px;min-height:136px;padding:16px 16px 16px 22px;color:var(--rt);background:linear-gradient(135deg,var(--r1),var(--r2))}
+.rhead::before{content:"";position:absolute;right:-6px;top:50%;width:160px;height:160px;transform:translateY(-50%);border-radius:50%;background:radial-gradient(closest-side,#ffffff70,#ffffff00);pointer-events:none}
+.rtx{position:relative;z-index:1;min-width:0}
+.rhead .rart{position:relative;z-index:1;flex:none;margin-left:auto;width:108px;height:108px;image-rendering:pixelated;filter:drop-shadow(0 10px 10px #00000059);transition:transform .25s}
+.rcard:hover .rart{transform:translateY(-4px) rotate(-4deg)}
+.win .rimg{flex:none;width:56px;height:56px;image-rendering:pixelated;filter:drop-shadow(0 6px 8px #0000004d)}
+.tile .ti img{width:26px;height:26px;image-rendering:pixelated}
+@media (prefers-reduced-motion:reduce){.rart{transition:none}.rcard:hover .rart{transform:none}}
+@media (max-width:420px){.rhead{min-height:120px}.rhead .rart{width:92px;height:92px}}
 .rhead::after{content:"";position:absolute;right:-26px;top:-34px;width:120px;height:120px;border-radius:26px;transform:rotate(22deg);background:#ffffff26;pointer-events:none}
 .rhead .gem{flex:none;width:44px;height:44px;filter:drop-shadow(0 6px 8px #0000004d)}
 .rhead small{display:block;font-weight:800;font-size:12px;letter-spacing:.06em;text-transform:uppercase;opacity:.8}
 .page .rhead h3{margin:0;font-size:24px;color:inherit}
-.rtag{position:relative;z-index:1;margin-left:auto;padding:5px 11px;border-radius:999px;background:#ffffffd9;color:#0a1e2b;font:800 12px Sora,sans-serif}
+.rtag{position:relative;z-index:1;display:inline-block;margin-top:8px;padding:5px 11px;border-radius:999px;background:#ffffffd9;color:#0a1e2b;font:800 12px Sora,sans-serif}
 .rbody{display:flex;flex-direction:column;gap:16px;flex:1;padding:18px 20px 20px}
 .rprice{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .rprice .pcoin{width:24px;height:24px}
@@ -307,7 +315,8 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .qty button:disabled{opacity:.35;cursor:not-allowed}
 .qty output{min-width:28px;text-align:center;font:800 16px Sora,sans-serif}
 #coSub{display:block;color:var(--mute);font-size:12.5px;font-weight:700}
-@media (max-width:520px){.checkout{flex-wrap:wrap;row-gap:10px}.checkout .sel{flex:1 1 0}.checkout .btn{flex:1 1 100%}}
+.cobtns{flex:none;display:flex;gap:8px}
+@media (max-width:520px){.checkout{display:grid;grid-template-columns:minmax(0,1fr) auto;grid-template-areas:"sel qty" "btns btns";gap:10px 12px}.checkout .sel{grid-area:sel}.qtyw{grid-area:qty;align-self:center}.cobtns{grid-area:btns}#coCart{flex:1 1 0}#coBtn{flex:1.7 1 0}.cobtns .btn{white-space:nowrap;padding-left:12px;padding-right:12px;font-size:14px}}
 .page[data-page="kitiltas"]{max-width:900px}
 .ubstat{display:grid;grid-template-columns:repeat(3,1fr);gap:0;margin-bottom:16px;overflow:hidden}
 .ubstat>div{display:flex;align-items:center;gap:12px;padding:16px 18px;border-right:1px solid var(--line)}
@@ -368,6 +377,68 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .ncomm a:hover{background:#ffffff33}
 .ncomm a svg{width:18px;height:18px}
 .nfeat .btn{display:inline-flex;text-decoration:none}
+#cartBtn{position:fixed;top:calc(env(safe-area-inset-top,0px) + 12px);right:14px;z-index:45;display:grid;place-items:center;width:46px;height:46px;border-radius:14px;border:0;background:var(--solid);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line),0 8px 18px -10px #0b3a5b88;cursor:pointer;transition:transform .15s}
+#cartBtn:hover{transform:translateY(-2px)}
+#cartBtn svg{width:22px;height:22px}
+#cartBtn.bump{animation:bump .4s ease-out}
+@keyframes bump{40%{transform:scale(1.18)}}
+.cbadge{position:absolute;top:-6px;right:-6px;min-width:22px;height:22px;padding:0 6px;border-radius:999px;background:#ff5d6c;color:#fff;font:800 12px/22px Sora,sans-serif;text-align:center;box-shadow:0 0 0 2px var(--bg)}
+@media (max-width:900px){#cartBtn{right:70px}}
+body.menu #cartBtn{display:none}
+.cartwrap{position:fixed;inset:0;z-index:70}
+.cartbg{position:absolute;inset:0;background:#06121bb3;backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px)}
+.cartbox{position:absolute;top:0;right:0;bottom:0;display:flex;flex-direction:column;width:min(430px,100%);background:var(--bg);box-shadow:-24px 0 60px -20px #000a;animation:cin .25s ease-out}
+@keyframes cin{from{transform:translateX(40px);opacity:0}}
+.carthead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:calc(env(safe-area-inset-top,0px) + 16px) 18px 12px}
+.carthead h2{margin:0;font-size:22px}
+.carthead .x{flex:none;width:40px;height:40px;border:0;border-radius:50%;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink);font:700 22px/1 Sora,sans-serif;cursor:pointer}
+.cartlist{flex:1;overflow-y:auto;padding:4px 18px 12px;display:grid;align-content:start;gap:10px}
+.citem{display:grid;grid-template-columns:auto 1fr auto auto;grid-template-areas:"img info price rm" "img qty qty qty";align-items:center;gap:6px 12px;padding:12px 12px 12px 14px;border-radius:16px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.citem.bad{box-shadow:inset 0 0 0 2px var(--bad)}
+.citem>.pcoin,.citem>.cimg,.citem>.cico{grid-area:img;align-self:start}
+.citem .pcoin{width:40px;height:40px}
+.cimg{width:44px;height:44px;image-rendering:pixelated}
+.cico{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:#fff;background:linear-gradient(135deg,#3fb4ff,#1c6fd6)}
+.cico svg{width:22px;height:22px}
+.cinfo{grid-area:info;min-width:0}
+.cinfo b{display:block;font:800 15px Sora,sans-serif;line-height:1.25}
+.cinfo span{color:var(--mute);font-size:13px;font-weight:700}
+.cinfo em{display:block;margin-top:2px;color:var(--bad);font-style:normal;font-weight:700;font-size:13px}
+.cprice{grid-area:price;font:800 15px Sora,sans-serif;white-space:nowrap}
+.crm{grid-area:rm;width:30px;height:30px;border:0;border-radius:50%;background:var(--bg2);color:var(--mute);font:700 18px/1 Sora,sans-serif;cursor:pointer}
+.crm:hover{color:var(--bad)}
+.citem .qty{grid-area:qty;justify-self:start}
+.qty.sm button{width:30px;height:30px;font-size:17px}
+.qty.sm output{min-width:24px;font-size:14.5px}
+.cartfoot{display:grid;gap:12px;padding:14px 18px calc(env(safe-area-inset-bottom,0px) + 18px);border-top:1px solid var(--line);background:var(--solid)}
+.ctotal{display:flex;align-items:baseline;justify-content:space-between}
+.ctotal span{color:var(--mute);font-weight:800}
+.ctotal b{font:800 24px Sora,sans-serif}
+.cartfoot .consent{margin:0;background:var(--bg)}
+.cartfoot .btn{width:100%}
+.cartfoot .msg:empty{display:none}
+.cempty{display:grid;justify-items:center;gap:8px;padding:40px 10px;text-align:center;color:var(--mute);font-weight:600}
+.cempty svg{width:48px;height:48px;color:var(--ice)}
+.cempty b{color:var(--ink);font:800 18px Sora,sans-serif}
+.clinks{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:6px}
+.clinks a{padding:9px 14px;border-radius:999px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);color:var(--ice);font-weight:800;font-size:14px;text-decoration:none}
+body.cartopen{overflow:hidden}
+.rftrow{display:flex;gap:8px}
+.rftrow .btn:first-child{flex:1;min-width:0}
+.ract .rftrow .cadd,.ubcard .rftrow .cadd{flex:none;width:54px;padding:0;display:grid;place-items:center}
+.cadd svg{width:22px;height:22px}
+.toast{position:fixed;left:50%;bottom:calc(env(safe-area-inset-bottom,0px) + 20px);z-index:75;display:flex;align-items:center;gap:12px;max-width:calc(100% - 32px);padding:10px 10px 10px 18px;border-radius:999px;background:var(--ink);color:var(--bg);font-weight:700;font-size:14.5px;box-shadow:0 16px 40px -14px #000a;transform:translateX(-50%);animation:tin .25s ease-out}
+@keyframes tin{from{opacity:0;transform:translate(-50%,10px)}}
+.toast button{flex:none;border:0;border-radius:999px;padding:8px 14px;background:#1c8ad6;color:#fff;font:800 13.5px Sora,sans-serif;cursor:pointer}
+.pdone{margin:0 0 22px;padding:18px 20px;border-radius:20px;background:linear-gradient(135deg,color-mix(in srgb,#3fb4ff 18%,var(--solid)),var(--solid));box-shadow:inset 0 0 0 2px color-mix(in srgb,#3fb4ff 70%,transparent),0 20px 38px -22px #1c6fd6;animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
+.pdh b{display:block;font:800 21px Sora,sans-serif}
+.pdh span{color:var(--mute);font-weight:600;font-size:14px}
+.pdone ul{list-style:none;margin:14px 0 0;padding:0;display:grid;gap:10px}
+.pdone li{display:flex;align-items:center;gap:12px;font-weight:800}
+.pdone li .pcoin{width:34px;height:34px;flex:none}
+.pdone li .cimg{width:38px;height:38px;flex:none}
+.pdone li .cico{width:34px;height:34px;flex:none}
+@media (prefers-reduced-motion:reduce){.cartbox,.toast,.pdone,#cartBtn.bump{animation:none}}
 @media (max-width:700px){.nfeat{grid-template-columns:1fr}.nfeat .nart{min-height:190px}.nfeat .nbody{padding:20px}.page .nfeat h3{font-size:21px}}
 .checkout .btn:disabled{cursor:not-allowed}
 .howto{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:26px}
@@ -567,6 +638,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
   <header class="top">
     <img class="lg" alt="IceMine">
     <button id="menuBtn" type="button" aria-label="Menü" aria-expanded="false" aria-controls="side"><svg class="i bars" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="i x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <button id="cartBtn" type="button" aria-label="Kosár" aria-controls="cartPanel"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg><span class="cbadge" id="cartCount" hidden>0</span></button>
   </header>
   <div class="shell">
     <aside id="side">
@@ -625,7 +697,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         </div>
         <div class="stats">
           <div class="tile gold"><span class="ti"><span class="pcoin"></span></span><small>IceCoin</small><b id="cCoin">0</b><a href="#vasarlas">Feltöltés →</a></div>
-          <div class="tile"><span class="ti"><svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><small>Rang</small><b id="cRankN">default</b><span>Lejárat: soha</span></div>
+          <div class="tile"><span class="ti" id="cRankIco"><svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><small>Rang</small><b id="cRankN">default</b><span>Lejárat: soha</span></div>
           <div class="tile"><span class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><small>Regisztrált</small><b id="cDate">–</b><span id="cTime"></span></div>
           <div class="tile"><span class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><small>E-mail cím</small><b class="mail" id="cMail">–</b></div>
         </div>
@@ -678,7 +750,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         <div class="checkout">
           <div class="sel"><small>Kiválasztott csomag</small><b id="coSel">Válassz egy csomagot</b><span id="coSub"></span><span id="coPrice"></span></div>
           <div class="qtyw" id="coQtyW" hidden><small>Mennyiség</small><div class="qty" role="group" aria-label="Mennyiség"><button type="button" data-q="-1" aria-label="Kevesebb">−</button><output id="coQty" aria-live="polite">1</output><button type="button" data-q="1" aria-label="Több">+</button></div></div>
-          <button class="btn" type="button" id="coBtn" disabled>Tovább a fizetéshez</button>
+          <div class="cobtns"><button class="btn alt" type="button" id="coCart" disabled>Kosárba</button><button class="btn" type="button" id="coBtn" disabled>Tovább a fizetéshez</button></div>
         </div>
         <div class="msg" id="buyMsg" aria-live="polite" style="margin-top:12px"></div>
         <div class="howto">
@@ -843,7 +915,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
 
           <h4>7. A vásárlás menete és a fizetés</h4>
           <ol>
-            <li>A Felhasználó kiválasztja a terméket, és bejelöli a nyilatkozatot a teljesítés azonnali megkezdéséről (8. pont).</li>
+            <li>A Felhasználó kiválasztja a terméket, vagy több terméket a kosárba helyez, és bejelöli a nyilatkozatot a teljesítés azonnali megkezdéséről (8. pont). Egy kosárban legfeljebb egy rang és egy Kitiltás csökkentése termék lehet, IceCoin csomagból csomagonként legfeljebb 10 darab.</li>
             <li>A <b>Tovább a fizetéshez</b> gomb a Stripe biztonságos fizetési oldalára visz. Itt bankkártyával, illetve a Stripe által felkínált egyéb módon (pl. Apple Pay, Google Pay) lehet fizetni.</li>
             <li>A szerződés a sikeres fizetéssel jön létre. A Szolgáltató a terméket a fizetés után azonnal jóváírja a Felhasználó fiókján, és a vásárlásról visszaigazoló e-mailt küld.</li>
           </ol>
@@ -1018,6 +1090,21 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
   <div id="scrim"></div>
 </div>
 
+<div id="cartPanel" class="cartwrap" hidden>
+  <div class="cartbg" id="cartBg"></div>
+  <aside class="cartbox" role="dialog" aria-modal="true" aria-labelledby="cartTitle">
+    <div class="carthead"><h2 id="cartTitle">Kosár</h2><button class="x" type="button" id="cartClose" aria-label="Bezárás">×</button></div>
+    <div class="cartlist" id="cartList"></div>
+    <div class="cartfoot" id="cartFoot">
+      <div class="ctotal"><span>Összesen</span><b id="cartTotal">0 Ft</b></div>
+      <label class="chk consent" id="cartConsentRow"><input type="checkbox" id="cartConsent"><span>Kérem a termékek azonnali jóváírását és a feloldás azonnali teljesítését, és tudomásul veszem, hogy ezzel elveszítem az elállási, illetve felmondási jogomat. Kliens ban esetén nincs feloldás. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
+      <button class="btn mc" type="button" id="cartPay">Fizetés</button>
+      <div class="msg" id="cartMsg" aria-live="polite"></div>
+    </div>
+  </aside>
+</div>
+<div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+
 <div id="docView" class="docview" role="dialog" aria-modal="true" aria-label="Dokumentumok" hidden>
   <div class="dvin">
     <div class="dvhead"><img class="lg" alt="IceMine"><h2>Dokumentumok</h2><button type="button" class="x" id="dvClose" aria-label="Bezárás">×</button></div>
@@ -1173,6 +1260,7 @@ function route(){
   $$("#side a.si").forEach(a=>a.classList.toggle("on",a.getAttribute("href")==="#"+p));
   document.body.classList.remove("menu");$("#menuBtn").setAttribute("aria-expanded",false);
   window.scrollTo(0,0);
+  if(!$("#cartPanel").hidden)closeCart();
   if(p==="szerencsekerek"&&user)loadWheel();
 }
 addEventListener("hashchange",route);
@@ -1279,6 +1367,7 @@ function render(){
   if(!user)return;
   const coins=fmtN(user.coins||0),rank=user.rank||"default";
   $("#cRank").textContent=rank;$("#cRankN").textContent=rank;
+  {const rr=RANKS.find(x=>x.name===rank),ico=$("#cRankIco");if(rr&&ico.dataset.r!==rr.id){ico.dataset.r=rr.id;ico.innerHTML=rankImg(rr.id,"")}else if(!rr&&ico.dataset.r){ico.dataset.r="";ico.innerHTML='<svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>'}}
   $("#cNick").textContent=user.name;
   $("#cCoin").textContent=coins;$("#setCoin").textContent=coins;$("#shopBal").textContent=coins;
   {const f=fmt(user.created).split(" ");$("#cDate").textContent=f[0];$("#cTime").textContent=f[1]||"";}
@@ -1292,7 +1381,7 @@ function render(){
     if(sk)skinData(user).then(u=>{if(skin.dataset.n===key)skin.src=u}).catch(()=>{});
     else skin.src="https://mc-heads.net/body/"+encodeURIComponent(user.name)+"/260";
   }
-  tUpdate();sUpdate();renderRanks();spinState();renderUnban();
+  tUpdate();sUpdate();renderRanks();spinState();renderUnban();renderCart();
 }
 
 const COIN="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cdefs%3E%3ClinearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e2f7ff%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%2362c4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%230d4f8a%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22f%22 x1=%22.25%22 y1=%220%22 x2=%22.75%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%239be2ff%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%232b90e2%22/%3E%3Cstop offset=%221%22 stop-color=%22%2314529e%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2219.6%22 fill=%22%230a3354%22/%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2218.2%22 fill=%22url%28%23r%29%22/%3E%3Cpath d=%22M20 5.2 32.8 12.6v14.8L20 34.8 7.2 27.4V12.6z%22 fill=%22url%28%23f%29%22 stroke=%22%230a3354%22 stroke-opacity=%22.45%22 stroke-width=%221%22/%3E%3Cpath d=%22M20 5.2V20L7.2 12.6M20 20l12.8-7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.16%22 stroke-width=%221%22 fill=%22none%22/%3E%3Cg stroke=%22%23f4fcff%22 stroke-width=%222.3%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 fill=%22none%22%3E%3Cg transform=%22rotate%280 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%2860 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%28120 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3C/g%3E%3Cpath d=%22M8.6 14.2A12.6 12.6 0 0 1 16.8 7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.75%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E";
@@ -1387,7 +1476,7 @@ $("#spinBtn").onclick=async()=>{
     if(d.rank&&d.granted){
       const r=RANKS.find(x=>x.name===d.rank);
       wb.className="win r-"+(r?r.id:"bronz");
-      wb.innerHTML=gem()+'<div><div class="wt">Nyertél!</div><div class="wa">'+escH(d.rank)+' rang</div></div>';
+      wb.innerHTML=rankImg(r?r.id:"bronz","rimg")+'<div><div class="wt">Nyertél!</div><div class="wa">'+escH(d.rank)+' rang</div></div>';
       wb.hidden=false;confetti();
     }else if(d.win){
       wb.className="win";
@@ -1426,6 +1515,8 @@ const RANKS=[
 ];
 let rMode="Kingdoms";
 const RCHECK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+const RANK_ART={"bronz": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACP0lEQVR42s1XTUgbQRT+NggBuwdlEaQ0B5cQhVDw4s3CnEoJBoWCsOBFPHgWQUV6llaQnnsovRQEoQeJ7HlBUIIXSQn+waokBDHmIG4PntJD3LA/M7tv4pb6TrM7++b73vdm3ttREGEFXW3z3pu2oyTl0xe1kJHWAAATI28w+mUcP2f3OpM62rwFvT5zO1M4Wz3G0WU90ieF/2xCAqbtKNuPLQDA0WUdZ6vHmNuZAgAYaS0kdVT0248tYQpergIyKvQa/ctXIE6FoMlGH3kMKWakNUBHV/5/okDQRCqEzj3RSAqYtqMEI60fOmBLDEzgQ5FfOgVsiQnn6ocOXs1kwZCF9dVKNgUFXW1/W/tIWvC6eoqR98NkAoos+EAm65tvVMq+52aj2R1vlKqxaUjJgqvvFoTgADD0eqg7Xi/mhd0xloAI3Nn/7gPPrZSeRYK0B4TgxjKJhLQCvE0XBI+zk5MrAMDBxQ3YmCZUIUWJnpfznLEMZBhQs4Ca5VPBBb+7/4PE6oCan0Tuw6fIb1wSOQC782+Tq4SNShmolAFsdUBqnELjvsswMjgpBcGcn28WO9LzTBK89/+BmhUm0QM4iUD/YEyrzYj7w/ntQ28ETNtRFj//6tZ230Zzd7836qfn6R+/uSDWaUv+XuAFbzaaocLildsdewlQoo9tRgVdba8X86Hq5p5zivRR0ZO7oZdEXHGRAScR4JE4uLiJ9aGAk4+haTvKRqmaODhZAd7Nl41pIVDK7flZBKKu4TKgXvsLCKxKZLYjjucAAAAASUVORK5CYII=", "abyss": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB2ElEQVR42s1XsWoCQRCdW2w8sAxXXpHPkDPYCZIUMV8RGwmBNJZpAiHY3BfYBoVIIJ1ESZHOwlbQJiBXBky5KZIJe+vs7tx5iXnl3e2b997sriPAjgj8SMK+EPiRPG8u5a+IcJFi8belZInIJDLwI/k6llbSwI9+irsEcPgyKdbdc0VQz4Xpo/Vm6pmIWvU+dOMQrtur1LtWvW8shHz6e6ESPzxOnM6xuAk2EVQNoSo8adaMznXo7jmgaggqJqol6J4DTitIAVTcgR9JtTjVe64ISpSwFUciAIBqI4Rqg1d8Nh/CbD40GlKfl7iRIrpxCOMRwMvTiizsMuRMgNtrTMTk2MSnpyDyFOe45kJQzooEZUhNIXUR3d1MoH6cjjcL7p87zuKsU6CnwY357KjHSlPlE6r7onuMadr4thIYj74WFglbkgKvx4urGossr0BTksIW3y4bkIuSzWkW6BvQhcODU4AEpHB92L7s5O49tsuWZmoe4O6DPEJMRkSRG62Qq/iv8b8EqPtAPwXxbS/TCVkkA+u7RTKA9WbqsROwEbo2oM6z3kw9nA09aoColEN4/1htDZPqIFEpb//Q6GtMPNaL6PsDSY3n2jOJFwqmQ6yR3DF/b3/PPwH+vjbV+1IbTQAAAABJRU5ErkJggg==", "iceking": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABlklEQVR42u1WoW6DUBQ9kAbJ1H6gEGwNqYWqupplakFNN1MTVZurmFqaqQU1udTUTUHdsswsm2lT+g1bp1rzJhYIhccFHmOYHkN4cO85975zHwAcKIbF0BQUw2LeJ2N1iCicsy5ysjBR0jJxJLlI26tsVypGNAlj/ys8lejqvVoH5KambbecS5UEKIbFRlMfAKCajrCJ5SYOoDiPHF98evELiVAMi63e/L21ol1I8sjxPel3bWwXtIjwmbsSq3y78NHv2pEHWsmXrj/yK88iV00HG4CFyXk4PnOzPRBiNM3ugt6xhfddNR3ahJSIsPrQ+VngeSGLPHcM4yJ2y7kkUj1FDgASNd8hxid2JIiHu7GbWtu8PkQdSa7HPUJ24FwHSZwHqvJCAuJuLyuiCHmj34KDAHIKkuf8X0Hv2Eieki3ei9Z9sHe/HmpoTwJu0t5AgzfjP6PiCm/BeqjB//q98sgfL27QG2il4koJaE8C2EfgVuLNApzeXnI7QMWVNiGVJKv9eXGkB76f/eamoM5fM+o/4YDG8ANzgtzHirWZpAAAAABJRU5ErkJggg==", "yeti": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACvklEQVR42sVXTWgTQRT+dsnFQxEsIihrwFDQaCLkFsrmkB4klXgU1ItFMWrFUy9tIIdAf5CepAftxYsguSkBo4fmkFCX9NBCEqMYiklWpEUMlZZ6EdZDspudzczs5gfyIJB982be976d780sQDHJK2uwMckra1ppVnMS63RNSF5Zk7yy9mPvgFjYOllPrh18YIKwzk+9y2n6+uY40RykZNNQsumuhRopP7cC6zhrzuryIlaXFwm/aE7Os8anuMFQI+UHpCigpqksNlJ+7lpmECItIBiOQq3kBVqldizQYtRKXpibj1PnidbqWckJEIzqeQCtIHQWRIzYxL6ko6YdJ7CTn0DbhMFwtEXp51zLUX7CpJ1ntdMrAIBQeNqgXbe5+TjUSl6gMqBk053klqrv/Vnr+J4JrV/biDGT5bLvieRcBjYLRdy8IRNB+cSJvt6vNPuLeN4q7HQxIFgb0bkzJwfeWLX9I+bYVmHHSG4wQDQRK/UDAihXVWLscSxGyHzkMnQ5DdzI1Hta2BMYdxQnmLXKov9b5bAlhHrTdsGvX34a/6/f8XW9gisTkiFLtZIXXHbvfSNTh+Q+heTCGwDATOwaF4CSK7V6SciH3e3fwBhdlu3+oLnUSl44fzlku/kSS7eg1pt49fIjFYjuD4Z8jqgPhac7jagNgn2Q1JtQ601MRdwoFRWUikpXzOu3D1AqKlhfW3ecnFCBHQgAuHphpq8xVvK+ZChP3u9rjKsCXiPqVX5mFVy8dBZ/x465jcjVK+LE04fYrGYwOREh/Lrv9qPE8O4DI7+QsMxaPcs31FZstqWAh+pf2N4dPoCpiJvYiMnnL/CPEZu8S25CT2Ac5eqxcxXwjuRhHEbWHkAFYAXBu1z0YrTk3E1Y2z8aWnL9AKLdkEXWR4R+ZJorGPSZ98HDvNN/3zs0vmgHfabZf8S/kjQ5Qj11AAAAAElFTkSuQmCC"};
+const rankImg=(id,cls)=>RANK_ART[id]?'<img class="'+(cls||"rart")+'" src="'+RANK_ART[id]+'" alt="" aria-hidden="true">':gem();
 const gem=()=>'<svg class="gem" viewBox="0 0 40 40" aria-hidden="true"><path d="M20 3 35 11.5v17L20 37 5 28.5v-17z" fill="var(--r2)"/><path d="M20 3 35 11.5 20 20 5 11.5z" fill="#ffffffb3"/><path d="M20 20v17L5 28.5v-17z" fill="#ffffff47"/><path d="M20 20 35 11.5v17L20 37z" fill="#00000026"/><path d="M20 3 35 11.5v17L20 37 5 28.5v-17z" fill="none" stroke="#fff" stroke-opacity=".85" stroke-width="1.6" stroke-linejoin="round"/></svg>';
 function renderRanks(){
   const cur=user?RANKS.findIndex(r=>r.name===user.rank):-1,bal=user?user.coins||0:0;
@@ -1436,9 +1527,9 @@ function renderRanks(){
     const miss=r.ic-bal;let act;
     if(i===cur)act=`<div class="rown">${RCHECK}Ez a jelenlegi rangod</div>`;
     else if(i<cur)act=`<div class="rown dim">Már magasabb rangod van</div>`;
-    else act=`<button class="btn mc" type="button" data-buy="${r.id}"${miss>0?" disabled":""}>Megveszem ${fmtN(r.ic)} IC-ért</button><button class="btn mc alt" type="button" data-ft="${r.id}">Fizetés forintban: ${fmtN(r.ft)} Ft</button>`+(miss>0?`<p class="rmiss">Még ${fmtN(miss)} IceCoin hiányzik. <a href="#vasarlas">Feltöltés</a></p>`:"");
+    else act=`<button class="btn mc" type="button" data-buy="${r.id}"${miss>0?" disabled":""}>Megveszem ${fmtN(r.ic)} IC-ért</button><div class="rftrow"><button class="btn mc alt" type="button" data-ft="${r.id}">Fizetés forintban: ${fmtN(r.ft)} Ft</button><button class="btn mc alt cadd" type="button" data-cart="rank" data-id="${r.id}" aria-label="${r.name} rang kosárba" title="Kosárba">${CARTADD}</button></div>`+(miss>0?`<p class="rmiss">Még ${fmtN(miss)} IceCoin hiányzik. <a href="#vasarlas">Feltöltés</a></p>`:"");
     return `<article class="rcard r-${r.id}${i===cur?" own":""}">
-      <header class="rhead">${gem()}<div><small>Rang</small><h3>${r.name}</h3></div>${i===cur?'<span class="rtag">A te rangod</span>':""}</header>
+      <header class="rhead"><div class="rtx"><small>Rang</small><h3>${r.name}</h3>${i===cur?'<span class="rtag">A te rangod</span>':""}</div>${rankImg(r.id)}</header>
       <div class="rbody">
         <div class="rprice"><span class="pcoin"></span><b>${fmtN(r.ic)} IC</b><span class="or">vagy ${fmtN(r.ft)} Ft</span></div>
         <div class="rsec"><h4>Általános</h4><ul class="rgen">${r.gen.map(g=>`<li>${RCHECK}${g}</li>`).join("")}</ul></div>
@@ -1452,6 +1543,7 @@ function renderRanks(){
 $("#rModes").onclick=e=>{const b=e.target.closest("button[data-m]");if(!b)return;rMode=b.dataset.m;renderRanks()};
 $("#rankGrid").onclick=async e=>{
   const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.cart)return cartAdd({t:"rank",id:b.dataset.id});
   const id=b.dataset.buy||b.dataset.ft,r=RANKS.find(x=>x.id===id);if(!r)return;
   const m=$(`[data-msg="${id}"]`);
   if(b.dataset.ft){
@@ -1492,13 +1584,13 @@ function coUpdate(){
   $("#coSub").textContent=coQty>1?coQty+" × "+fmtN(c)+" IceCoin":"";
   $("#coPrice").textContent=fmtN(p*coQty)+" Ft";
   $("#coQty").textContent=coQty;
-  $$(".qty button").forEach(b=>b.disabled=(+b.dataset.q<0&&coQty<=1)||(+b.dataset.q>0&&coQty>=MAXQ));
+  $$("#coQtyW .qty button").forEach(b=>b.disabled=(+b.dataset.q<0&&coQty<=1)||(+b.dataset.q>0&&coQty>=MAXQ));
 }
 $("#packs").addEventListener("change",e=>{
   const i=+e.target.value;
   $$(".pack").forEach((el,k)=>el.classList.toggle("on",k===i));
   coQty=1;$("#coQtyW").hidden=false;coUpdate();
-  $("#coBtn").disabled=false;msg("#buyMsg","");
+  $("#coBtn").disabled=false;$("#coCart").disabled=false;msg("#buyMsg","");
 });
 $(".qty").onclick=e=>{const b=e.target.closest("button");if(!b)return;coQty=Math.min(MAXQ,Math.max(1,coQty+ +b.dataset.q));coUpdate()};
 $("#coBtn").onclick=async()=>{
@@ -1535,15 +1627,17 @@ function pNote(box,t,s,ring){
 }
 async function payResult(id,kind){
   const box=$(kind==="rang"?"#rankNote":kind==="unban"?"#unbanNote":"#payNote");
-  if(id==="megszakitva")return pNote(box,"A fizetés megszakadt","Nem történt terhelés, bármikor újrapróbálhatod.");
+  if(id==="megszakitva"){try{sessionStorage.removeItem("im_cart_pending")}catch(e){}return pNote(box,"A fizetés megszakadt","Nem történt terhelés, bármikor újrapróbálhatod."+(cart.length?" A kosarad tartalma megmaradt.":""))}
   pNote(box,"Fizetés ellenőrzése…","Egy pillanat, máris jóváírjuk a vásárlásod.",true);
   for(let k=0;k<8;k++){
     const d=await api("/api/checkout-status",{id});
     if(d.user){user=d.user;render()}
     if(d.paid){
+      try{if(sessionStorage.getItem("im_cart_pending")){sessionStorage.removeItem("im_cart_pending");cart=[];saveCart();renderCart()}}catch(e){}
+      if((d.ic?1:0)+(d.rank?1:0)+(d.unban?1:0)>1){box.innerHTML=paidHtml(d);confetti();return}
       if(d.unban){const x=UNBANS.find(z=>z.name===d.unban);box.innerHTML='<div class="win long"><span class="wi">'+(x?x.ico:"")+'</span><div><div class="wt">Sikeres fizetés! A staff 24 órán belül elvégzi:</div><div class="wa">'+escH(d.unban)+'</div></div></div>';return}
-      if(d.rank&&!d.ic){const r=RANKS.find(x=>x.name===d.rank);box.innerHTML='<div class="win r-'+(r?r.id:"bronz")+'">'+gem()+'<div><div class="wt">Sikeres fizetés! Mostantól a rangod:</div><div class="wa">'+escH(d.rank)+'</div></div></div>'}
-      else box.innerHTML='<div class="win"><span class="pcoin"></span><div><div class="wt">'+(d.rank?"Már volt ilyen rangod, ezért helyette:":"Sikeres fizetés!")+'</div><div class="wa">+'+fmtN(d.ic)+' IceCoin</div></div></div>';
+      if(d.rank&&!d.rankComp){const r=RANKS.find(x=>x.name===d.rank);box.innerHTML='<div class="win r-'+(r?r.id:"bronz")+'">'+rankImg(r?r.id:"bronz","rimg")+'<div><div class="wt">Sikeres fizetés! Mostantól a rangod:</div><div class="wa">'+escH(d.rank)+'</div></div></div>'}
+      else box.innerHTML='<div class="win"><span class="pcoin"></span><div><div class="wt">'+(d.rank?"Már volt ilyen rangod, ezért helyette:":"Sikeres fizetés!")+'</div><div class="wa">+'+fmtN(d.ic||d.rankComp)+' IceCoin</div></div></div>';
       confetti();return;
     }
     if(d.error)return pNote(box,"Nem sikerült ellenőrizni a fizetést",d.error);
@@ -1573,12 +1667,13 @@ function renderUnban(){
   $("#ubGrid").innerHTML=UNBANS.map(x=>{
     let act;
     if(locked)act=`<div class="rown dim">Legközelebb ${dayHu(next)} után</div>`;
-    else act=(x.ic?`<button class="btn mc" type="button" data-ubic="${x.id}"${bal<x.ic?" disabled":""}>Megveszem ${fmtN(x.ic)} IC-ért</button>`:"")+`<button class="btn mc${x.ic?" alt":""}" type="button" data-ubft="${x.id}">${x.ic?"Fizetés forintban: ":"Megveszem: "}${fmtN(x.ft)} Ft</button>`;
+    else act=(x.ic?`<button class="btn mc" type="button" data-ubic="${x.id}"${bal<x.ic?" disabled":""}>Megveszem ${fmtN(x.ic)} IC-ért</button>`:"")+`<div class="rftrow"><button class="btn mc${x.ic?" alt":""}" type="button" data-ubft="${x.id}">${x.ic?"Fizetés forintban: ":"Megveszem: "}${fmtN(x.ft)} Ft</button><button class="btn mc alt cadd" type="button" data-cart="unban" data-id="${x.id}" aria-label="${x.name} kosárba" title="Kosárba">${CARTADD}</button></div>`;
     return `<article class="ubcard${x.big?" big":""}"><div class="ubtop"><span class="ubi">${x.ico}</span><h3>${x.name}</h3></div><p>${x.desc}</p><div class="ubprice">${fmtN(x.ft)} Ft${x.ic?` <span>vagy ${fmtN(x.ic)} IceCoin</span>`:""}</div>${act}<div class="msg" data-ubmsg="${x.id}" aria-live="polite"></div></article>`;
   }).join("");
 }
 $("#ubGrid").onclick=async e=>{
   const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.cart)return cartAdd({t:"unban",id:b.dataset.id});
   const id=b.dataset.ubic||b.dataset.ubft,x=UNBANS.find(z=>z.id===id);if(!x)return;
   const m=$(`[data-ubmsg="${id}"]`);$("#unbanNote").innerHTML="";
   if(b.dataset.ubic){
@@ -1681,6 +1776,85 @@ $("#pwform").onsubmit=async e=>{
   f.reset();msg("#pMsg","A jelszavad megváltozott.","o");
 };
 
+const CARTADD='<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8h-4M13 4v6M10 7h6"/></svg>';
+let cart=[];
+try{const c=JSON.parse(localStorage.getItem("im_cart")||"[]");if(Array.isArray(c))cart=c.filter(x=>x&&(x.t==="ic"&&PACKS.some(p=>p[0]===x.ic)&&x.qty>=1&&x.qty<=MAXQ||x.t==="rank"&&RANKS.some(r=>r.id===x.id)||x.t==="unban"&&UNBANS.some(u=>u.id===x.id))).slice(0,12)}catch(e){}
+const saveCart=()=>{try{localStorage.setItem("im_cart",JSON.stringify(cart))}catch(e){}};
+function cartInfo(x){
+  if(x.t==="ic"){const p=PACKS.find(z=>z[0]===x.ic);return {name:fmtN(x.ic)+" IceCoin",unit:p[1],qty:x.qty,img:'<span class="pcoin"></span>'}}
+  if(x.t==="rank"){const r=RANKS.find(z=>z.id===x.id),ri=RANKS.indexOf(r),cur=user?RANKS.findIndex(z=>z.name===user.rank):-1;return {name:r.name+" rang",unit:r.ft,qty:1,img:rankImg(r.id,"cimg"),warn:ri<=cur?(ri===cur?"Már ez a rangod.":"Már magasabb rangod van."):""}}
+  const u=UNBANS.find(z=>z.id===x.id),locked=user&&user.unbanNext>Date.now();
+  return {name:u.name,unit:u.ft,qty:1,img:'<span class="cico">'+u.ico+'</span>',warn:locked?"Legközelebb "+dayHu(user.unbanNext)+" után vásárolhatsz ilyet.":""};
+}
+let toastT;
+function toast(t){
+  const el=$("#toast");el.innerHTML='<span></span><button type="button">Kosár megnyitása</button>';
+  el.querySelector("span").textContent=t;el.querySelector("button").onclick=()=>{el.hidden=true;openCart()};
+  el.hidden=false;clearTimeout(toastT);toastT=setTimeout(()=>{el.hidden=true},3800);
+}
+function cartAdd(x){
+  let note="Kosárba tettük.";
+  if(x.t==="ic"){
+    const e=cart.find(z=>z.t==="ic"&&z.ic===x.ic);
+    if(e){if(e.qty+x.qty>MAXQ)note="Egy csomagból legfeljebb "+MAXQ+" darab lehet a kosárban.";e.qty=Math.min(MAXQ,e.qty+x.qty)}
+    else{if(cart.length>=12)return toast("A kosár megtelt.");cart.push({t:"ic",ic:x.ic,qty:x.qty})}
+  }else{
+    if(cart.some(z=>z.t===x.t&&z.id===x.id))note="Ez már a kosaradban van.";
+    else if(cart.some(z=>z.t===x.t))note=x.t==="rank"?"Kicseréltük a rangot a kosárban.":"Kicseréltük a terméket a kosárban.";
+    cart=cart.filter(z=>z.t!==x.t);cart.push({t:x.t,id:x.id});
+  }
+  saveCart();renderCart();toast(note);
+  const b=$("#cartBtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");
+}
+function paidHtml(d){
+  const li=[];
+  if(d.ic)li.push(['<span class="pcoin"></span>',"+"+fmtN(d.ic)+" IceCoin jóváírva"]);
+  if(d.rank){const r=RANKS.find(x=>x.name===d.rank);li.push([rankImg(r?r.id:"bronz","cimg"),d.rankComp?escH(d.rank)+" rang már megvolt, helyette +"+fmtN(d.rankComp)+" IceCoin":escH(d.rank)+" rang jóváírva"])}
+  if(d.unban){const x=UNBANS.find(z=>z.name===d.unban);li.push(['<span class="cico">'+(x?x.ico:"")+'</span>',escH(d.unban)+": a staff 24 órán belül elvégzi"])}
+  return '<div class="pdone"><div class="pdh"><b>Sikeres fizetés!</b><span>Köszönjük a vásárlást, a visszaigazolást e-mailben is elküldtük.</span></div><ul>'+li.map(x=>"<li>"+x[0]+"<span>"+x[1]+"</span></li>").join("")+"</ul></div>";
+}
+function renderCart(){
+  const n=cart.reduce((a,x)=>a+(x.t==="ic"?x.qty:1),0);
+  $("#cartCount").textContent=n;$("#cartCount").hidden=!n;
+  const list=$("#cartList");
+  if(!cart.length){
+    list.innerHTML='<div class="cempty">'+CARTADD+'<b>A kosarad üres</b><span>Válassz valamit a boltban:</span><div class="clinks"><a href="#vasarlas">IceCoin</a><a href="#rangok">Rangok</a><a href="#kitiltas">Kitiltás csökkentése</a></div></div>';
+    $("#cartFoot").hidden=true;return;
+  }
+  $("#cartFoot").hidden=false;
+  let total=0,bad=false;
+  list.innerHTML=cart.map((x,i)=>{
+    const f=cartInfo(x);total+=f.unit*f.qty;if(f.warn)bad=true;
+    return `<div class="citem${f.warn?" bad":""}">${f.img}<div class="cinfo"><b>${escH(f.name)}</b><span>${fmtN(f.unit)} Ft${x.t==="ic"?" / db":""}</span>${f.warn?`<em>${escH(f.warn)}</em>`:""}</div><div class="cprice">${fmtN(f.unit*f.qty)} Ft</div><button class="crm" type="button" data-rm="${i}" aria-label="${escH(f.name)} eltávolítása">×</button>${x.t==="ic"?`<div class="qty sm" data-i="${i}" role="group" aria-label="Mennyiség"><button type="button" data-q="-1" aria-label="Kevesebb"${x.qty<=1?" disabled":""}>−</button><output>${x.qty}</output><button type="button" data-q="1" aria-label="Több"${x.qty>=MAXQ?" disabled":""}>+</button></div>`:""}</div>`;
+  }).join("");
+  $("#cartTotal").textContent=fmtN(total)+" Ft";
+  $("#cartPay").textContent="Fizetés: "+fmtN(total)+" Ft";
+  $("#cartPay").disabled=bad;
+  if(bad)msg("#cartMsg","Távolítsd el a pirossal jelölt tételt a fizetés előtt.","e");
+  else if(/pirossal/.test($("#cartMsg").textContent))msg("#cartMsg","");
+}
+function openCart(){renderCart();msg("#cartMsg","");renderCart();$("#cartPanel").hidden=false;document.body.classList.add("cartopen");$("#cartClose").focus()}
+function closeCart(){$("#cartPanel").hidden=true;document.body.classList.remove("cartopen")}
+$("#cartBtn").onclick=openCart;$("#cartClose").onclick=closeCart;$("#cartBg").onclick=closeCart;
+addEventListener("keydown",e=>{if(e.key==="Escape"&&!$("#cartPanel").hidden)closeCart()});
+$("#cartList").onclick=e=>{
+  const rm=e.target.closest("[data-rm]");
+  if(rm){cart.splice(+rm.dataset.rm,1);saveCart();renderCart();return}
+  const b=e.target.closest(".qty button");
+  if(b){const i=+b.closest(".qty").dataset.i;cart[i].qty=Math.min(MAXQ,Math.max(1,cart[i].qty+ +b.dataset.q));saveCart();renderCart()}
+};
+$("#cartConsent").onchange=e=>{if(e.target.checked){$("#cartConsentRow").classList.remove("need");if(/nyilatkozat/.test($("#cartMsg").textContent))msg("#cartMsg","")}};
+$("#cartPay").onclick=async()=>{
+  if(!cart.length)return;
+  if(!$("#cartConsent").checked){$("#cartConsentRow").classList.add("need");return msg("#cartMsg","A fizetéshez jelöld be a nyilatkozatot.","e")}
+  const b=$("#cartPay");b.disabled=true;msg("#cartMsg","Átirányítás a biztonságos fizetési oldalra…");
+  const d=await api("/api/checkout",{cart:cart.map(x=>x.t==="ic"?{t:"ic",ic:x.ic,qty:x.qty}:{t:x.t,id:x.id}),consent:true});
+  if(d.error||!d.url){b.disabled=false;return msg("#cartMsg",d.error||"Nem sikerült elindítani a fizetést.","e")}
+  try{sessionStorage.setItem("im_cart_pending","1")}catch(e){}
+  location.href=d.url;
+};
+$("#coCart").onclick=()=>{const r=$("#packs input:checked");if(!r)return;cartAdd({t:"ic",ic:PACKS[+r.value][0],qty:coQty})};
+renderCart();
 (async function init(){
   const m=location.search.match(/megerosites=([A-Za-z0-9_]{3,16}):([A-Za-z0-9]{12})/);
   if(m){
@@ -1697,7 +1871,7 @@ $("#pwform").onsubmit=async e=>{
     $("#rInfo").textContent="Add meg az új jelszavad.";
     return;
   }
-  const fz=location.search.match(/fizetes=(cs_(?:test|live)_[A-Za-z0-9]+|megszakitva)/),fzKind=/[?&]rang=1(&|$)/.test(location.search)?"rang":/[?&]tipus=unban(&|$)/.test(location.search)?"unban":"ic";
+  const fz=location.search.match(/fizetes=(cs_(?:test|live)_[A-Za-z0-9]+|megszakitva)/),fzKind=/[?&]rang=1(&|$)/.test(location.search)?"rang":/[?&]tipus=unban(&|$)/.test(location.search)?"unban":/[?&]tipus=kosar(&|$)/.test(location.search)?"kosar":"ic";
   if(fz){try{history.replaceState(null,"",location.pathname+(fzKind==="rang"?"#rangok":fzKind==="unban"?"#kitiltas":"#vasarlas"))}catch(e){}}
   if(token){
     const d=await api("/api/me");
