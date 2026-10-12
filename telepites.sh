@@ -196,6 +196,8 @@ $DOMAIN, www.$DOMAIN {
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:$PORT
 }
+
+import /etc/caddy/*.caddy
 EOF
 caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1 || hiba "A Caddy beállítás hibás."
 systemctl enable --quiet caddy

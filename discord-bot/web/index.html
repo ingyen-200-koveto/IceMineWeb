@@ -1,0 +1,510 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>IceMine Bot</title>
+<meta name="description" content="Az IceMine Discord szerver saját, magyar nyelvű botja: fiók összekötés automatikus ranggal, ticketek, szintek, nyereményjátékok és élő szerverállapot.">
+<meta name="theme-color" content="#061523">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="IceMine">
+<meta property="og:title" content="IceMine Bot">
+<meta property="og:description" content="Az IceMine Discord szerver saját botja: fiók összekötés, ticketek, szintek, nyereményjátékok és élő szerverállapot.">
+<meta property="og:image" content="https://bot.icemine.hu/parancsok.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="icon" type="image/png" href="logo.png">
+<link rel="apple-touch-icon" href="logo.png">
+<script>try{var t=localStorage.getItem("imbot-tema");if(t==="light"||t==="dark")document.documentElement.setAttribute("data-theme",t)}catch(e){}</script>
+<style>
+@font-face{font-family:Sora;src:url(fonts/sora.woff) format("woff");font-weight:100 800;font-display:swap}
+@font-face{font-family:Manrope;src:url(fonts/manrope.woff) format("woff");font-weight:200 800;font-display:swap}
+:root{--bg:#f2f8fc;--bg2:#e4effa;--solid:#fff;--ink:#0a1e2b;--mute:#587184;--ice:#1c8ad6;--line:#0b3a5b1f;--ok:#14884f;--glow:#7fd3ff;--sh:0 18px 40px -24px #0b3a5b77;--staff:#b25f00;--admin:#7a4fd6;color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#06121b;--bg2:#0a1d2b;--solid:#0f2638;--ink:#e8f4fb;--mute:#8fb1c6;--ice:#5cc0ff;--line:#8fd0ff26;--ok:#5fe0a3;--glow:#2a8fd0;--sh:0 18px 40px -24px #000;--staff:#ffc46b;--admin:#b9a6ff;color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#06121b;--bg2:#0a1d2b;--solid:#0f2638;--ink:#e8f4fb;--mute:#8fb1c6;--ice:#5cc0ff;--line:#8fd0ff26;--ok:#5fe0a3;--glow:#2a8fd0;--sh:0 18px 40px -24px #000;--staff:#ffc46b;--admin:#b9a6ff;color-scheme:dark}
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 16.5px/1.65 Manrope,system-ui,sans-serif;overflow-x:hidden}
+h1,h2,h3{font-family:Sora,system-ui,sans-serif;font-weight:800;letter-spacing:-.02em;line-height:1.15;margin:0}
+a{color:var(--ice)}
+:focus-visible{outline:3px solid var(--ice);outline-offset:3px}
+[hidden]{display:none!important}
+svg.i{width:20px;height:20px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.wrap{max-width:1120px;margin:0 auto;padding:0 24px}
+.skip{position:absolute;left:12px;top:-60px;z-index:60;padding:10px 16px;border-radius:12px;background:var(--solid);color:var(--ink);font-weight:700}
+.skip:focus{top:12px}
+
+.bar{position:fixed;top:0;left:0;right:0;z-index:40;padding-top:env(safe-area-inset-top,0px);color:#fff;transition:background .25s,box-shadow .25s,color .25s}
+.bar.solid{color:var(--ink);background:color-mix(in srgb,var(--bg) 84%,transparent);-webkit-backdrop-filter:blur(14px);backdrop-filter:blur(14px);box-shadow:0 1px 0 var(--line)}
+.bar-in{display:flex;align-items:center;gap:8px;height:66px}
+.brand{display:inline-flex;align-items:center;gap:10px;margin-right:auto;color:inherit;text-decoration:none;border-radius:12px}
+.brand img{width:36px;height:36px;border-radius:11px;box-shadow:0 0 0 2px #ffffff30}
+.bname{font:800 22px/1 Sora,system-ui,sans-serif;letter-spacing:-.02em;white-space:nowrap}
+.bname b{font-weight:800;color:#5cc0ff}
+.bar.solid .bname b{color:var(--ice)}
+.bbadge{display:inline-block;margin-left:6px;padding:3px 7px;border-radius:7px;background:#5865f2;color:#fff;font:800 11px/1.2 Sora,sans-serif;letter-spacing:.06em;vertical-align:4px}
+.nav{display:flex;align-items:center;gap:2px}
+.nav a{padding:8px 13px;border-radius:999px;color:inherit;text-decoration:none;font:700 14.5px Sora,sans-serif;opacity:.88;transition:background .15s,opacity .15s}
+.nav a:hover{opacity:1;background:#ffffff1c}
+.bar.solid .nav a:hover{background:color-mix(in srgb,var(--ice) 12%,transparent)}
+.ibtn{display:grid;place-items:center;width:42px;height:42px;border:0;border-radius:13px;cursor:pointer;color:inherit;background:#ffffff16;box-shadow:inset 0 0 0 1px #ffffff2e;transition:background .15s}
+.ibtn:hover{background:#ffffff26}
+.bar.solid .ibtn{background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+#tema .sun{display:none}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #tema .sun{display:block}:root:not([data-theme="light"]) #tema .moon{display:none}}
+:root[data-theme="dark"] #tema .sun{display:block}:root[data-theme="dark"] #tema .moon{display:none}
+
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;font:700 15px Sora,sans-serif;border:0;cursor:pointer;padding:13px 22px;color:#fff;text-decoration:none;white-space:nowrap}
+.btn svg{width:19px;height:19px;flex:none}
+.btn.mc{position:relative;overflow:hidden;border-radius:12px;background:#1c8ad6;box-shadow:0 4px 0 #0d5a94;transition:transform .15s,box-shadow .15s,filter .15s}
+.btn.mc::after{content:"";position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,#ffffff70,transparent);transform:skewX(-20deg);pointer-events:none}
+.btn.mc:hover{transform:translateY(-3px);filter:brightness(1.1);box-shadow:0 7px 0 #0d5a94,0 16px 24px -10px #1c8ad6}
+.btn.mc:hover::after{animation:shine .7s ease-out}
+@keyframes shine{to{left:130%}}
+.btn.mc:active{transform:translateY(3px);filter:brightness(.97);box-shadow:0 1px 0 #0d5a94}
+.btn.mc.lila{background:#5865f2;box-shadow:0 4px 0 #3c45b8}
+.btn.mc.lila:hover{box-shadow:0 7px 0 #3c45b8,0 16px 24px -10px #5865f2}
+.btn.mc.lila:active{box-shadow:0 1px 0 #3c45b8}
+.btn.mc.ghost{background:#ffffff14;box-shadow:inset 0 0 0 1px #ffffff40,0 4px 0 #00000059}
+.btn.mc.ghost::after{background:linear-gradient(100deg,transparent,#ffffff30,transparent)}
+.btn.mc.ghost:hover{background:#ffffff22;box-shadow:inset 0 0 0 1px #7fd3ff,0 7px 0 #00000059}
+.btn.mc.ghost:active{box-shadow:inset 0 0 0 1px #7fd3ff,0 1px 0 #00000059}
+.btn.mc.alt{background:var(--solid);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line),0 3px 0 var(--line)}
+.btn.mc.alt::after{background:linear-gradient(100deg,transparent,color-mix(in srgb,var(--ice) 22%,transparent),transparent)}
+.btn.mc.alt:hover{box-shadow:inset 0 0 0 1px var(--ice),0 6px 0 color-mix(in srgb,var(--ice) 45%,transparent)}
+.btn.mc.alt:active{box-shadow:inset 0 0 0 1px var(--ice),0 1px 0 color-mix(in srgb,var(--ice) 45%,transparent)}
+.btn.sm{padding:10px 16px;font-size:14px;border-radius:11px}
+.btn.sm svg{width:18px;height:18px}
+
+.hero{position:relative;overflow:hidden;color:#fff;background:#061523;padding-top:calc(env(safe-area-inset-top,0px) + 112px)}
+.hero .land{position:absolute;left:0;right:0;bottom:0;width:100%;height:max(260px,34vw);display:block}
+.hero::after{content:"";position:absolute;left:0;right:0;bottom:0;height:56px;z-index:1;background:linear-gradient(transparent,var(--bg));pointer-events:none}
+.hero::before{content:"";position:absolute;right:-10%;top:-20%;width:70%;height:90%;background:radial-gradient(closest-side,#2a8fd04d,transparent);pointer-events:none}
+.flakes{position:absolute;inset:0;pointer-events:none;z-index:1}
+.flakes i{position:absolute;top:-4px;background:#fff;animation:snowfall linear infinite}
+@keyframes snowfall{to{transform:translate(var(--dx),var(--fall,110vh))}}
+.hero-in{position:relative;z-index:2;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);align-items:center;gap:48px;padding-bottom:clamp(150px,15vw,210px)}
+.tag{display:inline-flex;align-items:center;gap:10px;height:34px;padding:0 16px 0 14px;border-radius:999px;font:700 12.5px Sora,sans-serif;letter-spacing:.26em;color:#e8f5ff;background:#0d2a44d9;box-shadow:inset 0 0 0 1.5px #3c8bd0}
+.tag i{width:8px;height:8px;border-radius:50%;background:#5fe0a3;box-shadow:0 0 10px #5fe0a3;animation:pulse 2s infinite}
+@keyframes pulse{0%{box-shadow:0 0 0 0 #5fe0a399}100%{box-shadow:0 0 0 9px transparent}}
+.hero h1{margin:18px 0 14px;font-size:clamp(44px,6.6vw,76px);line-height:1.02;letter-spacing:-.035em;background:linear-gradient(180deg,#fff 35%,#bfe4ff);-webkit-background-clip:text;background-clip:text;color:transparent;filter:drop-shadow(0 8px 20px #0009)}
+.hero h1 span{background:linear-gradient(135deg,#7fd3ff,#3fb4ff);-webkit-background-clip:text;background-clip:text}
+.lead{margin:0;max-width:34em;font-size:clamp(16.5px,1.6vw,18.5px);color:#cfe6f7;text-shadow:0 2px 12px #000a}
+.cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:28px}
+.facts{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+.facts span{display:inline-flex;align-items:center;gap:8px;padding:7px 14px;border-radius:999px;background:#061523b3;box-shadow:inset 0 0 0 1px #8fd0ff33;font:700 13.5px Manrope,sans-serif;color:#dff1fc;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+.facts b{font:800 15px Sora,sans-serif;color:#fff}
+
+.dcw{position:relative;justify-self:end;width:100%;max-width:500px}
+.dcw::before{content:"";position:absolute;inset:-12% -14%;background:radial-gradient(closest-side,#3fb4ff40,transparent);pointer-events:none}
+.dc{position:relative;border-radius:18px;background:#313338;color:#dbdee1;font:500 15px/1.45 Manrope,system-ui,sans-serif;overflow:hidden;box-shadow:0 34px 70px -24px #000d,inset 0 0 0 1px #ffffff14;animation:float 7s ease-in-out infinite}
+@keyframes float{50%{transform:translateY(-8px)}}
+.dc-top{display:flex;align-items:center;gap:8px;height:48px;padding:0 16px;background:#2b2d31;box-shadow:0 1px 0 #1f2023;font:700 15px Manrope,sans-serif;color:#f2f3f5}
+.dc-top .h{color:#80848e;font:500 22px/1 Manrope,sans-serif}
+.dc-top .w{margin-left:auto;display:flex;gap:6px}
+.dc-top .w i{width:10px;height:10px;border-radius:50%;background:#4e5058}
+.dc-msg{display:grid;grid-template-columns:42px minmax(0,1fr);gap:0 14px;padding:14px 16px 18px}
+.dc-used{grid-column:2;display:flex;align-items:center;gap:6px;min-width:0;margin-bottom:3px;font-size:13px;color:#949ba4;white-space:nowrap;overflow:hidden}
+.dc-used .ua{flex:none;display:grid;place-items:center;width:16px;height:16px;border-radius:50%;background:#3ba55c;color:#fff;font:800 9px Sora,sans-serif}
+.dc-used b{color:#c9cdfb;font-weight:700}
+.dc-av{width:42px;height:42px;border-radius:50%;display:block}
+.dc-name{display:flex;align-items:center;gap:7px;flex-wrap:wrap;font:700 15.5px Manrope,sans-serif;color:#7fd3ff}
+.dc-name .app{padding:1px 5px;border-radius:4px;background:#5865f2;color:#fff;font:800 10px/1.4 Manrope,sans-serif}
+.dc-name time{font:500 12px Manrope,sans-serif;color:#949ba4}
+.dc-card{display:grid;gap:10px;margin-top:6px;padding:12px 14px 12px;border-radius:8px;background:#2b2d31;border-left:4px solid #5cc0ff;min-width:0}
+.dc-ban{display:block;width:100%;height:auto;aspect-ratio:3/1;border-radius:6px;object-fit:cover;background:#1e1f22}
+.dc-card h4{margin:2px 0 0;font:800 17px Manrope,sans-serif;color:#f2f3f5}
+.dc-card ul{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:14.5px}
+.dc-card li{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dc-card code,.mono{font:600 13px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.dc-card code{padding:2px 5px;border-radius:4px;background:#1e1f22;color:#dbdee1}
+.dc-card hr{width:100%;height:1px;margin:2px 0;border:0;background:#3f4147}
+.dc-sel{display:flex;align-items:center;justify-content:space-between;height:42px;padding:0 12px;border-radius:8px;background:#1e1f22;color:#949ba4;font-size:14.5px;box-shadow:inset 0 0 0 1px #00000040}
+.dc-sel svg{width:18px;height:18px}
+.dc-foot{font-size:12px;color:#949ba4}
+
+section{padding:clamp(64px,9vw,104px) 0}
+section.tint{background:var(--bg2)}
+.eyebrow{display:inline-flex;align-items:center;gap:10px;font:800 12.5px Sora,sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--ice)}
+.eyebrow::before{content:"";width:22px;height:2px;border-radius:2px;background:currentColor}
+.sh h2{margin:12px 0 12px;font-size:clamp(28px,4.4vw,42px)}
+.sh p{margin:0;max-width:40em;color:var(--mute)}
+.sh.c{text-align:center}.sh.c p{margin:0 auto}
+
+.feat{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:38px}
+.f{position:relative;padding:24px 22px 22px;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh);transition:transform .2s,box-shadow .2s}
+.f:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ice) 50%,transparent),var(--sh)}
+.f .ti{display:grid;place-items:center;width:48px;height:48px;margin-bottom:16px;border-radius:14px;color:var(--ice);background:color-mix(in srgb,var(--ice) 14%,transparent)}
+.f .ti svg{width:24px;height:24px}
+.f h3{margin:0 0 6px;font-size:18.5px}
+.f p{margin:0;color:var(--mute);font-size:15px;line-height:1.6}
+.f.hot{color:#fff;background:radial-gradient(60% 120% at 0 100%,#7fd3ff59,transparent 60%),radial-gradient(50% 90% at 100% 0,#3fb4ff55,transparent 65%),linear-gradient(135deg,#1c6fd6,#0b3a5b 72%);box-shadow:var(--sh)}
+.f.hot .ti{color:#fff;background:#ffffff26;box-shadow:inset 0 0 0 1px #ffffff40}
+.f.hot p{color:#d7ecfb}
+.f.hot a{color:#fff;font-weight:800}
+
+.link{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.1fr);align-items:center;gap:48px}
+.link .btn{margin-top:26px}
+.steps{list-style:none;counter-reset:s;margin:0;padding:0;display:grid;gap:14px}
+.steps li{counter-increment:s;position:relative;padding:18px 20px 18px 76px;border-radius:20px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.steps li::before{content:counter(s);position:absolute;left:20px;top:18px;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;color:#fff;font:800 17px Sora,sans-serif;background:linear-gradient(135deg,#3fb4ff,#1c6fd6);box-shadow:0 3px 0 #0d5a94}
+.steps b{display:block;margin-bottom:2px;font:800 16.5px/1.35 Sora,sans-serif}
+.steps span{color:var(--mute);font-size:15px}
+.steps code{display:inline-block;margin:2px 0;padding:2px 8px;border-radius:7px;background:var(--bg2);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line);font:700 14px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;word-break:break-all}
+
+.ctools{display:flex;flex-wrap:wrap;align-items:center;gap:12px;margin:34px 0 18px}
+.search{flex:1 1 280px;display:flex;align-items:center;gap:10px;height:52px;padding:0 18px;border-radius:999px;background:var(--solid);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.search:focus-within{box-shadow:inset 0 0 0 2px var(--ice),var(--sh)}
+.search input{flex:1;min-width:0;height:100%;border:0;outline:0;background:none;color:var(--ink);font:600 16px Manrope,sans-serif}
+.search input::placeholder{color:var(--mute)}
+.search input::-webkit-search-cancel-button{display:none}
+.tabs{display:flex;gap:6px;max-width:100%;overflow-x:auto;scrollbar-width:none;padding:3px}
+.tabs::-webkit-scrollbar{display:none}
+.tabs button{flex:none;height:42px;padding:0 15px;border:0;border-radius:999px;cursor:pointer;color:var(--ink);background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);font:700 14px Sora,sans-serif;transition:background .15s,box-shadow .15s}
+.tabs button:hover{box-shadow:inset 0 0 0 1px var(--ice)}
+.tabs button small{margin-left:5px;font:700 12px Manrope,sans-serif;opacity:.6}
+.tabs button[aria-pressed="true"]{color:#fff;background:linear-gradient(135deg,#3fb4ff,#1c6fd6);box-shadow:0 3px 0 #0d5a94}
+.tabs button[aria-pressed="true"] small{opacity:.85}
+.clist{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.cmd{position:relative;min-width:0;padding:16px 58px 16px 18px;border-radius:18px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);transition:box-shadow .15s}
+.cmd:hover{box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--ice) 55%,transparent),var(--sh)}
+.cmd .n{display:flex;flex-wrap:wrap;align-items:center;gap:6px 8px}
+.cmd .n code{font:800 16.5px Sora,sans-serif;color:var(--ice);letter-spacing:-.01em}
+.cmd .a{padding:1px 8px;border-radius:7px;background:var(--bg2);color:var(--mute);box-shadow:inset 0 0 0 1px var(--line)}
+.cmd .b{padding:2px 9px;border-radius:999px;font:800 10.5px/1.6 Sora,sans-serif;letter-spacing:.08em;text-transform:uppercase}
+.cmd .b.staff{color:var(--staff);background:color-mix(in srgb,var(--staff) 14%,transparent)}
+.cmd .b.admin{color:var(--admin);background:color-mix(in srgb,var(--admin) 15%,transparent)}
+.cmd p{margin:6px 0 0;color:var(--mute);font-size:14.5px;line-height:1.55}
+.cmd ul{list-style:none;margin:10px 0 0;padding:10px 0 0;display:grid;gap:4px;border-top:1px dashed var(--line);font-size:14px;color:var(--mute)}
+.cmd ul b{color:var(--ink);font:700 13.5px ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+.cpy{position:absolute;top:12px;right:12px;display:grid;place-items:center;width:36px;height:36px;border:0;border-radius:11px;cursor:pointer;color:var(--mute);background:transparent;transition:background .15s,color .15s}
+.cpy:hover{color:var(--ice);background:color-mix(in srgb,var(--ice) 12%,transparent)}
+.cpy svg{width:18px;height:18px}
+.empty{grid-column:1/-1;margin:0;padding:34px 20px;border-radius:18px;text-align:center;color:var(--mute);background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.note{margin:18px 0 0;color:var(--mute);font-size:14px;text-align:center}
+
+.join{position:relative;overflow:hidden;display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:22px 30px;padding:clamp(26px,4vw,42px);border-radius:28px;color:#fff;background:radial-gradient(60% 120% at 0 100%,#7fd3ff59,transparent 60%),radial-gradient(50% 90% at 100% 0,#3fb4ff55,transparent 65%),linear-gradient(135deg,#1c6fd6,#0b3a5b 72%);box-shadow:var(--sh)}
+.join::after{content:"";position:absolute;right:-50px;top:-60px;width:200px;height:200px;border-radius:44px;transform:rotate(24deg);background:linear-gradient(135deg,#ffffff26,#ffffff05);box-shadow:inset 0 0 0 1px #ffffff22;pointer-events:none}
+.join img{width:88px;height:88px;border-radius:24px;box-shadow:0 14px 30px -12px #000b,0 0 0 3px #ffffff40}
+.join h2{font-size:clamp(24px,3.4vw,32px)}
+.join p{margin:6px 0 0;color:#d7ecfb}
+.jbtns{position:relative;z-index:1;display:flex;flex-wrap:wrap;gap:10px}
+.ipchip{display:inline-flex;align-items:center;gap:10px;min-height:48px;padding:10px 18px;border:0;border-radius:12px;cursor:pointer;color:#fff;background:#061523b3;box-shadow:inset 0 0 0 1px #8fd0ff4d;font:700 16px Sora,sans-serif;transition:background .15s,box-shadow .15s,transform .15s}
+.ipchip svg{width:17px;height:17px;opacity:.75}
+.ipchip:hover{background:#0b2a44f0;box-shadow:inset 0 0 0 1px #7fd3ff,0 8px 22px -8px #3fb4ff;transform:translateY(-1px)}
+.ipchip.ok{box-shadow:inset 0 0 0 1px #5fe0a3,0 8px 22px -8px #5fe0a3}
+.ipchip .g{width:9px;height:9px;border-radius:50%;background:#5fe0a3;box-shadow:0 0 0 4px #5fe0a333}
+
+footer{padding:34px 0 calc(34px + env(safe-area-inset-bottom,0px));border-top:1px solid var(--line);color:var(--mute);font-size:14px}
+.fin{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:18px 28px}
+.fbrand{display:flex;align-items:center;gap:12px}
+.fbrand img{width:40px;height:40px;border-radius:12px}
+.fbrand .bname{font-size:19px;color:var(--ink)}
+.fbrand .bname b{color:var(--ice)}
+.fbrand small{display:block;margin-top:3px;font-size:13px}
+.links{display:flex;flex-wrap:wrap;gap:8px}
+.links a{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:999px;color:var(--ink);text-decoration:none;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);font:700 14px Manrope,sans-serif;transition:box-shadow .15s,color .15s}
+.links a:hover{color:var(--ice);box-shadow:inset 0 0 0 1px var(--ice)}
+.links svg{width:17px;height:17px}
+.disc{margin:22px 0 0;font-size:12.5px;line-height:1.6}
+
+.toast{position:fixed;left:50%;bottom:calc(22px + env(safe-area-inset-bottom,0px));z-index:50;max-width:calc(100% - 32px);padding:12px 18px;border-radius:14px;color:#fff;background:#0a1e2bf0;box-shadow:0 18px 40px -16px #000c,inset 0 0 0 1px #8fd0ff33;font:700 14.5px Manrope,sans-serif;opacity:0;transform:translate(-50%,12px);transition:opacity .2s,transform .2s;pointer-events:none}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+
+@media (max-width:960px){
+.hero-in{grid-template-columns:1fr;gap:40px}
+.dcw{justify-self:stretch;max-width:560px}
+.link{grid-template-columns:1fr;gap:30px}
+.feat{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:760px){
+.nav{display:none}
+.clist{grid-template-columns:1fr}
+.join{grid-template-columns:1fr;justify-items:start}
+.join img{width:72px;height:72px;border-radius:20px}
+}
+@media (max-width:560px){
+.wrap{padding:0 16px}
+.bar-in{height:60px}
+.bname{font-size:20px}
+.hero{padding-top:calc(env(safe-area-inset-top,0px) + 92px)}
+.hero-in{padding-bottom:150px}
+.cta .btn{flex:1 1 100%}
+.feat{grid-template-columns:1fr}
+.steps li{padding:16px 16px 16px 68px}
+.steps li::before{left:16px;top:16px;width:38px;height:38px}
+.dc-msg{grid-template-columns:36px minmax(0,1fr);gap:0 11px;padding:12px 12px 16px}
+.dc-av{width:36px;height:36px}
+.dc-card{padding:10px 11px}
+.jbtns,.jbtns>*{width:100%}
+.dc-hide{display:none}
+}
+@media (max-width:400px){.bar .btn.sm{padding:10px 12px}.bar .btn.sm span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.flakes{display:none}.dc{animation:none}.tag i{animation:none}.btn.mc,.f,.ipchip{transition:none}.btn.mc:hover::after{animation:none}}
+</style>
+</head>
+<body>
+<a class="skip" href="#parancsok">Ugrás a parancsokhoz</a>
+<header class="bar" id="bar">
+  <div class="wrap bar-in">
+    <a class="brand" href="#" aria-label="IceMine Bot, oldal teteje">
+      <img src="logo.png" alt="" width="36" height="36">
+      <span class="bname" aria-hidden="true"><b>Ice</b>Mine<span class="bbadge">BOT</span></span>
+    </a>
+    <nav class="nav" aria-label="Fő menü">
+      <a href="#funkciok">Funkciók</a>
+      <a href="#osszekotes">Összekötés</a>
+      <a href="#parancsok">Parancsok</a>
+      <a href="https://icemine.hu">Weboldal</a>
+    </nav>
+    <button class="ibtn" id="tema" type="button" aria-label="Világos vagy sötét téma">
+      <svg class="i moon" viewBox="0 0 24 24"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"/></svg>
+      <svg class="i sun" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M4.6 4.6L6 6M18 18l1.4 1.4M2.5 12h2M19.5 12h2M4.6 19.4L6 18M18 6l1.4-1.4"/></svg>
+    </button>
+    <a class="btn mc lila sm" href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg><span>Discord</span></a>
+  </div>
+</header>
+
+<main>
+<div class="hero">
+  <svg class="land" viewBox="0 0 320 108" preserveAspectRatio="xMidYMax slice" shape-rendering="crispEdges" aria-hidden="true"><defs><linearGradient id="lsky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#061523"/><stop offset=".45" stop-color="#0d2c47"/><stop offset=".8" stop-color="#1b5379"/><stop offset="1" stop-color="#2a6d96"/></linearGradient></defs><path fill="url(#lsky)" d="M0 0h320v108h-320z"/><path fill="#fff" opacity=".55" d="M231 35h1v1h-1zM95 6h1v1h-1zM21 38h1v1h-1zM15 49h1v1h-1zM42 45h1v1h-1zM205 6h1v1h-1zM26 30h1v1h-1zM238 51h1v1h-1zM214 41h1v1h-1zM59 25h1v1h-1zM108 0h1v1h-1zM107 11h1v1h-1zM109 28h1v1h-1zM168 18h1v1h-1zM200 16h1v1h-1zM305 31h1v1h-1zM8 4h1v1h-1zM185 8h1v1h-1zM37 4h1v1h-1zM66 50h1v1h-1zM242 4h1v1h-1z"/><path fill="#fff" opacity=".85" d="M231 32h1v1h-1zM97 11h1v1h-1zM243 40h1v1h-1zM275 51h1v1h-1zM231 41h1v1h-1zM319 0h1v1h-1zM97 15h1v1h-1zM167 28h1v1h-1zM43 29h1v1h-1zM142 26h1v1h-1zM68 15h1v1h-1zM90 43h1v1h-1zM96 28h1v1h-1zM308 41h1v1h-1zM4 49h1v1h-1zM106 37h1v1h-1zM124 0h1v1h-1zM188 23h1v1h-1zM232 8h1v1h-1zM197 11h1v1h-1zM312 15h1v1h-1zM97 10h1v1h-1zM283 12h1v1h-1zM198 30h1v1h-1zM266 11h1v1h-1zM245 35h1v1h-1zM144 23h1v1h-1zM169 42h1v1h-1zM243 22h1v1h-1zM246 4h1v1h-1zM279 23h1v1h-1zM22 47h1v1h-1zM180 5h1v1h-1zM15 31h1v1h-1zM7 39h1v1h-1zM195 24h1v1h-1zM41 5h1v1h-1z"/><path fill="#fff" opacity=".35" d="M155 9h1v1h-1zM315 41h1v1h-1zM32 3h1v1h-1zM100 33h1v1h-1zM150 31h1v1h-1zM161 48h1v1h-1zM262 18h1v1h-1zM35 36h1v1h-1zM197 4h1v1h-1zM0 13h1v1h-1zM203 26h1v1h-1zM289 40h1v1h-1zM138 21h1v1h-1zM159 21h1v1h-1zM209 48h1v1h-1zM51 0h1v1h-1zM97 46h1v1h-1zM303 19h1v1h-1zM51 2h1v1h-1zM37 4h1v1h-1zM247 36h1v1h-1zM78 19h1v1h-1zM40 26h1v1h-1zM53 6h1v1h-1zM262 16h1v1h-1zM35 8h1v1h-1zM315 39h1v1h-1zM143 13h1v1h-1zM210 28h1v1h-1zM30 2h1v1h-1zM292 8h1v1h-1zM267 37h1v1h-1zM302 2h1v1h-1zM159 2h1v1h-1zM306 40h1v1h-1zM159 20h1v1h-1zM6 38h1v1h-1z"/><path fill="#4fe3c1" opacity=".22" d="M0 24h2v5h-2zM2 25h2v5h-2zM4 25h2v6h-2zM6 25h2v6h-2zM8 25h2v7h-2zM10 25h2v7h-2zM12 24h2v7h-2zM14 24h2v7h-2zM16 23h2v7h-2zM18 23h2v7h-2zM20 22h2v7h-2zM22 23h2v6h-2zM24 22h2v6h-2zM26 23h2v5h-2zM28 23h2v5h-2zM30 24h2v4h-2zM32 25h2v3h-2zM34 26h2v3h-2zM36 27h2v2h-2zM38 28h2v2h-2zM40 28h2v2h-2zM42 28h2v2h-2zM44 27h2v2h-2zM46 27h2v2h-2zM48 26h2v2h-2zM50 24h2v3h-2zM52 23h2v3h-2zM54 21h2v4h-2zM56 19h2v4h-2zM58 17h2v5h-2zM60 15h2v6h-2zM62 14h2v6h-2zM64 13h2v7h-2zM66 13h2v7h-2zM68 13h2v7h-2zM70 13h2v7h-2zM72 14h2v7h-2zM74 14h2v7h-2zM76 15h2v7h-2zM78 16h2v7h-2zM80 18h2v6h-2zM82 19h2v5h-2zM84 20h2v5h-2zM86 21h2v4h-2zM88 21h2v3h-2zM90 21h2v3h-2zM92 22h2v2h-2zM94 21h2v2h-2zM96 21h2v2h-2zM98 21h2v2h-2zM100 20h2v2h-2zM102 20h2v2h-2zM104 21h2v2h-2zM106 21h2v2h-2zM108 21h2v3h-2zM110 22h2v3h-2zM112 23h2v4h-2zM114 24h2v5h-2zM116 25h2v5h-2zM118 26h2v6h-2zM120 26h2v7h-2zM122 27h2v7h-2zM124 28h2v7h-2zM126 28h2v7h-2zM128 28h2v7h-2zM130 27h2v7h-2zM132 27h2v7h-2zM134 25h2v7h-2zM136 25h2v6h-2zM138 23h2v6h-2zM140 23h2v5h-2zM142 22h2v4h-2zM144 21h2v4h-2zM146 20h2v3h-2zM148 20h2v2h-2zM150 20h2v2h-2zM152 20h2v2h-2zM154 20h2v2h-2zM156 21h2v2h-2zM158 21h2v2h-2zM160 21h2v2h-2zM162 21h2v2h-2zM164 21h2v3h-2zM166 21h2v3h-2zM168 20h2v4h-2zM170 19h2v5h-2zM172 18h2v5h-2zM174 17h2v6h-2zM176 16h2v6h-2zM178 15h2v7h-2zM180 14h2v7h-2zM182 13h2v7h-2zM184 13h2v7h-2zM186 13h2v7h-2zM188 13h2v7h-2zM190 14h2v7h-2zM192 16h2v6h-2zM194 17h2v6h-2zM196 19h2v5h-2zM198 21h2v4h-2zM200 22h2v4h-2zM202 24h2v3h-2zM204 25h2v3h-2zM206 27h2v2h-2zM208 28h2v2h-2zM210 28h2v2h-2zM212 28h2v2h-2zM214 28h2v2h-2zM216 27h2v2h-2zM218 27h2v2h-2zM220 26h2v3h-2zM222 25h2v3h-2zM224 24h2v4h-2zM226 24h2v4h-2zM228 23h2v5h-2zM230 22h2v6h-2zM232 23h2v6h-2zM234 22h2v7h-2zM236 23h2v7h-2zM238 23h2v7h-2zM240 24h2v7h-2zM242 24h2v7h-2zM244 24h2v7h-2zM246 24h2v7h-2zM248 25h2v6h-2zM250 24h2v6h-2zM252 23h2v5h-2zM254 22h2v5h-2zM256 21h2v4h-2zM258 20h2v3h-2zM260 19h2v3h-2zM262 18h2v2h-2zM264 17h2v2h-2zM266 16h2v2h-2zM268 15h2v2h-2zM270 15h2v2h-2zM272 15h2v2h-2zM274 15h2v2h-2zM276 16h2v2h-2zM278 16h2v3h-2zM280 17h2v4h-2zM282 18h2v4h-2zM284 19h2v5h-2zM286 19h2v6h-2zM288 20h2v6h-2zM290 20h2v7h-2zM292 20h2v7h-2zM294 20h2v7h-2zM296 20h2v7h-2zM298 20h2v7h-2zM300 19h2v7h-2zM302 19h2v7h-2zM304 19h2v7h-2zM306 19h2v6h-2zM308 20h2v5h-2zM310 21h2v5h-2zM312 22h2v4h-2zM314 23h2v4h-2zM316 24h2v3h-2zM318 26h2v2h-2z"/><path fill="#8ff5dc" opacity=".35" d="M0 25h2v1h-2zM2 26h2v1h-2zM4 27h2v1h-2zM6 27h2v1h-2zM8 27h2v1h-2zM10 27h2v1h-2zM12 27h2v1h-2zM14 26h2v1h-2zM16 26h2v1h-2zM18 25h2v1h-2zM20 25h2v1h-2zM22 25h2v1h-2zM24 24h2v1h-2zM26 25h2v1h-2zM28 25h2v1h-2zM30 25h2v1h-2zM32 26h2v1h-2zM34 27h2v1h-2zM36 27h2v1h-2zM38 28h2v1h-2zM40 28h2v1h-2zM42 28h2v1h-2zM44 27h2v1h-2zM46 27h2v1h-2zM48 26h2v1h-2zM50 25h2v1h-2zM52 23h2v1h-2zM54 22h2v1h-2zM56 20h2v1h-2zM58 19h2v1h-2zM60 17h2v1h-2zM62 16h2v1h-2zM64 16h2v1h-2zM66 15h2v1h-2zM68 15h2v1h-2zM70 16h2v1h-2zM72 16h2v1h-2zM74 17h2v1h-2zM76 18h2v1h-2zM78 19h2v1h-2zM80 20h2v1h-2zM82 21h2v1h-2zM84 21h2v1h-2zM86 22h2v1h-2zM88 22h2v1h-2zM90 22h2v1h-2zM92 22h2v1h-2zM94 21h2v1h-2zM96 21h2v1h-2zM98 21h2v1h-2zM100 20h2v1h-2zM102 20h2v1h-2zM104 21h2v1h-2zM106 21h2v1h-2zM108 22h2v1h-2zM110 23h2v1h-2zM112 24h2v1h-2zM114 25h2v1h-2zM116 27h2v1h-2zM118 28h2v1h-2zM120 29h2v1h-2zM122 30h2v1h-2zM124 30h2v1h-2zM126 30h2v1h-2zM128 30h2v1h-2zM130 30h2v1h-2zM132 29h2v1h-2zM134 28h2v1h-2zM136 27h2v1h-2zM138 25h2v1h-2zM140 24h2v1h-2zM142 23h2v1h-2zM144 22h2v1h-2zM146 21h2v1h-2zM148 20h2v1h-2zM150 20h2v1h-2zM152 20h2v1h-2zM154 20h2v1h-2zM156 21h2v1h-2zM158 21h2v1h-2zM160 21h2v1h-2zM162 21h2v1h-2zM164 21h2v1h-2zM166 21h2v1h-2zM168 21h2v1h-2zM170 21h2v1h-2zM172 20h2v1h-2zM174 19h2v1h-2zM176 18h2v1h-2zM178 17h2v1h-2zM180 16h2v1h-2zM182 16h2v1h-2zM184 16h2v1h-2zM186 16h2v1h-2zM188 16h2v1h-2zM190 17h2v1h-2zM192 18h2v1h-2zM194 19h2v1h-2zM196 20h2v1h-2zM198 22h2v1h-2zM200 23h2v1h-2zM202 25h2v1h-2zM204 26h2v1h-2zM206 27h2v1h-2zM208 28h2v1h-2zM210 28h2v1h-2zM212 28h2v1h-2zM214 28h2v1h-2zM216 27h2v1h-2zM218 27h2v1h-2zM220 26h2v1h-2zM222 26h2v1h-2zM224 25h2v1h-2zM226 25h2v1h-2zM228 24h2v1h-2zM230 24h2v1h-2zM232 25h2v1h-2zM234 25h2v1h-2zM236 25h2v1h-2zM238 26h2v1h-2zM240 26h2v1h-2zM242 27h2v1h-2zM244 27h2v1h-2zM246 27h2v1h-2zM248 27h2v1h-2zM250 26h2v1h-2zM252 25h2v1h-2zM254 24h2v1h-2zM256 22h2v1h-2zM258 21h2v1h-2zM260 19h2v1h-2zM262 18h2v1h-2zM264 17h2v1h-2zM266 16h2v1h-2zM268 15h2v1h-2zM270 15h2v1h-2zM272 15h2v1h-2zM274 15h2v1h-2zM276 16h2v1h-2zM278 17h2v1h-2zM280 18h2v1h-2zM282 19h2v1h-2zM284 20h2v1h-2zM286 21h2v1h-2zM288 22h2v1h-2zM290 22h2v1h-2zM292 22h2v1h-2zM294 23h2v1h-2zM296 22h2v1h-2zM298 22h2v1h-2zM300 22h2v1h-2zM302 22h2v1h-2zM304 21h2v1h-2zM306 21h2v1h-2zM308 22h2v1h-2zM310 22h2v1h-2zM312 23h2v1h-2zM314 24h2v1h-2zM316 25h2v1h-2zM318 26h2v1h-2z"/><path fill="#6cc4ef" opacity=".18" d="M0 32h2v3h-2zM2 33h2v3h-2zM4 34h2v3h-2zM6 35h2v3h-2zM8 36h2v3h-2zM10 36h2v3h-2zM12 35h2v3h-2zM14 35h2v3h-2zM16 35h2v3h-2zM18 34h2v3h-2zM20 34h2v3h-2zM22 33h2v3h-2zM24 33h2v3h-2zM26 33h2v3h-2zM28 33h2v3h-2zM30 34h2v3h-2zM32 34h2v3h-2zM34 34h2v3h-2zM36 34h2v3h-2zM38 35h2v3h-2zM40 34h2v3h-2zM42 34h2v3h-2zM44 33h2v3h-2zM46 32h2v3h-2zM48 31h2v3h-2zM50 30h2v3h-2zM52 28h2v3h-2zM54 27h2v3h-2zM56 25h2v3h-2zM58 24h2v3h-2zM60 23h2v3h-2zM62 22h2v3h-2zM64 21h2v3h-2zM66 21h2v3h-2zM68 21h2v3h-2zM70 22h2v3h-2zM72 23h2v3h-2zM74 24h2v3h-2zM76 25h2v3h-2zM78 26h2v3h-2zM80 27h2v3h-2zM82 29h2v3h-2zM84 29h2v3h-2zM86 30h2v3h-2zM88 30h2v3h-2zM90 31h2v3h-2zM92 31h2v3h-2zM94 30h2v3h-2zM96 30h2v3h-2zM98 30h2v3h-2zM100 29h2v3h-2zM102 29h2v3h-2zM104 29h2v3h-2zM106 29h2v3h-2zM108 30h2v3h-2zM110 30h2v3h-2zM112 31h2v3h-2zM114 32h2v3h-2zM116 33h2v3h-2zM118 34h2v3h-2zM120 35h2v3h-2zM122 35h2v3h-2zM124 36h2v3h-2zM126 36h2v3h-2zM128 35h2v3h-2zM130 35h2v3h-2zM132 34h2v3h-2zM134 33h2v3h-2zM136 32h2v3h-2zM138 31h2v3h-2zM140 29h2v3h-2zM142 29h2v3h-2zM144 28h2v3h-2zM146 27h2v3h-2zM148 27h2v3h-2zM150 27h2v3h-2zM152 27h2v3h-2zM154 28h2v3h-2zM156 28h2v3h-2zM158 29h2v3h-2zM160 30h2v3h-2zM162 30h2v3h-2zM164 30h2v3h-2zM166 30h2v3h-2zM168 30h2v3h-2zM170 30h2v3h-2zM172 29h2v3h-2zM174 28h2v3h-2zM176 27h2v3h-2zM178 26h2v3h-2zM180 25h2v3h-2zM182 24h2v3h-2zM184 23h2v3h-2zM186 23h2v3h-2zM188 23h2v3h-2zM190 23h2v3h-2zM192 24h2v3h-2zM194 25h2v3h-2zM196 26h2v3h-2zM198 27h2v3h-2zM200 29h2v3h-2zM202 30h2v3h-2zM204 31h2v3h-2zM206 32h2v3h-2zM208 33h2v3h-2zM210 33h2v3h-2zM212 33h2v3h-2zM214 33h2v3h-2zM216 33h2v3h-2zM218 33h2v3h-2zM220 32h2v3h-2zM222 32h2v3h-2zM224 32h2v3h-2zM226 32h2v3h-2zM228 32h2v3h-2zM230 32h2v3h-2zM232 33h2v3h-2zM234 33h2v3h-2zM236 34h2v3h-2zM238 35h2v3h-2zM240 35h2v3h-2zM242 36h2v3h-2zM244 36h2v3h-2zM246 36h2v3h-2zM248 35h2v3h-2zM250 35h2v3h-2zM252 34h2v3h-2zM254 32h2v3h-2zM256 31h2v3h-2zM258 29h2v3h-2zM260 27h2v3h-2zM262 25h2v3h-2zM264 24h2v3h-2zM266 23h2v3h-2zM268 22h2v3h-2zM270 21h2v3h-2zM272 21h2v3h-2zM274 21h2v3h-2zM276 21h2v3h-2zM278 22h2v3h-2zM280 23h2v3h-2zM282 24h2v3h-2zM284 25h2v3h-2zM286 26h2v3h-2zM288 27h2v3h-2zM290 28h2v3h-2zM292 28h2v3h-2zM294 28h2v3h-2zM296 29h2v3h-2zM298 29h2v3h-2zM300 29h2v3h-2zM302 29h2v3h-2zM304 29h2v3h-2zM306 29h2v3h-2zM308 30h2v3h-2zM310 30h2v3h-2zM312 31h2v3h-2zM314 32h2v3h-2zM316 33h2v3h-2zM318 35h2v3h-2z"/><path fill="#e9f6ff" d="M267 11h1v1h-1zM268 11h1v1h-1zM269 11h1v1h-1zM265 12h1v1h-1zM266 12h1v1h-1zM267 12h1v1h-1zM268 12h1v1h-1zM269 12h1v1h-1zM270 12h1v1h-1zM271 12h1v1h-1zM264 13h1v1h-1zM265 13h1v1h-1zM266 13h1v1h-1zM267 13h1v1h-1zM268 13h1v1h-1zM269 13h1v1h-1zM270 13h1v1h-1zM271 13h1v1h-1zM272 13h1v1h-1zM264 14h1v1h-1zM265 14h1v1h-1zM266 14h1v1h-1zM267 14h1v1h-1zM268 14h1v1h-1zM269 14h1v1h-1zM270 14h1v1h-1zM271 14h1v1h-1zM272 14h1v1h-1zM263 15h1v1h-1zM264 15h1v1h-1zM265 15h1v1h-1zM266 15h1v1h-1zM267 15h1v1h-1zM268 15h1v1h-1zM269 15h1v1h-1zM270 15h1v1h-1zM271 15h1v1h-1zM272 15h1v1h-1zM273 15h1v1h-1zM263 16h1v1h-1zM264 16h1v1h-1zM265 16h1v1h-1zM266 16h1v1h-1zM267 16h1v1h-1zM268 16h1v1h-1zM269 16h1v1h-1zM270 16h1v1h-1zM271 16h1v1h-1zM272 16h1v1h-1zM273 16h1v1h-1zM263 17h1v1h-1zM264 17h1v1h-1zM265 17h1v1h-1zM266 17h1v1h-1zM267 17h1v1h-1zM268 17h1v1h-1zM269 17h1v1h-1zM270 17h1v1h-1zM271 17h1v1h-1zM272 17h1v1h-1zM273 17h1v1h-1zM264 18h1v1h-1zM265 18h1v1h-1zM266 18h1v1h-1zM267 18h1v1h-1zM268 18h1v1h-1zM269 18h1v1h-1zM270 18h1v1h-1zM271 18h1v1h-1zM272 18h1v1h-1zM264 19h1v1h-1zM265 19h1v1h-1zM266 19h1v1h-1zM267 19h1v1h-1zM268 19h1v1h-1zM269 19h1v1h-1zM270 19h1v1h-1zM271 19h1v1h-1zM272 19h1v1h-1zM265 20h1v1h-1zM266 20h1v1h-1zM267 20h1v1h-1zM268 20h1v1h-1zM269 20h1v1h-1zM270 20h1v1h-1zM271 20h1v1h-1zM267 21h1v1h-1zM268 21h1v1h-1zM269 21h1v1h-1z"/><path fill="#c3dff0" d="M266 14h1v1h-1zM267 14h1v1h-1zM270 18h1v1h-1zM269 19h1v1h-1zM271 15h1v1h-1z"/><path fill="#1e4d73" d="M0 50h2v58h-2zM2 48h2v60h-2zM4 46h2v62h-2zM6 44h2v64h-2zM8 42h2v66h-2zM20 52h2v56h-2zM22 50h2v58h-2zM24 48h2v60h-2zM26 46h2v62h-2zM28 46h2v62h-2zM30 44h2v64h-2zM32 42h2v66h-2zM34 40h2v68h-2zM36 38h2v70h-2zM38 38h2v70h-2zM40 36h2v72h-2zM42 34h2v74h-2zM44 32h2v76h-2zM46 30h2v78h-2zM80 56h2v52h-2zM82 52h2v56h-2zM84 52h2v56h-2zM86 48h2v60h-2zM88 48h2v60h-2zM90 44h2v64h-2zM100 52h2v56h-2zM102 50h2v58h-2zM104 48h2v60h-2zM106 48h2v60h-2zM108 46h2v62h-2zM110 44h2v64h-2zM112 42h2v66h-2zM114 40h2v68h-2zM116 38h2v70h-2zM118 38h2v70h-2zM120 36h2v72h-2zM122 34h2v74h-2zM124 32h2v76h-2zM126 30h2v78h-2zM128 28h2v80h-2zM130 26h2v82h-2zM162 52h2v56h-2zM164 50h2v58h-2zM166 48h2v60h-2zM168 46h2v62h-2zM170 44h2v64h-2zM172 42h2v66h-2zM174 40h2v68h-2zM192 52h2v56h-2zM194 50h2v58h-2zM196 48h2v60h-2zM198 46h2v62h-2zM200 46h2v62h-2zM202 44h2v64h-2zM204 42h2v66h-2zM206 40h2v68h-2zM208 38h2v70h-2zM210 36h2v72h-2zM212 34h2v74h-2zM238 54h2v54h-2zM240 52h2v56h-2zM242 50h2v58h-2zM244 48h2v60h-2zM246 46h2v62h-2zM248 44h2v64h-2zM250 42h2v66h-2zM262 52h2v56h-2zM264 50h2v58h-2zM266 48h2v60h-2zM268 46h2v62h-2zM270 44h2v64h-2zM272 44h2v64h-2zM274 42h2v66h-2zM276 40h2v68h-2zM278 38h2v70h-2zM280 36h2v72h-2zM282 36h2v72h-2zM284 34h2v74h-2zM286 32h2v76h-2zM288 30h2v78h-2zM290 28h2v80h-2z"/><path fill="#173f60" d="M10 42h2v66h-2zM12 44h2v64h-2zM14 46h2v62h-2zM16 48h2v60h-2zM18 50h2v58h-2zM48 30h2v78h-2zM50 32h2v76h-2zM52 34h2v74h-2zM54 36h2v72h-2zM56 38h2v70h-2zM58 38h2v70h-2zM60 40h2v68h-2zM62 42h2v66h-2zM64 44h2v64h-2zM66 46h2v62h-2zM68 46h2v62h-2zM70 48h2v60h-2zM72 50h2v58h-2zM74 52h2v56h-2zM76 54h2v54h-2zM78 54h2v54h-2zM92 44h2v64h-2zM94 48h2v60h-2zM96 48h2v60h-2zM98 52h2v56h-2zM132 26h2v82h-2zM134 28h2v80h-2zM136 30h2v78h-2zM138 32h2v76h-2zM140 34h2v74h-2zM142 36h2v72h-2zM144 38h2v70h-2zM146 38h2v70h-2zM148 40h2v68h-2zM150 42h2v66h-2zM152 44h2v64h-2zM154 46h2v62h-2zM156 48h2v60h-2zM158 48h2v60h-2zM160 50h2v58h-2zM176 40h2v68h-2zM178 42h2v66h-2zM180 44h2v64h-2zM182 46h2v62h-2zM184 48h2v60h-2zM186 50h2v58h-2zM188 52h2v56h-2zM190 54h2v54h-2zM214 34h2v74h-2zM216 36h2v72h-2zM218 38h2v70h-2zM220 40h2v68h-2zM222 42h2v66h-2zM224 44h2v64h-2zM226 46h2v62h-2zM228 46h2v62h-2zM230 48h2v60h-2zM232 50h2v58h-2zM234 52h2v56h-2zM236 54h2v54h-2zM252 42h2v66h-2zM254 44h2v64h-2zM256 46h2v62h-2zM258 48h2v60h-2zM260 50h2v58h-2zM292 28h2v80h-2zM294 30h2v78h-2zM296 32h2v76h-2zM298 34h2v74h-2zM300 36h2v72h-2zM302 36h2v72h-2zM304 38h2v70h-2zM306 40h2v68h-2zM308 42h2v66h-2zM310 44h2v64h-2zM312 44h2v64h-2zM314 46h2v62h-2zM316 48h2v60h-2zM318 50h2v58h-2z"/><path fill="#d7eefa" d="M0 50h2v2h-2zM2 48h2v3h-2zM4 46h2v4h-2zM6 44h2v5h-2zM8 42h2v6h-2zM20 52h2v2h-2zM22 50h2v2h-2zM24 48h2v3h-2zM26 46h2v4h-2zM28 46h2v4h-2zM30 44h2v5h-2zM32 42h2v6h-2zM34 40h2v7h-2zM36 38h2v8h-2zM38 38h2v8h-2zM40 36h2v9h-2zM42 34h2v9h-2zM44 32h2v9h-2zM46 30h2v9h-2zM82 52h2v2h-2zM84 52h2v2h-2zM86 48h2v3h-2zM88 48h2v3h-2zM90 44h2v5h-2zM100 52h2v2h-2zM102 50h2v2h-2zM104 48h2v3h-2zM106 48h2v3h-2zM108 46h2v4h-2zM110 44h2v5h-2zM112 42h2v6h-2zM114 40h2v7h-2zM116 38h2v8h-2zM118 38h2v8h-2zM120 36h2v9h-2zM122 34h2v9h-2zM124 32h2v9h-2zM126 30h2v9h-2zM128 28h2v9h-2zM130 26h2v9h-2zM162 52h2v2h-2zM164 50h2v2h-2zM166 48h2v3h-2zM168 46h2v4h-2zM170 44h2v5h-2zM172 42h2v6h-2zM174 40h2v7h-2zM192 52h2v2h-2zM194 50h2v2h-2zM196 48h2v3h-2zM198 46h2v4h-2zM200 46h2v4h-2zM202 44h2v5h-2zM204 42h2v6h-2zM206 40h2v7h-2zM208 38h2v8h-2zM210 36h2v9h-2zM212 34h2v9h-2zM240 52h2v2h-2zM242 50h2v2h-2zM244 48h2v3h-2zM246 46h2v4h-2zM248 44h2v5h-2zM250 42h2v6h-2zM262 52h2v2h-2zM264 50h2v2h-2zM266 48h2v3h-2zM268 46h2v4h-2zM270 44h2v5h-2zM272 44h2v5h-2zM274 42h2v6h-2zM276 40h2v7h-2zM278 38h2v8h-2zM280 36h2v9h-2zM282 36h2v9h-2zM284 34h2v9h-2zM286 32h2v9h-2zM288 30h2v9h-2zM290 28h2v9h-2z"/><path fill="#a9d3ea" d="M10 42h2v6h-2zM12 44h2v5h-2zM14 46h2v4h-2zM16 48h2v3h-2zM18 50h2v2h-2zM48 30h2v9h-2zM50 32h2v9h-2zM52 34h2v9h-2zM54 36h2v9h-2zM56 38h2v8h-2zM58 38h2v8h-2zM60 40h2v7h-2zM62 42h2v6h-2zM64 44h2v5h-2zM66 46h2v4h-2zM68 46h2v4h-2zM70 48h2v3h-2zM72 50h2v2h-2zM74 52h2v2h-2zM92 44h2v5h-2zM94 48h2v3h-2zM96 48h2v3h-2zM98 52h2v2h-2zM132 26h2v9h-2zM134 28h2v9h-2zM136 30h2v9h-2zM138 32h2v9h-2zM140 34h2v9h-2zM142 36h2v9h-2zM144 38h2v8h-2zM146 38h2v8h-2zM148 40h2v7h-2zM150 42h2v6h-2zM152 44h2v5h-2zM154 46h2v4h-2zM156 48h2v3h-2zM158 48h2v3h-2zM160 50h2v2h-2zM176 40h2v7h-2zM178 42h2v6h-2zM180 44h2v5h-2zM182 46h2v4h-2zM184 48h2v3h-2zM186 50h2v2h-2zM188 52h2v2h-2zM214 34h2v9h-2zM216 36h2v9h-2zM218 38h2v8h-2zM220 40h2v7h-2zM222 42h2v6h-2zM224 44h2v5h-2zM226 46h2v4h-2zM228 46h2v4h-2zM230 48h2v3h-2zM232 50h2v2h-2zM234 52h2v2h-2zM252 42h2v6h-2zM254 44h2v5h-2zM256 46h2v4h-2zM258 48h2v3h-2zM260 50h2v2h-2zM292 28h2v9h-2zM294 30h2v9h-2zM296 32h2v9h-2zM298 34h2v9h-2zM300 36h2v9h-2zM302 36h2v9h-2zM304 38h2v8h-2zM306 40h2v7h-2zM308 42h2v6h-2zM310 44h2v5h-2zM312 44h2v5h-2zM314 46h2v4h-2zM316 48h2v3h-2zM318 50h2v2h-2z"/><path fill="#143653" d="M0 86h2v22h-2zM2 86h2v22h-2zM4 84h2v24h-2zM6 80h2v28h-2zM8 78h2v30h-2zM10 76h2v32h-2zM12 74h2v34h-2zM14 72h2v36h-2zM16 70h2v38h-2zM18 68h2v40h-2zM20 66h2v42h-2zM22 64h2v44h-2zM24 62h2v46h-2zM54 86h2v22h-2zM56 86h2v22h-2zM58 84h2v24h-2zM60 82h2v26h-2zM62 80h2v28h-2zM64 78h2v30h-2zM66 74h2v34h-2zM68 72h2v36h-2zM70 70h2v38h-2zM72 68h2v40h-2zM74 66h2v42h-2zM90 80h2v28h-2zM92 80h2v28h-2zM94 76h2v32h-2zM96 76h2v32h-2zM98 72h2v36h-2zM100 72h2v36h-2zM102 68h2v40h-2zM104 68h2v40h-2zM106 64h2v44h-2zM108 64h2v44h-2zM110 60h2v48h-2zM112 60h2v48h-2zM114 56h2v52h-2zM142 82h2v26h-2zM144 80h2v28h-2zM146 76h2v32h-2zM148 74h2v34h-2zM150 72h2v36h-2zM152 70h2v38h-2zM154 68h2v40h-2zM156 66h2v42h-2zM158 64h2v44h-2zM180 82h2v26h-2zM182 80h2v28h-2zM184 78h2v30h-2zM186 76h2v32h-2zM188 74h2v34h-2zM190 72h2v36h-2zM192 70h2v38h-2zM194 68h2v40h-2zM196 66h2v42h-2zM198 64h2v44h-2zM200 62h2v46h-2zM202 60h2v48h-2zM228 82h2v26h-2zM230 80h2v28h-2zM232 78h2v30h-2zM234 74h2v34h-2zM236 72h2v36h-2zM238 70h2v38h-2zM240 68h2v40h-2zM242 66h2v42h-2zM262 84h2v24h-2zM264 82h2v26h-2zM266 80h2v28h-2zM268 78h2v30h-2zM270 76h2v32h-2zM272 74h2v34h-2zM274 72h2v36h-2zM276 68h2v40h-2zM278 66h2v42h-2zM280 64h2v44h-2zM282 62h2v46h-2zM284 60h2v48h-2zM308 82h2v26h-2zM310 80h2v28h-2zM312 78h2v30h-2zM314 76h2v32h-2zM316 74h2v34h-2zM318 72h2v36h-2z"/><path fill="#10304a" d="M26 62h2v46h-2zM28 64h2v44h-2zM30 66h2v42h-2zM32 68h2v40h-2zM34 70h2v38h-2zM36 72h2v36h-2zM38 74h2v34h-2zM40 76h2v32h-2zM42 78h2v30h-2zM44 80h2v28h-2zM46 84h2v24h-2zM48 86h2v22h-2zM50 86h2v22h-2zM52 86h2v22h-2zM76 66h2v42h-2zM78 68h2v40h-2zM80 70h2v38h-2zM82 72h2v36h-2zM84 74h2v34h-2zM86 78h2v30h-2zM88 80h2v28h-2zM116 56h2v52h-2zM118 60h2v48h-2zM120 60h2v48h-2zM122 64h2v44h-2zM124 64h2v44h-2zM126 68h2v40h-2zM128 68h2v40h-2zM130 72h2v36h-2zM132 72h2v36h-2zM134 76h2v32h-2zM136 76h2v32h-2zM138 80h2v28h-2zM140 80h2v28h-2zM160 64h2v44h-2zM162 66h2v42h-2zM164 68h2v40h-2zM166 70h2v38h-2zM168 72h2v36h-2zM170 74h2v34h-2zM172 76h2v32h-2zM174 80h2v28h-2zM176 82h2v26h-2zM178 84h2v24h-2zM204 60h2v48h-2zM206 62h2v46h-2zM208 64h2v44h-2zM210 66h2v42h-2zM212 68h2v40h-2zM214 70h2v38h-2zM216 72h2v36h-2zM218 74h2v34h-2zM220 76h2v32h-2zM222 78h2v30h-2zM224 80h2v28h-2zM226 82h2v26h-2zM244 66h2v42h-2zM246 68h2v40h-2zM248 70h2v38h-2zM250 72h2v36h-2zM252 74h2v34h-2zM254 78h2v30h-2zM256 80h2v28h-2zM258 82h2v26h-2zM260 84h2v24h-2zM286 60h2v48h-2zM288 62h2v46h-2zM290 64h2v44h-2zM292 66h2v42h-2zM294 68h2v40h-2zM296 72h2v36h-2zM298 74h2v34h-2zM300 76h2v32h-2zM302 78h2v30h-2zM304 80h2v28h-2zM306 82h2v26h-2z"/><path fill="#e6f5fd" d="M20 66h2v2h-2zM22 64h2v2h-2zM24 62h2v3h-2zM74 66h2v2h-2zM106 64h2v2h-2zM108 64h2v2h-2zM110 60h2v4h-2zM112 60h2v4h-2zM114 56h2v6h-2zM156 66h2v2h-2zM158 64h2v2h-2zM196 66h2v2h-2zM198 64h2v2h-2zM200 62h2v3h-2zM202 60h2v4h-2zM242 66h2v2h-2zM278 66h2v2h-2zM280 64h2v2h-2zM282 62h2v3h-2zM284 60h2v4h-2z"/><path fill="#b9dcef" d="M26 62h2v3h-2zM28 64h2v2h-2zM30 66h2v2h-2zM76 66h2v2h-2zM116 56h2v6h-2zM118 60h2v4h-2zM120 60h2v4h-2zM122 64h2v2h-2zM124 64h2v2h-2zM160 64h2v2h-2zM162 66h2v2h-2zM204 60h2v4h-2zM206 62h2v3h-2zM208 64h2v2h-2zM210 66h2v2h-2zM244 66h2v2h-2zM286 60h2v4h-2zM288 62h2v3h-2zM290 64h2v2h-2zM292 66h2v2h-2z"/><path fill="#eaf7ff" d="M0 88h2v20h-2zM2 88h2v20h-2zM4 90h2v18h-2zM6 90h2v18h-2zM8 90h2v18h-2zM10 90h2v18h-2zM12 90h2v18h-2zM14 90h2v18h-2zM16 90h2v18h-2zM18 90h2v18h-2zM20 90h2v18h-2zM22 90h2v18h-2zM24 90h2v18h-2zM26 90h2v18h-2zM28 90h2v18h-2zM30 90h2v18h-2zM32 90h2v18h-2zM34 90h2v18h-2zM36 90h2v18h-2zM38 90h2v18h-2zM40 90h2v18h-2zM42 90h2v18h-2zM44 88h2v20h-2zM46 88h2v20h-2zM48 86h2v22h-2zM50 86h2v22h-2zM52 86h2v22h-2zM54 86h2v22h-2zM56 84h2v24h-2zM58 84h2v24h-2zM60 84h2v24h-2zM62 84h2v24h-2zM64 86h2v22h-2zM66 86h2v22h-2zM68 86h2v22h-2zM70 86h2v22h-2zM72 86h2v22h-2zM74 86h2v22h-2zM76 86h2v22h-2zM78 86h2v22h-2zM80 86h2v22h-2zM82 86h2v22h-2zM84 86h2v22h-2zM86 86h2v22h-2zM88 88h2v20h-2zM90 88h2v20h-2zM92 88h2v20h-2zM94 90h2v18h-2zM96 90h2v18h-2zM98 90h2v18h-2zM100 92h2v16h-2zM102 92h2v16h-2zM104 92h2v16h-2zM106 92h2v16h-2zM108 92h2v16h-2zM110 90h2v18h-2zM112 90h2v18h-2zM114 90h2v18h-2zM116 90h2v18h-2zM118 90h2v18h-2zM120 90h2v18h-2zM122 90h2v18h-2zM124 90h2v18h-2zM126 90h2v18h-2zM128 90h2v18h-2zM130 90h2v18h-2zM132 88h2v20h-2zM134 88h2v20h-2zM136 88h2v20h-2zM138 88h2v20h-2zM140 86h2v22h-2zM142 86h2v22h-2zM144 86h2v22h-2zM146 84h2v24h-2zM148 84h2v24h-2zM150 84h2v24h-2zM152 84h2v24h-2zM154 84h2v24h-2zM156 84h2v24h-2zM158 86h2v22h-2zM160 86h2v22h-2zM162 86h2v22h-2zM164 86h2v22h-2zM166 88h2v20h-2zM168 88h2v20h-2zM170 88h2v20h-2zM172 88h2v20h-2zM174 88h2v20h-2zM176 88h2v20h-2zM178 88h2v20h-2zM180 88h2v20h-2zM182 88h2v20h-2zM184 88h2v20h-2zM186 90h2v18h-2zM188 90h2v18h-2zM190 90h2v18h-2zM192 92h2v16h-2zM194 92h2v16h-2zM196 92h2v16h-2zM198 92h2v16h-2zM200 92h2v16h-2zM202 92h2v16h-2zM204 90h2v18h-2zM206 90h2v18h-2zM208 90h2v18h-2zM210 90h2v18h-2zM212 88h2v20h-2zM214 88h2v20h-2zM216 88h2v20h-2zM218 88h2v20h-2zM220 88h2v20h-2zM222 88h2v20h-2zM224 88h2v20h-2zM226 88h2v20h-2zM228 88h2v20h-2zM230 86h2v22h-2zM232 86h2v22h-2zM234 86h2v22h-2zM236 86h2v22h-2zM238 84h2v24h-2zM240 84h2v24h-2zM242 84h2v24h-2zM244 84h2v24h-2zM246 84h2v24h-2zM248 84h2v24h-2zM250 86h2v22h-2zM252 86h2v22h-2zM254 86h2v22h-2zM256 88h2v20h-2zM258 88h2v20h-2zM260 88h2v20h-2zM262 88h2v20h-2zM264 88h2v20h-2zM266 88h2v20h-2zM268 88h2v20h-2zM270 88h2v20h-2zM272 88h2v20h-2zM274 88h2v20h-2zM276 90h2v18h-2zM278 90h2v18h-2zM280 90h2v18h-2zM282 90h2v18h-2zM284 92h2v16h-2zM286 92h2v16h-2zM288 92h2v16h-2zM290 92h2v16h-2zM292 92h2v16h-2zM294 92h2v16h-2zM296 90h2v18h-2zM298 90h2v18h-2zM300 90h2v18h-2zM302 88h2v20h-2zM304 88h2v20h-2zM306 88h2v20h-2zM308 88h2v20h-2zM310 86h2v22h-2zM312 86h2v22h-2zM314 86h2v22h-2zM316 86h2v22h-2zM318 86h2v22h-2z"/><path fill="#d2ebf8" d="M0 95h2v13h-2zM2 95h2v13h-2zM4 97h2v11h-2zM6 97h2v11h-2zM8 97h2v11h-2zM10 97h2v11h-2zM12 97h2v11h-2zM14 97h2v11h-2zM16 97h2v11h-2zM18 97h2v11h-2zM20 97h2v11h-2zM22 97h2v11h-2zM24 97h2v11h-2zM26 97h2v11h-2zM28 97h2v11h-2zM30 97h2v11h-2zM32 97h2v11h-2zM34 97h2v11h-2zM36 97h2v11h-2zM38 97h2v11h-2zM40 97h2v11h-2zM42 97h2v11h-2zM44 95h2v13h-2zM46 95h2v13h-2zM48 93h2v15h-2zM50 93h2v15h-2zM52 93h2v15h-2zM54 93h2v15h-2zM56 91h2v17h-2zM58 91h2v17h-2zM60 91h2v17h-2zM62 91h2v17h-2zM64 93h2v15h-2zM66 93h2v15h-2zM68 93h2v15h-2zM70 93h2v15h-2zM72 93h2v15h-2zM74 93h2v15h-2zM76 93h2v15h-2zM78 93h2v15h-2zM80 93h2v15h-2zM82 93h2v15h-2zM84 93h2v15h-2zM86 93h2v15h-2zM88 95h2v13h-2zM90 95h2v13h-2zM92 95h2v13h-2zM94 97h2v11h-2zM96 97h2v11h-2zM98 97h2v11h-2zM100 99h2v9h-2zM102 99h2v9h-2zM104 99h2v9h-2zM106 99h2v9h-2zM108 99h2v9h-2zM110 97h2v11h-2zM112 97h2v11h-2zM114 97h2v11h-2zM116 97h2v11h-2zM118 97h2v11h-2zM120 97h2v11h-2zM122 97h2v11h-2zM124 97h2v11h-2zM126 97h2v11h-2zM128 97h2v11h-2zM130 97h2v11h-2zM132 95h2v13h-2zM134 95h2v13h-2zM136 95h2v13h-2zM138 95h2v13h-2zM140 93h2v15h-2zM142 93h2v15h-2zM144 93h2v15h-2zM146 91h2v17h-2zM148 91h2v17h-2zM150 91h2v17h-2zM152 91h2v17h-2zM154 91h2v17h-2zM156 91h2v17h-2zM158 93h2v15h-2zM160 93h2v15h-2zM162 93h2v15h-2zM164 93h2v15h-2zM166 95h2v13h-2zM168 95h2v13h-2zM170 95h2v13h-2zM172 95h2v13h-2zM174 95h2v13h-2zM176 95h2v13h-2zM178 95h2v13h-2zM180 95h2v13h-2zM182 95h2v13h-2zM184 95h2v13h-2zM186 97h2v11h-2zM188 97h2v11h-2zM190 97h2v11h-2zM192 99h2v9h-2zM194 99h2v9h-2zM196 99h2v9h-2zM198 99h2v9h-2zM200 99h2v9h-2zM202 99h2v9h-2zM204 97h2v11h-2zM206 97h2v11h-2zM208 97h2v11h-2zM210 97h2v11h-2zM212 95h2v13h-2zM214 95h2v13h-2zM216 95h2v13h-2zM218 95h2v13h-2zM220 95h2v13h-2zM222 95h2v13h-2zM224 95h2v13h-2zM226 95h2v13h-2zM228 95h2v13h-2zM230 93h2v15h-2zM232 93h2v15h-2zM234 93h2v15h-2zM236 93h2v15h-2zM238 91h2v17h-2zM240 91h2v17h-2zM242 91h2v17h-2zM244 91h2v17h-2zM246 91h2v17h-2zM248 91h2v17h-2zM250 93h2v15h-2zM252 93h2v15h-2zM254 93h2v15h-2zM256 95h2v13h-2zM258 95h2v13h-2zM260 95h2v13h-2zM262 95h2v13h-2zM264 95h2v13h-2zM266 95h2v13h-2zM268 95h2v13h-2zM270 95h2v13h-2zM272 95h2v13h-2zM274 95h2v13h-2zM276 97h2v11h-2zM278 97h2v11h-2zM280 97h2v11h-2zM282 97h2v11h-2zM284 99h2v9h-2zM286 99h2v9h-2zM288 99h2v9h-2zM290 99h2v9h-2zM292 99h2v9h-2zM294 99h2v9h-2zM296 97h2v11h-2zM298 97h2v11h-2zM300 97h2v11h-2zM302 95h2v13h-2zM304 95h2v13h-2zM306 95h2v13h-2zM308 95h2v13h-2zM310 93h2v15h-2zM312 93h2v15h-2zM314 93h2v15h-2zM316 93h2v15h-2zM318 93h2v15h-2z"/><path fill="#0f3b33" d="M2 84h12v3h-12zM3 81h10v3h-10zM4 78h8v3h-8zM5 75h6v3h-6zM6 72h4v3h-4zM7 69h2v3h-2zM18 84h8v3h-8zM19 81h6v3h-6zM20 78h4v3h-4zM21 75h2v3h-2zM41 82h10v3h-10zM42 79h8v3h-8zM43 76h6v3h-6zM44 73h4v3h-4zM45 70h2v3h-2zM66 80h8v3h-8zM67 77h6v3h-6zM68 74h4v3h-4zM69 71h2v3h-2zM101 86h10v3h-10zM102 83h8v3h-8zM103 80h6v3h-6zM104 77h4v3h-4zM105 74h2v3h-2zM146 78h12v3h-12zM147 75h10v3h-10zM148 72h8v3h-8zM149 69h6v3h-6zM150 66h4v3h-4zM151 63h2v3h-2zM168 82h8v3h-8zM169 79h6v3h-6zM170 76h4v3h-4zM171 73h2v3h-2zM187 86h10v3h-10zM188 83h8v3h-8zM189 80h6v3h-6zM190 77h4v3h-4zM191 74h2v3h-2zM224 82h8v3h-8zM225 79h6v3h-6zM226 76h4v3h-4zM227 73h2v3h-2zM236 78h12v3h-12zM237 75h10v3h-10zM238 72h8v3h-8zM239 69h6v3h-6zM240 66h4v3h-4zM241 63h2v3h-2zM273 84h10v3h-10zM274 81h8v3h-8zM275 78h6v3h-6zM276 75h4v3h-4zM277 72h2v3h-2zM302 82h8v3h-8zM303 79h6v3h-6zM304 76h4v3h-4zM305 73h2v3h-2zM312 80h12v3h-12zM313 77h10v3h-10zM314 74h8v3h-8zM315 71h6v3h-6zM316 68h4v3h-4zM317 65h2v3h-2z"/><path fill="#0b2f29" d="M2 86h12v1h-12zM3 83h10v1h-10zM4 80h8v1h-8zM5 77h6v1h-6zM6 74h4v1h-4zM7 71h2v1h-2zM18 86h8v1h-8zM19 83h6v1h-6zM20 80h4v1h-4zM21 77h2v1h-2zM41 84h10v1h-10zM42 81h8v1h-8zM43 78h6v1h-6zM44 75h4v1h-4zM45 72h2v1h-2zM66 82h8v1h-8zM67 79h6v1h-6zM68 76h4v1h-4zM69 73h2v1h-2zM101 88h10v1h-10zM102 85h8v1h-8zM103 82h6v1h-6zM104 79h4v1h-4zM105 76h2v1h-2zM146 80h12v1h-12zM147 77h10v1h-10zM148 74h8v1h-8zM149 71h6v1h-6zM150 68h4v1h-4zM151 65h2v1h-2zM168 84h8v1h-8zM169 81h6v1h-6zM170 78h4v1h-4zM171 75h2v1h-2zM187 88h10v1h-10zM188 85h8v1h-8zM189 82h6v1h-6zM190 79h4v1h-4zM191 76h2v1h-2zM224 84h8v1h-8zM225 81h6v1h-6zM226 78h4v1h-4zM227 75h2v1h-2zM236 80h12v1h-12zM237 77h10v1h-10zM238 74h8v1h-8zM239 71h6v1h-6zM240 68h4v1h-4zM241 65h2v1h-2zM273 86h10v1h-10zM274 83h8v1h-8zM275 80h6v1h-6zM276 77h4v1h-4zM277 74h2v1h-2zM302 84h8v1h-8zM303 81h6v1h-6zM304 78h4v1h-4zM305 75h2v1h-2zM312 82h12v1h-12zM313 79h10v1h-10zM314 76h8v1h-8zM315 73h6v1h-6zM316 70h4v1h-4zM317 67h2v1h-2z"/><path fill="#eaf7ff" d="M2 84h9v1h-9zM3 81h7v1h-7zM4 78h5v1h-5zM5 75h3v1h-3zM6 72h2v1h-2zM7 69h2v1h-2zM18 84h5v1h-5zM19 81h3v1h-3zM20 78h2v1h-2zM21 75h2v1h-2zM41 82h7v1h-7zM42 79h5v1h-5zM43 76h3v1h-3zM44 73h2v1h-2zM45 70h2v1h-2zM66 80h5v1h-5zM67 77h3v1h-3zM68 74h2v1h-2zM69 71h2v1h-2zM101 86h7v1h-7zM102 83h5v1h-5zM103 80h3v1h-3zM104 77h2v1h-2zM105 74h2v1h-2zM146 78h9v1h-9zM147 75h7v1h-7zM148 72h5v1h-5zM149 69h3v1h-3zM150 66h2v1h-2zM151 63h2v1h-2zM168 82h5v1h-5zM169 79h3v1h-3zM170 76h2v1h-2zM171 73h2v1h-2zM187 86h7v1h-7zM188 83h5v1h-5zM189 80h3v1h-3zM190 77h2v1h-2zM191 74h2v1h-2zM224 82h5v1h-5zM225 79h3v1h-3zM226 76h2v1h-2zM227 73h2v1h-2zM236 78h9v1h-9zM237 75h7v1h-7zM238 72h5v1h-5zM239 69h3v1h-3zM240 66h2v1h-2zM241 63h2v1h-2zM273 84h7v1h-7zM274 81h5v1h-5zM275 78h3v1h-3zM276 75h2v1h-2zM277 72h2v1h-2zM302 82h5v1h-5zM303 79h3v1h-3zM304 76h2v1h-2zM305 73h2v1h-2zM312 80h9v1h-9zM313 77h7v1h-7zM314 74h5v1h-5zM315 71h3v1h-3zM316 68h2v1h-2zM317 65h2v1h-2z"/><path fill="#4a3524" d="M7 87h2v3h-2zM21 87h2v3h-2zM45 85h2v3h-2zM69 83h2v3h-2zM105 89h2v3h-2zM151 81h2v3h-2zM171 85h2v3h-2zM191 89h2v3h-2zM227 85h2v3h-2zM241 81h2v3h-2zM277 87h2v3h-2zM305 85h2v3h-2zM317 83h2v3h-2z"/><path fill="#8fd0f2" d="M122 84h6v6h-6zM128 84h6v6h-6zM125 78h6v6h-6zM84 80h6v6h-6zM254 82h6v6h-6zM260 82h6v6h-6z"/><path fill="#c7ecff" d="M122 84h6v1h-6zM122 84h1v6h-1zM124 86h1v1h-1zM125 87h1v1h-1zM128 84h6v1h-6zM128 84h1v6h-1zM130 86h1v1h-1zM131 87h1v1h-1zM125 78h6v1h-6zM125 78h1v6h-1zM127 80h1v1h-1zM128 81h1v1h-1zM84 80h6v1h-6zM84 80h1v6h-1zM86 82h1v1h-1zM87 83h1v1h-1zM254 82h6v1h-6zM254 82h1v6h-1zM256 84h1v1h-1zM257 85h1v1h-1zM260 82h6v1h-6zM260 82h1v6h-1zM262 84h1v1h-1zM263 85h1v1h-1z"/><path fill="#5fb2df" d="M127 85h1v5h-1zM123 89h5v1h-5zM133 85h1v5h-1zM129 89h5v1h-5zM130 79h1v5h-1zM126 83h5v1h-5zM89 81h1v5h-1zM85 85h5v1h-5zM259 83h1v5h-1zM255 87h5v1h-5zM265 83h1v5h-1zM261 87h5v1h-5z"/></svg>
+  <div class="flakes" id="flakes"></div>
+  <div class="wrap hero-in">
+    <div>
+      <span class="tag"><i></i>DISCORD BOT</span>
+      <h1>IceMine <span>Bot</span></h1>
+      <p class="lead">Az IceMine Discord szerver saját, magyar nyelvű botja. Összeköti a weboldalas fiókodat a Discorddal, kiosztja a rangokat, és intézi a ticketeket, a szinteket meg a nyereményjátékokat.</p>
+      <div class="cta">
+        <a class="btn mc lila" href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Csatlakozás a Discordhoz</a>
+        <a class="btn mc ghost" href="#parancsok"><svg class="i" viewBox="0 0 24 24"><path d="M4 17l6-6-6-6M12 19h8"/></svg>Parancsok</a>
+      </div>
+      <div class="facts">
+        <span><b id="fCount">53</b> parancs</span>
+        <span><b>5</b> kategória</span>
+        <span>Magyar nyelvű</span>
+      </div>
+    </div>
+    <div class="dcw" aria-hidden="true">
+      <div class="dc">
+        <div class="dc-top"><span class="h">#</span>parancsok<span class="w"><i></i><i></i><i></i></span></div>
+        <div class="dc-msg">
+          <div class="dc-used"><span class="ua">S</span>Steve használta: <b>/segitseg</b></div>
+          <img class="dc-av" src="logo.png" alt="" width="42" height="42">
+          <div>
+            <div class="dc-name">IceMine <span class="app">APP</span><time>Ma 18:42</time></div>
+            <div class="dc-card">
+              <img class="dc-ban" src="parancsok.jpg" alt="" width="1200" height="400">
+              <h4>🎮 Alap</h4>
+              <ul>
+                <li><code>/ip</code> · szervercím és verziók</li>
+                <li><code>/statusz</code> · fent van-e a szerver</li>
+                <li><code>/osszekotes</code> · weboldal fiók összekötése</li>
+                <li><code>/szint</code> · a szinted és az XP-d</li>
+                <li class="dc-hide"><code>/napi</code> · napi XP jutalom</li>
+              </ul>
+              <hr>
+              <div class="dc-sel">Válassz kategóriát…<svg class="i" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div>
+              <div class="dc-foot">🧊 IceMine • play.icemine.hu</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="funkciok">
+  <div class="wrap">
+    <div class="sh c">
+      <span class="eyebrow">Funkciók</span>
+      <h2>Minden, ami a szerverhez kell</h2>
+      <p>A bot éjjel-nappal fut, és összeköti a Discordot a weboldallal meg a Minecraft szerverrel.</p>
+    </div>
+    <div class="feat">
+      <article class="f hot">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 006.4 0l3-3a4.5 4.5 0 00-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 00-6.4 0l-3 3a4.5 4.5 0 006.4 6.4l1.2-1.2"/></svg></div>
+        <h3>Fiók összekötés</h3>
+        <p>Kösd össze a weboldalas fiókodat a Discorddal, és a rangod magától megjelenik a Discordon is. <a href="#osszekotes">Így működik</a></p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M4 6h16v4a2 2 0 000 4v4H4v-4a2 2 0 000-4z"/><path d="M14.5 6v2.5M14.5 10.8v2.4M14.5 15.5V18"/></svg></div>
+        <h3>Ticketek</h3>
+        <p>Egy gombnyomással privát csatornát nyitsz a staffal, ha segítség kell vagy valamit jelentenél.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M4 20h16"/><path d="M7 16v-4M12 16V8M17 16V4"/></svg></div>
+        <h3>Szintek és toplista</h3>
+        <p>Az aktivitásért XP jár, szintenként rangokkal. Napi jutalom sorozat bónusszal és toplista a legaktívabbakról.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="8" width="17" height="4" rx="1"/><path d="M5 12v8h14v-8M12 8v12M12 8C10.5 4.5 7 4 7 6s2.5 2 5 2zm0 0c1.5-3.5 5-4 5-2s-2.5 2-5 2z"/></svg></div>
+        <h3>Nyereményjátékok</h3>
+        <p>Gombos jelentkezés, automatikus sorsolás a végén, és ha kell, újrasorsolás egy paranccsal.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M9 18h6M10 21h4M12 3a6 6 0 00-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0012 3z"/></svg></div>
+        <h3>Ötletek</h3>
+        <p>Küldd be az ötleted a szerverhez, a többiek gombbal támogathatják, a staff pedig válaszol rá.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M3 12h4l3 7 4-14 3 7h4"/></svg></div>
+        <h3>Élő szerverállapot</h3>
+        <p>Percenként frissülő panel: fent van-e a Minecraft szerver, és éppen hányan játszanak.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4.5" width="18" height="6" rx="3"/><circle cx="15" cy="7.5" r="1.4"/><rect x="3" y="13.5" width="18" height="6" rx="3"/><circle cx="9" cy="16.5" r="1.4"/></svg></div>
+        <h3>Rangválasztó</h3>
+        <p>Gombokkal magad veheted fel vagy le a rangokat, például az értesítésekhez.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l7 3v5c0 4.5-3 8.5-7 10-4-1.5-7-5.5-7-10V6z"/><path d="M9 12l2 2 4-4"/></svg></div>
+        <h3>Moderálás és napló</h3>
+        <p>Figyelmeztetések, némítás, kitiltás, linkszűrő, és részletes napló mindenről, ami a szerveren történik.</p>
+      </article>
+      <article class="f">
+        <div class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="3.5"/><path d="M9 9h.01M15 9h.01M9 15h.01M15 15h.01M12 12h.01" stroke-width="3"/></svg></div>
+        <h3>Szórakozás</h3>
+        <p>Minecraft kvíz XP-ért, kő-papír-olló a bot ellen, varázsgömb, kocka, szerelemmérő és még sok más.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<section class="tint" id="osszekotes">
+  <div class="wrap link">
+    <div class="sh">
+      <span class="eyebrow">Fiók összekötés</span>
+      <h2>A rangod a Discordon is, magától</h2>
+      <p>Kösd össze a fiókodat az IceMine Discorddal ahhoz, hogy automatikusan igényeld a rangot. Ha később új rangot kapsz a weboldalon, a bot a Discordon is frissíti.</p>
+      <a class="btn mc" href="https://icemine.hu" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.4 5.2 3.4 8.5s-1 6.1-3.4 8.5c-2.4-2.4-3.4-5.2-3.4-8.5s1-6.1 3.4-8.5z"/></svg>Irány a weboldal</a>
+    </div>
+    <ol class="steps">
+      <li><b>Kérj kódot a weboldalon</b><span>Jelentkezz be az icemine.hu-n, és a Karakter oldalon nyomj a „Kód kérése” gombra.</span></li>
+      <li><b>Írd be a Discordon</b><span>Bármelyik csatornában használd a parancsot a kapott 6 jegyű kóddal, például:<br><code>/osszekotes kod:482915</code></span></li>
+      <li><b>Kész is</b><span>A bot összeköti a két fiókot, és megkapod a rangodat a Discordon. A <code>/fiok</code> paranccsal bármikor megnézheted.</span></li>
+    </ol>
+  </div>
+</section>
+
+<section id="parancsok">
+  <div class="wrap">
+    <div class="sh c">
+      <span class="eyebrow">Parancsok</span>
+      <h2>Az összes parancs</h2>
+      <p>A Discordon írj be egy perjelet (<b>/</b>), és válaszd ki a parancsot a listából. Itt kereshetsz is köztük.</p>
+    </div>
+    <div class="ctools">
+      <label class="search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg><input id="q" type="search" placeholder="Keresés, pl. szint vagy ticket" autocomplete="off" aria-label="Parancs keresése"></label>
+      <div class="tabs" id="tabs" role="group" aria-label="Kategóriák"></div>
+    </div>
+    <div class="clist" id="clist" aria-live="polite"></div>
+    <p class="note">A Staff és Admin parancsokat csak a megfelelő jogosultsággal látod a Discordon.</p>
+  </div>
+</section>
+
+<section class="tint">
+  <div class="wrap">
+    <div class="join">
+      <img src="logo.png" alt="" width="88" height="88">
+      <div>
+        <h2>Gyere, játssz velünk!</h2>
+        <p>Csatlakozz az IceMine Discordhoz, és lépj fel a szerverre is. Java és Bedrock, 1.20 – 1.21.x.</p>
+      </div>
+      <div class="jbtns">
+        <a class="btn mc lila" href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Discord</a>
+        <button class="ipchip" id="ip" type="button" aria-label="Szerver IP másolása: play.icemine.hu"><span class="g"></span><span id="ipT">play.icemine.hu</span><svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 011-1h10"/></svg></button>
+      </div>
+    </div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <div class="fin">
+      <div class="fbrand">
+        <img src="logo.png" alt="" width="40" height="40">
+        <div><span class="bname"><b>Ice</b>Mine Bot</span><small>Az IceMine Discord szerver saját botja</small></div>
+      </div>
+      <nav class="links" aria-label="Elérhetőségek">
+        <a href="https://icemine.hu"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M3.5 12h17M12 3.5c2.4 2.4 3.4 5.2 3.4 8.5s-1 6.1-3.4 8.5c-2.4-2.4-3.4-5.2-3.4-8.5s1-6.1 3.4-8.5z"/></svg>icemine.hu</a>
+        <a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><path fill="currentColor" d="M20.317 4.3698a19.7913 19.7913 0 00-4.8851-1.5152.0741.0741 0 00-.0785.0371c-.211.3753-.4447.8648-.6083 1.2495-1.8447-.2762-3.68-.2762-5.4868 0-.1636-.3933-.4058-.8742-.6177-1.2495a.077.077 0 00-.0785-.037 19.7363 19.7363 0 00-4.8852 1.515.0699.0699 0 00-.0321.0277C.5334 9.0458-.319 13.5799.0992 18.0578a.0824.0824 0 00.0312.0561c2.0528 1.5076 4.0413 2.4228 5.9929 3.0294a.0777.0777 0 00.0842-.0276c.4616-.6304.8731-1.2952 1.226-1.9942a.076.076 0 00-.0416-.1057c-.6528-.2476-1.2743-.5495-1.8722-.8923a.077.077 0 01-.0076-.1277c.1258-.0943.2517-.1923.3718-.2914a.0743.0743 0 01.0776-.0105c3.9278 1.7933 8.18 1.7933 12.0614 0a.0739.0739 0 01.0785.0095c.1202.099.246.1981.3728.2924a.077.077 0 01-.0066.1276 12.2986 12.2986 0 01-1.873.8914.0766.0766 0 00-.0407.1067c.3604.698.7719 1.3628 1.225 1.9932a.076.076 0 00.0842.0286c1.961-.6067 3.9495-1.5219 6.0023-3.0294a.077.077 0 00.0313-.0552c.5004-5.177-.8382-9.6739-3.5485-13.6604a.061.061 0 00-.0312-.0286zM8.02 15.3312c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9555-2.4189 2.157-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.9555 2.4189-2.1569 2.4189zm7.9748 0c-1.1825 0-2.1569-1.0857-2.1569-2.419 0-1.3332.9554-2.4189 2.1569-2.4189 1.2108 0 2.1757 1.0952 2.1568 2.419 0 1.3332-.946 2.4189-2.1568 2.4189Z"/></svg>Discord</a>
+        <a href="https://youtube.com/@icemine_1" target="_blank" rel="noopener"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="2.5" y="5.5" width="19" height="13" rx="4" fill="#ff0033"/><path fill="#fff" d="M10 9.2v5.6l4.8-2.8z"/></svg>YouTube</a>
+        <a href="https://www.instagram.com/icemine_1" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="5"/><circle cx="12" cy="12" r="3.6"/><path d="M16.8 7.2h.01"/></svg>Instagram</a>
+        <a href="mailto:support@icemine.hu"><svg class="i" viewBox="0 0 24 24"><rect x="3.5" y="5.5" width="17" height="13" rx="2"/><path d="M3.5 7.5l8.5 6 8.5-6"/></svg>support@icemine.hu</a>
+      </nav>
+    </div>
+    <p class="disc">Az IceMine nem hivatalos Minecraft szolgáltatás. Nem a Mojang vagy a Microsoft jóváhagyásával készült, és nem áll kapcsolatban velük. A Discord a Discord Inc. védjegye.</p>
+  </div>
+</footer>
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  const $=s=>document.querySelector(s),root=document.documentElement;
+  const CMDS=[{"k":"alap","n":"ip","d":"Szervercím és verziók"},{"k":"alap","n":"statusz","d":"Fent van-e a szerver, és hányan játszanak"},{"k":"alap","n":"weboldal","d":"Az IceMine weboldala"},{"k":"alap","n":"linkek","d":"Weboldal, Discord, YouTube, Instagram, e-mail"},{"k":"alap","n":"szabalyzat","d":"Hol olvashatod a szabályzatot"},{"k":"alap","n":"info","d":"Adatok egy tagról","a":["tag"]},{"k":"alap","n":"szint","d":"A szinted, vagy valaki másé","a":["tag"]},{"k":"alap","n":"toplista","d":"A legaktívabb tagok"},{"k":"alap","n":"napi","d":"Napi XP jutalom, sorozat bónusszal"},{"k":"alap","n":"otlet","d":"Ötlet beküldése a szerverhez","a":["otlet"]},{"k":"alap","n":"osszekotes","d":"A weboldalas fiókod összekötése a Discorddal","a":["kod"]},{"k":"alap","n":"fiok","d":"A weboldalas fiókod (vagy másé)","a":["tag"]},{"k":"alap","n":"segitseg","d":"A bot parancsai"},{"k":"szorakozas","n":"trivia","d":"Minecraft kvíz, jó válaszért XP jár"},{"k":"szorakozas","n":"kpo","d":"Kő, papír, olló a bot ellen"},{"k":"szorakozas","n":"8ball","d":"Kérdezd meg a varázsgömböt","a":["kerdes"]},{"k":"szorakozas","n":"fej-vagy-iras","d":"Pénzfeldobás","a":["tipp"]},{"k":"szorakozas","n":"kocka","d":"Dobókocka","a":["oldalak","db"]},{"k":"szorakozas","n":"szerelem","d":"Szerelemmérő két ember között","a":["tag","masik"]},{"k":"szorakozas","n":"tipp","d":"Egy hasznos Minecraft tipp"},{"k":"szorakozas","n":"avatar","d":"Valakinek a profilképe nagyban","a":["tag"]},{"k":"kozosseg","n":"skin","d":"Minecraft skin megtekintése","a":["nev"]},{"k":"kozosseg","n":"szerverinfo","d":"A Discord szerver adatai"},{"k":"kozosseg","n":"emlekezteto","d":"Szólok, ha eljön az idő","a":["ido","szoveg"]},{"k":"kozosseg","n":"afk","d":"Jelezd, hogy nem vagy gépnél","a":["ok"]},{"k":"kozosseg","n":"szamol","d":"Számológép, pl. (64*3)+12","a":["kifejezes"]},{"k":"kozosseg","n":"meghivo","d":"Meghívó link a Discordra"},{"k":"kozosseg","n":"botinfo","d":"Adatok a botról"},{"k":"kozosseg","n":"ping","d":"A bot válaszideje"},{"k":"staff","n":"bejelentes","d":"Bejelentés küldése","a":["csatorna","everyone","rang","kep"]},{"k":"staff","n":"mondd","d":"Üzenet a bot nevében","a":["csatorna","kartya","szin"]},{"k":"staff","n":"szavazas","d":"Szavazás indítása ebben a csatornában","a":["kerdes","valasz1–5","ora","tobb"]},{"k":"staff","n":"esemeny","d":"Esemény kiírása jelentkezéssel","a":["cim","mikor","leiras","csatorna","ping"]},{"k":"staff","n":"torles","d":"Üzenetek törlése ebből a csatornából","a":["mennyiseg","tag"]},{"k":"staff","n":"lassitas","d":"Lassított mód ebben a csatornában","a":["masodperc"]},{"k":"staff","n":"zarolas","d":"Csatorna lezárása vagy feloldása","a":["be","ok"]},{"k":"staff","n":"nemitas","d":"Tag lenémítása","a":["tag","ido","ok"]},{"k":"staff","n":"figyelmeztetes","d":"Figyelmeztetések","s":[["adas","Figyelmeztetés adása"],["lista","Egy tag figyelmeztetései"],["visszavonas","Egy figyelmeztetés visszavonása"],["torles","Egy tag összes figyelmeztetésének törlése"]]},{"k":"staff","n":"kirugas","d":"Tag kirúgása a Discordról","a":["tag","ok"]},{"k":"staff","n":"kitiltas","d":"Tag kitiltása a Discordról","a":["tag","ok","ido","uzenetek_torlese"]},{"k":"staff","n":"kitiltas-feloldas","d":"Kitiltás feloldása","a":["felhasznalo_id"]},{"k":"staff","n":"becenev","d":"Becenév módosítása","a":["tag","nev"]},{"k":"staff","n":"rang","d":"Rang adása vagy elvétele","s":[["adas","Rang adása"],["elvetel","Rang elvétele"]]},{"k":"staff","n":"ticket","d":"Ticket kezelése (a ticket csatornában)","s":[["hozzaad","Valaki hozzáadása a tickethez"],["eltavolit","Valaki kivétele a ticketből"]]},{"k":"staff","n":"otlet-valasz","d":"Válasz egy beküldött ötletre","a":["uzenet","dontes","megjegyzes"]},{"k":"admin","n":"beallitas","d":"A bot beállításai","s":[["mutat","A jelenlegi beállítások"],["udvozlo","Ide köszönti a bot az új tagokat"],["otletek","Ide kerülnek az ötletek"],["naplo","Naplócsatorna beállítása (fő napló vagy egy-egy témának külön)"],["vasarlasok","Ide küldöm a weboldalas vásárlásokat"],["webrang","Melyik Discord rang tartozzon egy weboldal ranghoz"],["ticket","Ticket kategória és a staff rang"],["autorang","Rang, amit minden új tag megkap"],["szamlalo","Hangcsatorna, aminek a neve mutatja, hányan vannak fent"],["linkszuro","Más Discord szerverek meghívóinak és a tömeges pingelésnek a törlése"],["szintek","Szintrendszer be/ki, és hova menjenek a szintlépések"],["szintrang","Rang, ami egy adott szinttől jár"]]},{"k":"admin","n":"rangok-letrehozas","d":"Létrehozza a weboldal rangjait a Discordon, és kiosztja őket"},{"k":"admin","n":"info-panel","d":"Információs panel kirakása (IP, weboldal, szabályzat, segítség)","a":["csatorna"]},{"k":"admin","n":"szabalyzat-panel","d":"Szabályzat panel, opcionálisan elfogadás gombbal","a":["csatorna","rang"]},{"k":"admin","n":"ticket-panel","d":"Ticket panel kirakása","a":["csatorna"]},{"k":"admin","n":"statusz-panel","d":"Élő szerverállapot panel, ami percenként frissül","a":["csatorna"]},{"k":"admin","n":"rangvalaszto","d":"Gombos rangválasztó, amivel a tagok maguk vehetnek fel rangokat","a":["csatorna","cim","rang1–10","leiras"]},{"k":"admin","n":"nyeremenyjatek","d":"Nyereményjátékok","s":[["inditas","Új nyereményjáték"],["lezaras","Lezárás és sorsolás most"],["ujrasorsolas","Új nyertes húzása egy lezárt nyereményjátékból"]]}];
+  const KAT=[["alap","Alap"],["szorakozas","Szórakozás"],["kozosseg","Közösség"],["staff","Staff"],["admin","Admin"]];
+  const COPY='<svg class="i" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a1 1 0 011-1h10"/></svg>',OK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+  const norm=s=>String(s).normalize("NFD").replace(/[̀-ͯ]/g,"").toLowerCase();
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  $("#tema").onclick=()=>{
+    const cur=root.getAttribute("data-theme"),dark=cur?cur==="dark":matchMedia("(prefers-color-scheme: dark)").matches,next=dark?"light":"dark";
+    root.setAttribute("data-theme",next);
+    try{localStorage.setItem("imbot-tema",next)}catch(e){}
+  };
+
+  const bar=$("#bar"),onScroll=()=>bar.classList.toggle("solid",scrollY>30);
+  addEventListener("scroll",onScroll,{passive:true});onScroll();
+
+  if(!reduce){
+    const box=$("#flakes"),sc=box.parentNode,setFall=()=>box.style.setProperty("--fall",(sc.offsetHeight+12)+"px");
+    for(let k=0;k<44;k++){const i=document.createElement("i"),s=k%5===0?4:k%3===0?3:2;i.style.cssText=`left:${Math.random()*100}%;width:${s}px;height:${s}px;opacity:${(.45+Math.random()*.5).toFixed(2)};--dx:${Math.round(Math.random()*60-30)}px;animation-duration:${(7+Math.random()*9).toFixed(1)}s;animation-delay:-${(Math.random()*16).toFixed(1)}s`;box.appendChild(i)}
+    setFall();addEventListener("resize",setFall);
+  }
+
+  let tT;
+  function toast(t){const el=$("#toast");el.textContent=t;el.classList.add("on");clearTimeout(tT);tT=setTimeout(()=>el.classList.remove("on"),1800)}
+  async function copyText(s){
+    try{await navigator.clipboard.writeText(s);return true}catch(e){}
+    try{const ta=document.createElement("textarea");ta.value=s;ta.setAttribute("readonly","");ta.style.cssText="position:fixed;opacity:0;top:0;left:0";document.body.appendChild(ta);ta.select();const ok=document.execCommand("copy");ta.remove();return ok}catch(e){return false}
+  }
+
+  $("#fCount").textContent=CMDS.length;
+  let kat="",q="";
+  const tabs=$("#tabs"),list=$("#clist");
+  tabs.innerHTML=[["","Összes"]].concat(KAT).map(([k,n])=>`<button type="button" data-k="${k}" aria-pressed="${k===kat}">${n}<small>${k?CMDS.filter(c=>c.k===k).length:CMDS.length}</small></button>`).join("");
+  tabs.onclick=e=>{const b=e.target.closest("button");if(!b)return;kat=b.dataset.k;tabs.querySelectorAll("button").forEach(x=>x.setAttribute("aria-pressed",x===b));render()};
+  $("#q").addEventListener("input",e=>{q=e.target.value;render()});
+
+  function card(c){
+    const badge=c.k==="staff"?'<span class="b staff">Staff</span>':c.k==="admin"?'<span class="b admin">Admin</span>':"";
+    const args=(c.a||[]).map(a=>`<span class="a mono">${esc(a)}</span>`).join("");
+    const subs=c.s&&c.s.length?`<ul>${c.s.map(([n,d])=>`<li><b>${esc(n)}</b> · ${esc(d)}</li>`).join("")}</ul>`:"";
+    return `<article class="cmd"><div class="n"><code>/${esc(c.n)}</code>${args}${badge}</div><p>${esc(c.d)}</p>${subs}<button class="cpy" type="button" data-c="/${esc(c.n)}" aria-label="/${esc(c.n)} másolása">${COPY}</button></article>`;
+  }
+  function render(){
+    const nq=norm(q.trim().replace(/^\//,""));
+    const out=CMDS.filter(c=>(!kat||c.k===kat)&&(!nq||norm([c.n,c.d].concat((c.s||[]).flat()).join(" ")).includes(nq)));
+    list.innerHTML=out.length?out.map(card).join(""):'<p class="empty">Nincs ilyen parancs. Próbálj más szót, vagy válaszd az Összes fület.</p>';
+  }
+  render();
+
+  list.onclick=async e=>{
+    const b=e.target.closest(".cpy");if(!b)return;
+    const ok=await copyText(b.dataset.c);
+    if(ok){b.innerHTML=OK;setTimeout(()=>{b.innerHTML=COPY},1400);toast("Kimásolva: "+b.dataset.c)}else toast("Nem sikerült másolni");
+  };
+
+  let ipT;
+  $("#ip").onclick=async()=>{
+    const b=$("#ip"),t=$("#ipT");if(!b.style.minWidth)b.style.minWidth=b.offsetWidth+"px";b.style.justifyContent="center";
+    const ok=await copyText("play.icemine.hu");clearTimeout(ipT);
+    t.textContent=ok?"IP kimásolva!":"play.icemine.hu";b.classList.toggle("ok",ok);
+    if(!ok)toast("Nem sikerült másolni");
+    ipT=setTimeout(()=>{t.textContent="play.icemine.hu";b.classList.remove("ok")},1600);
+  };
+})();
+</script>
+</body>
+</html>
