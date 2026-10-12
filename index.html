@@ -311,8 +311,37 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .win{display:flex;align-items:center;justify-content:center;gap:16px;max-width:380px;margin:18px auto 0;padding:16px 24px;border-radius:24px;background:linear-gradient(135deg,color-mix(in srgb,#3fb4ff 22%,var(--solid)),var(--solid));box-shadow:inset 0 0 0 2px color-mix(in srgb,#3fb4ff 80%,transparent),0 20px 38px -20px #1c6fd6;animation:pop .55s cubic-bezier(.2,1.4,.4,1)}
 .win .pcoin{width:48px;height:48px;flex:none}
 .win .wt{font:800 14px Sora,sans-serif;color:var(--mute)}
+.win .gem{flex:none;width:48px;height:48px;filter:drop-shadow(0 6px 8px #0000004d)}
+.win.r-bronz{background:linear-gradient(135deg,color-mix(in srgb,#f3b783 32%,var(--solid)),var(--solid));box-shadow:inset 0 0 0 2px #c46f37cc,0 20px 38px -20px #7a3d17}
+.win.r-bronz .wa{background-image:linear-gradient(135deg,#e39a5f,#7a3d17)}
+.spin small{display:block;margin-top:3px;font-size:.8em;letter-spacing:0;text-transform:none;opacity:.92}
+.spininfo{max-width:440px;margin:10px auto 0;text-align:center;color:var(--mute);font-weight:600;font-size:14.5px;line-height:1.45}
+.spininfo b{color:var(--ink)}
+.skinpanel{margin-top:16px;padding:20px 22px}
+.sphead{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:16px}
+.sphead .x{flex:none;width:38px;height:38px;border:0;border-radius:50%;background:var(--bg2);color:var(--ink);font:700 22px/1 Sora,sans-serif;cursor:pointer}
+.spgrid{display:grid;grid-template-columns:160px 1fr;gap:22px;align-items:start}
+.spprev{display:grid;place-items:center;height:250px;border-radius:18px;background:radial-gradient(closest-side,color-mix(in srgb,var(--glow) 38%,transparent),transparent),var(--bg2);box-shadow:inset 0 0 0 1px var(--line)}
+.spprev img{height:210px;width:auto;image-rendering:pixelated;filter:drop-shadow(0 12px 14px #0b3a5b55)}
+.spprev span{padding:0 16px;text-align:center;color:var(--mute);font-weight:700;font-size:13.5px}
+.spside{display:grid;gap:12px;align-content:start}
+.spside .hint{margin:0}
+.spfile{display:inline-flex;align-items:center;justify-content:center;gap:8px;justify-self:start;cursor:pointer}
+.spfile svg{width:18px;height:18px}
+.spact{display:flex;gap:10px;flex-wrap:wrap}
+.spgame{display:grid;grid-template-columns:1fr auto;align-items:center;gap:8px 12px;margin-top:18px;padding:14px 16px;border-radius:16px;background:var(--bg2)}
+.spgame small{grid-column:1/-1;color:var(--mute);font-weight:700;font-size:13px}
+.spgame code{min-width:0;overflow-wrap:anywhere;font:600 13.5px ui-monospace,Menlo,Consolas,monospace;color:var(--ink)}
+.spgame .btn{margin:0;padding:10px 16px}
+#skinMsg:empty{display:none}
+@media (max-width:560px){.skinpanel{padding:18px 16px}.spgrid{grid-template-columns:1fr}.spprev{height:230px}.spfile{justify-self:stretch}.spact .btn{flex:1}.spgame{grid-template-columns:1fr}.spgame .btn{justify-self:start}}
 .win .wa{font:800 31px Sora,sans-serif;letter-spacing:-.02em;line-height:1.1;background:linear-gradient(135deg,#3fb4ff,#1557a8);-webkit-background-clip:text;background-clip:text;color:transparent}
 @keyframes pop{from{transform:scale(.85);opacity:0}to{transform:none;opacity:1}}
+#payNote .win{margin:0 auto 22px}
+.pnote{display:flex;align-items:center;gap:14px;margin:0 0 22px;padding:15px 18px;border-radius:18px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh);color:var(--mute);font-weight:600;font-size:14.5px;line-height:1.45}
+.pnote b{display:block;color:var(--ink);font:800 15.5px Sora,sans-serif;margin-bottom:2px}
+.pnote .ring{flex:none;width:24px;height:24px;border-radius:50%;border:3px solid var(--ice);border-right-color:transparent;animation:pnspin .9s linear infinite}
+@keyframes pnspin{to{transform:rotate(360deg)}}
 .tcard{margin-top:16px;text-align:left}
 .thead{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap}
 .avail{display:inline-flex;align-items:center;gap:7px;padding:5px 12px;border-radius:999px;background:var(--bg2);font-weight:700;font-size:13.5px;color:var(--mute)}
@@ -362,7 +391,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
   .quick button{padding:10px 14px}
   .tile a{display:inline-block;padding:8px 0;margin-top:0}
 }
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#side{transition:none}#wheelRot{transition:none}.flakes{display:none}.btn.mc,.aswitch button{transition:none}.btn.mc:hover::after{animation:none}.win,.lose,.pointer.kick{animation:none}.pack,.check,.spin{transition:none}.chip.on i{animation:none}}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#side{transition:none}#wheelRot{transition:none}.flakes{display:none}.btn.mc,.aswitch button{transition:none}.btn.mc:hover::after{animation:none}.win,.lose,.pointer.kick{animation:none}.pack,.check,.spin{transition:none}.chip.on i{animation:none}.pnote .ring{animation:none}}
 </style>
 </head>
 <body>
@@ -477,10 +506,24 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
             <span class="rankpill"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg><span id="cRank">default</span></span>
             <h2 class="cNick" id="cNick">–</h2>
             <p class="since" id="cSince"></p>
-            <button class="btn glass tbtn" type="button" data-soon="A skin kezelés"><svg class="i" viewBox="0 0 24 24"><path d="M8 3L3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-1 2-2.4 3-4 3S9 5 8 3z"/></svg>Skin kezelés</button>
+            <button class="btn glass tbtn" type="button" id="skinBtn" aria-controls="skinPanel"><svg class="i" viewBox="0 0 24 24"><path d="M8 3L3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-1 2-2.4 3-4 3S9 5 8 3z"/></svg>Skin kezelés</button>
           </div>
         </div>
         <div class="msg" id="cMsg" aria-live="polite"></div>
+        <div class="card skinpanel" id="skinPanel" hidden>
+          <div class="sphead"><div class="px" style="font-size:19px">Skin kezelés</div><button class="x" type="button" id="skinClose" aria-label="Bezárás">×</button></div>
+          <div class="spgrid">
+            <div class="spprev"><img id="skinPrev" alt="Skin előnézet" hidden><span id="skinPrevEmpty">Válassz egy skint, és itt látod, hogy fog kinézni.</span></div>
+            <div class="spside">
+              <label class="btn mc spfile"><svg class="i" viewBox="0 0 24 24"><path d="M12 16V4M7 9l5-5 5 5M4 16v3a1 1 0 001 1h14a1 1 0 001-1v-3"/></svg>Skin kiválasztása<input type="file" id="skinFile" accept="image/png" hidden></label>
+              <p class="hint">64×64 pixeles PNG kép. Kész skint letölthetsz skin oldalakról, vagy rajzolhatsz sajátot.</p>
+              <div class="rmodes spmodel" role="group" aria-label="Kar típusa"><button type="button" data-slim="0" aria-pressed="true">Klasszikus kar</button><button type="button" data-slim="1" aria-pressed="false">Vékony kar</button></div>
+              <div class="spact"><button class="btn mc" type="button" id="skinSave" disabled>Mentés</button><button class="btn alt" type="button" id="skinReset" hidden>Alap skin visszaállítása</button></div>
+              <div class="msg" id="skinMsg" aria-live="polite"></div>
+            </div>
+          </div>
+          <div class="spgame" id="skinGame" hidden><small>Játékban ezzel a paranccsal állíthatod be:</small><code id="skinCmd"></code><button class="btn glass" type="button" id="skinCopy">Másolás</button></div>
+        </div>
         <div class="stats">
           <div class="tile gold"><span class="ti"><span class="pcoin"></span></span><small>IceCoin</small><b id="cCoin">0</b><a href="#vasarlas">Feltöltés →</a></div>
           <div class="tile"><span class="ti"><svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><small>Rang</small><b id="cRankN">default</b><span>Lejárat: soha</span></div>
@@ -517,6 +560,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
           <div><h2>Rangok</h2><p>Válassz rangot, és vedd meg IceCoinért vagy forintért.</p></div>
           <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="rankBal">0</b></div>
         </div>
+        <div id="rankNote" role="status" aria-live="polite"></div>
         <div class="rbar"><small>Jutalmak ebben a játékmódban:</small><div class="rmodes" id="rModes" role="group" aria-label="Játékmód"></div></div>
         <div class="msg" id="rankMsg" aria-live="polite"></div>
         <div class="rgrid" id="rankGrid"></div>
@@ -528,6 +572,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
           <div><h2>IceCoin vásárlás</h2><p>Válassz csomagot, és töltsd fel az egyenleged.</p></div>
           <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="shopBal">0</b></div>
         </div>
+        <div id="payNote" role="status" aria-live="polite"></div>
         <div class="packs" id="packs" role="radiogroup" aria-label="IceCoin csomagok"></div>
         <div class="checkout">
           <div class="sel"><small>Kiválasztott csomag</small><b id="coSel">Válassz egy csomagot</b><span id="coPrice"></span></div>
@@ -544,7 +589,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 
       <section class="page" data-page="szerencsekerek">
         <div class="shophero">
-          <div><h2>Szerencsekerék</h2><p>Hetente egy ingyenes pörgetés. Nyerj akár 150 IceCoint!</p></div>
+          <div><h2>Szerencsekerék</h2><p>Hetente egy ingyenes pörgetés, utána 50 IceCoinért pörgethetsz újra. Nyerj IceCoint, vagy akár Bronz rangot!</p></div>
           <div class="balpill"><i class="dot" id="spinDot"></i><span id="spinStateTxt">Ezen a héten még pörgethetsz</span></div>
         </div>
         <div class="wheelstage">
@@ -554,6 +599,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
             <button class="spin" id="spinBtn" type="button">Pörgetés</button>
           </div>
         </div>
+        <p class="spininfo" id="spinInfo"></p>
         <div class="win" id="winBox" hidden></div>
         <div class="lose" id="loseBox" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 3 3-3M9 20l3-3 3 3M4 10.5l4 1-1.5 4M20 13.5l-4-1 1.5-4M4 13.5l4-1-1.5-4M20 10.5l-4 1 1.5 4"/></svg><span>Sajnálom, de mai nap nem jártál szerencsével..</span></div>
         <div class="msg" id="spinMsg" aria-live="polite"></div>
@@ -630,8 +676,13 @@ async function api(path,body){
   const o={method:body?"POST":"GET",headers:{"Content-Type":"application/json"}};
   if(token)o.headers.Authorization="Bearer "+token;
   if(body)o.body=JSON.stringify(body);
-  try{const r=await fetch(path,o);const d=await r.json().catch(()=>({}));return Object.assign({s:r.status},d)}
-  catch(e){return {s:0,error:"A szerver nem érhető el. Próbáld újra."}}
+  try{
+    const ctl=new AbortController(),tm=setTimeout(()=>ctl.abort(),25000);o.signal=ctl.signal;
+    const r=await fetch(path,o);clearTimeout(tm);
+    const d=await r.json().catch(()=>({}));
+    if(!r.ok&&!d.error)d.error="A szerver most nem válaszol ("+r.status+"). Próbáld újra pár perc múlva.";
+    return Object.assign({s:r.status},d);
+  }catch(e){return {s:0,error:"A szerver nem érhető el. Ellenőrizd a netet, vagy próbáld újra később."}}
 }
 const msg=(sel,t,c)=>{const m=$(sel);m.textContent=t;m.className="msg "+(c||"")};
 const fmtN=n=>String(n).replace(/\B(?=(\d{3})+(?!\d))/g,"\u00a0");
@@ -780,7 +831,81 @@ skin.onerror=()=>{skin.hidden=true;$("#fig").hidden=false};
 const pad=n=>String(n).padStart(2,"0");
 function fmt(t){if(!t)return "–";const d=new Date(t);return d.getFullYear()+"-"+pad(d.getMonth()+1)+"-"+pad(d.getDate())+" "+pad(d.getHours())+":"+pad(d.getMinutes())+":"+pad(d.getSeconds())}
 function maskMail(e){if(!e)return "–";const [l,dm]=e.split("@");return l[0]+"*".repeat(Math.max(l.length-2,1))+l.slice(-1)+"@"+dm}
-$$(".tbtn").forEach(b=>b.onclick=()=>msg("#cMsg",b.dataset.soon+" hamarosan érhető el."));
+let skinLocal=null,skinPick=null,skinSlim=false;
+const loadImg=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+const readURL=b=>new Promise((ok,no)=>{const fr=new FileReader();fr.onload=()=>ok(fr.result);fr.onerror=no;fr.readAsDataURL(b)});
+function skinFront(img,slim){
+  const k=16,c=document.createElement("canvas");c.width=16*k;c.height=32*k;
+  const g=c.getContext("2d");g.imageSmoothingEnabled=false;
+  const old=img.naturalHeight===32,aw=slim&&!old?3:4;
+  const d=(sx,sy,w,h,dx,dy,flip)=>{
+    if(!flip)return g.drawImage(img,sx,sy,w,h,dx*k,dy*k,w*k,h*k);
+    g.save();g.translate((dx+w)*k,dy*k);g.scale(-1,1);g.drawImage(img,sx,sy,w,h,0,0,w*k,h*k);g.restore();
+  };
+  d(8,8,8,8,4,0);d(20,20,8,12,4,8);d(44,20,aw,12,4-aw,8);d(4,20,4,12,4,20);
+  if(old){d(44,20,4,12,12,8,true);d(4,20,4,12,8,20,true)}else{d(36,52,aw,12,12,8);d(20,52,4,12,8,20)}
+  let hat=true;
+  if(old){const t=document.createElement("canvas");t.width=64;t.height=32;const tg=t.getContext("2d");tg.drawImage(img,0,0);const a=tg.getImageData(32,0,32,16).data;hat=false;for(let i=3;i<a.length;i+=4)if(a[i]<128){hat=true;break}}
+  if(hat)d(40,8,8,8,4,0);
+  if(!old){d(20,36,8,12,4,8);d(44,36,aw,12,4-aw,8);d(52,52,aw,12,12,8);d(4,36,4,12,4,20);d(4,52,4,12,8,20)}
+  return c.toDataURL("image/png");
+}
+function isSlim(img){
+  if(img.naturalHeight!==64)return false;
+  const t=document.createElement("canvas");t.width=64;t.height=64;const tg=t.getContext("2d");tg.drawImage(img,0,0);
+  const a=tg.getImageData(54,20,2,12).data;for(let i=3;i<a.length;i+=4)if(a[i])return false;return true;
+}
+const skinURL=u=>"/skin/"+encodeURIComponent(u.name)+".png?v="+u.skin.v;
+async function skinData(u){return skinFront(await loadImg(skinLocal&&skinLocal.v===u.skin.v?skinLocal.src:skinURL(u)),u.skin.slim)}
+function skinSync(){
+  const has=!!(user&&user.skin);
+  $("#skinReset").hidden=!has;$("#skinGame").hidden=!has;
+  if(has)$("#skinCmd").textContent='/skin url "'+location.origin+"/skin/"+user.name+'.png"'+(user.skin.slim?" slim":"");
+  $$(".spmodel button").forEach(b=>b.setAttribute("aria-pressed",String((b.dataset.slim==="1")===skinSlim)));
+}
+async function skinPreview(){
+  const im=$("#skinPrev"),em=$("#skinPrevEmpty");
+  if(!skinPick){im.hidden=true;em.hidden=false;return}
+  try{im.src=skinFront(await loadImg(skinPick),skinSlim);im.hidden=false;em.hidden=true}catch(e){im.hidden=true;em.hidden=false}
+}
+$("#skinBtn").onclick=async()=>{
+  const p=$("#skinPanel");p.hidden=!p.hidden;if(p.hidden)return;
+  msg("#skinMsg","");skinPick=null;$("#skinSave").disabled=true;skinSlim=!!(user.skin&&user.skin.slim);
+  if(user.skin){try{skinPick=skinLocal&&skinLocal.v===user.skin.v?skinLocal.src:await readURL(await (await fetch(skinURL(user))).blob())}catch(e){skinPick=null}}
+  skinSync();skinPreview();
+  p.scrollIntoView({block:"nearest",behavior:reduceMotion()?"auto":"smooth"});
+};
+$("#skinClose").onclick=()=>{$("#skinPanel").hidden=true};
+$("#skinFile").onchange=async e=>{
+  const f=e.target.files[0];e.target.value="";if(!f)return;
+  if(f.type&&f.type!=="image/png")return msg("#skinMsg","Csak PNG kép tölthető fel.","e");
+  if(f.size>32768)return msg("#skinMsg","A kép túl nagy, legfeljebb 32 KB lehet.","e");
+  let src,img;
+  try{src=await readURL(f);img=await loadImg(src)}catch(x){return msg("#skinMsg","Ezt a képet nem sikerült beolvasni.","e")}
+  if(img.naturalWidth!==64||(img.naturalHeight!==64&&img.naturalHeight!==32))return msg("#skinMsg","A skin 64×64 pixeles PNG legyen. Ez a kép "+img.naturalWidth+"×"+img.naturalHeight+" pixeles.","e");
+  skinPick=src;skinSlim=isSlim(img);msg("#skinMsg","");$("#skinSave").disabled=false;skinSync();skinPreview();
+};
+$(".spmodel").onclick=e=>{const b=e.target.closest("button");if(!b)return;skinSlim=b.dataset.slim==="1";skinSync();skinPreview();if(skinPick)$("#skinSave").disabled=false};
+$("#skinSave").onclick=async()=>{
+  if(!skinPick)return;
+  const b=$("#skinSave");b.disabled=true;msg("#skinMsg","Mentés…");
+  const d=await api("/api/skin",{data:skinPick,slim:skinSlim});
+  if(d.error||!d.user||!d.user.skin){b.disabled=false;return msg("#skinMsg",d.error||"Nem sikerült menteni.","e")}
+  skinLocal={v:d.user.skin.v,src:skinPick};user=d.user;render();skinSync();
+  msg("#skinMsg","Elmentettük a skined.","o");
+};
+$("#skinReset").onclick=async()=>{
+  if(!confirm("Biztosan visszaállítod az alap skint?"))return;
+  const d=await api("/api/skin",{reset:true});
+  if(d.error)return msg("#skinMsg",d.error,"e");
+  skinLocal=null;skinPick=null;skinSlim=false;user=d.user;render();skinSync();skinPreview();$("#skinSave").disabled=true;
+  msg("#skinMsg","Visszaállítottuk az alap skint.","o");
+};
+$("#skinCopy").onclick=async()=>{
+  const t=$("#skinCmd").textContent;
+  try{await navigator.clipboard.writeText(t);msg("#skinMsg","A parancsot kimásoltuk.","o")}
+  catch(e){const r=document.createRange();r.selectNodeContents($("#skinCmd"));const sel=getSelection();sel.removeAllRanges();sel.addRange(r);msg("#skinMsg","Jelöld ki és másold ki a parancsot.","")}
+};
 
 function render(){
   $("#auth").hidden=!!user;$("#app").hidden=!user;
@@ -794,25 +919,31 @@ function render(){
   {const esc=s=>s.replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]),m=maskMail(user.email),k=m.indexOf("@");
    $("#cMail").innerHTML=k>0?esc(m.slice(0,k))+"<wbr>"+esc(m.slice(k)):esc(m);}
   $("#fig").innerHTML=figure(user.name);
-  const src="https://mc-heads.net/body/"+encodeURIComponent(user.name)+"/260";
-  if(skin.dataset.n!==user.name){skin.dataset.n=user.name;skin.hidden=true;$("#fig").hidden=false;skin.src=src}
-  tUpdate();sUpdate();renderRanks();
+  const sk=user.skin,key=sk?"c:"+user.name+":"+sk.v+":"+(sk.slim?1:0):"n:"+user.name;
+  if(skin.dataset.n!==key){
+    skin.dataset.n=key;skin.hidden=true;$("#fig").hidden=false;
+    if(sk)skinData(user).then(u=>{if(skin.dataset.n===key)skin.src=u}).catch(()=>{});
+    else skin.src="https://mc-heads.net/body/"+encodeURIComponent(user.name)+"/260";
+  }
+  tUpdate();sUpdate();renderRanks();spinState();
 }
 
 const COIN="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 40 40%22%3E%3Cdefs%3E%3ClinearGradient id=%22r%22 x1=%220%22 y1=%220%22 x2=%221%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%23e2f7ff%22/%3E%3Cstop offset=%22.45%22 stop-color=%22%2362c4ff%22/%3E%3Cstop offset=%221%22 stop-color=%22%230d4f8a%22/%3E%3C/linearGradient%3E%3ClinearGradient id=%22f%22 x1=%22.25%22 y1=%220%22 x2=%22.75%22 y2=%221%22%3E%3Cstop offset=%220%22 stop-color=%22%239be2ff%22/%3E%3Cstop offset=%22.5%22 stop-color=%22%232b90e2%22/%3E%3Cstop offset=%221%22 stop-color=%22%2314529e%22/%3E%3C/linearGradient%3E%3C/defs%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2219.6%22 fill=%22%230a3354%22/%3E%3Ccircle cx=%2220%22 cy=%2220%22 r=%2218.2%22 fill=%22url%28%23r%29%22/%3E%3Cpath d=%22M20 5.2 32.8 12.6v14.8L20 34.8 7.2 27.4V12.6z%22 fill=%22url%28%23f%29%22 stroke=%22%230a3354%22 stroke-opacity=%22.45%22 stroke-width=%221%22/%3E%3Cpath d=%22M20 5.2V20L7.2 12.6M20 20l12.8-7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.16%22 stroke-width=%221%22 fill=%22none%22/%3E%3Cg stroke=%22%23f4fcff%22 stroke-width=%222.3%22 stroke-linecap=%22round%22 stroke-linejoin=%22round%22 fill=%22none%22%3E%3Cg transform=%22rotate%280 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%2860 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3Cg transform=%22rotate%28120 20 20%29%22%3E%3Cpath d=%22M20 11.5v17M17.6 13.6l2.4 2.2 2.4-2.2M17.6 26.4l2.4-2.2 2.4 2.2%22/%3E%3C/g%3E%3C/g%3E%3Cpath d=%22M8.6 14.2A12.6 12.6 0 0 1 16.8 7.4%22 stroke=%22%23fff%22 stroke-opacity=%22.75%22 stroke-width=%222%22 stroke-linecap=%22round%22 fill=%22none%22/%3E%3C/svg%3E";
-let rot=0,spinning=false,spun=false,slots=[0,10,0,50,100,0,10,150,0,50];
+let rot=0,spinning=false,spun=false,spinCost=50,slots=[{ic:0},{ic:10},{ic:0},{ic:50},{ic:100},{ic:0},{ic:10},{ic:150},{ic:0},{rank:"Bronz"}];
+const escH=s=>String(s).replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"})[c]);
 const WCOL={0:["#21405a","#9ccbe8"],10:["#9adbf8","#0b3a5b"],50:["#3fa3e6","#ffffff"],100:["#1c6fd6","#ffffff"],150:["url(#wgold)","#3a2200"]};
-const colFor=v=>WCOL[v]||["#5c7f99","#ffffff"];
+const colFor=x=>x.rank?["url(#wbronze)","#fff4ea"]:WCOL[x.ic]||["#5c7f99","#ffffff"];
 const reduceMotion=()=>matchMedia("(prefers-reduced-motion:reduce)").matches;
 function drawWheel(){
   const C=150,R=136,N=slots.length,st=360/N,P=a=>[(C+R*Math.sin(a*Math.PI/180)).toFixed(2),(C-R*Math.cos(a*Math.PI/180)).toFixed(2)];
-  let s=`<defs><linearGradient id="wgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset=".6" stop-color="#f2a81f"/><stop offset="1" stop-color="#d48a0c"/></linearGradient><linearGradient id="wrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8efff"/><stop offset=".5" stop-color="#3fb4ff"/><stop offset="1" stop-color="#1c6fd6"/></linearGradient><radialGradient id="wshade"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></radialGradient></defs>`;
+  let s=`<defs><linearGradient id="wgold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ffe08a"/><stop offset=".6" stop-color="#f2a81f"/><stop offset="1" stop-color="#d48a0c"/></linearGradient><linearGradient id="wbronze" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#f3b783"/><stop offset=".55" stop-color="#c46f37"/><stop offset="1" stop-color="#7a3d17"/></linearGradient><linearGradient id="wrim" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#c8efff"/><stop offset=".5" stop-color="#3fb4ff"/><stop offset="1" stop-color="#1c6fd6"/></linearGradient><radialGradient id="wshade"><stop offset=".6" stop-color="#000" stop-opacity="0"/><stop offset="1" stop-color="#000" stop-opacity=".22"/></radialGradient></defs>`;
   s+=`<circle cx="${C}" cy="${C}" r="149" fill="#0b3a5b"/>`;
-  slots.forEach((v,i)=>{
-    const [x0,y0]=P(i*st-st/2),[x1,y1]=P(i*st+st/2),[bg,fg]=colFor(v);
+  slots.forEach((x,i)=>{
+    const v=x.ic||0,[x0,y0]=P(i*st-st/2),[x1,y1]=P(i*st+st/2),[bg,fg]=colFor(x);
     s+=`<path d="M${C} ${C}L${x0} ${y0}A${R} ${R} 0 0 1 ${x1} ${y1}Z" fill="${bg}"/>`;
     s+=`<g transform="rotate(${i*st} ${C} ${C})">`;
-    if(v){s+=`<text class="wtxt" x="${C}" y="${C-R+34}" text-anchor="middle" dominant-baseline="central" fill="${fg}">${v}</text><image href="${COIN}" x="${C-9}" y="${C-R+49}" width="18" height="18"/>`}
+    if(x.rank){s+=`<text x="${C}" y="${C-R+31}" text-anchor="middle" dominant-baseline="central" fill="${fg}" style="font:800 12.5px Sora,sans-serif;letter-spacing:.05em">${escH(x.rank.toUpperCase())}</text><path transform="translate(${C-10} ${C-R+43})" d="M1 4l4.5 3.5L10 1l4.5 6.5L19 4l-2 9H3z" fill="${fg}"/>`}
+    else if(v){s+=`<text class="wtxt" x="${C}" y="${C-R+34}" text-anchor="middle" dominant-baseline="central" fill="${fg}">${v}</text><image href="${COIN}" x="${C-9}" y="${C-R+49}" width="18" height="18"/>`}
     else{s+=`<g transform="translate(${C} ${C-R+42})" stroke="${fg}" stroke-width="2.6" stroke-linecap="round" fill="none">`;for(let k=0;k<6;k++)s+=`<g transform="rotate(${k*60})"><path d="M0 0V-12M-4-9L0-5.5L4-9"/></g>`;s+="</g>"}
     s+="</g>";
   });
@@ -821,10 +952,10 @@ function drawWheel(){
   s+=`<circle cx="${C}" cy="${C}" r="${R+5}" fill="none" stroke="url(#wrim)" stroke-width="10"/>`;
   for(let i=0;i<N;i++){const a=(i*st-st/2)*Math.PI/180;s+=`<circle cx="${(C+(R+5)*Math.sin(a)).toFixed(2)}" cy="${(C-(R+5)*Math.cos(a)).toFixed(2)}" r="3.4" fill="#fff" stroke="#0b3a5b55" stroke-width="1"/>`}
   $("#wheelG").innerHTML=s;
-  const cnt={};slots.forEach(v=>cnt[v]=(cnt[v]||0)+1);
-  $("#prizes").innerHTML=Object.keys(cnt).map(Number).sort((a,b)=>b-a).map(v=>{
-    const bg=v===150?"linear-gradient(135deg,#ffe08a,#d48a0c)":colFor(v)[0];
-    return `<div class="prize"><i style="background:${bg}"></i><div><b>${v?fmtN(v)+" IceCoin":"Nem nyerő"}</b><span>${Math.round(cnt[v]/N*100)}% esély</span></div></div>`;
+  const seen=new Set(),list=slots.filter(x=>x.rank||x.ic).filter(x=>{const k=x.rank||x.ic;if(seen.has(k))return false;seen.add(k);return true}).sort((a,b)=>(b.rank?1e9:b.ic)-(a.rank?1e9:a.ic));
+  $("#prizes").innerHTML=list.map(x=>{
+    const bg=x.rank?"linear-gradient(135deg,#f3b783,#7a3d17)":x.ic===150?"linear-gradient(135deg,#ffe08a,#d48a0c)":colFor(x)[0];
+    return `<div class="prize"><i style="background:${bg}"></i><div><b>${x.rank?escH(x.rank)+" rang":fmtN(x.ic)+" IceCoin"}</b><span>${x.rank?"A legritkább nyeremény":"Azonnal a fiókodra kerül"}</span></div></div>`;
   }).join("");
 }
 function untilMonday(){
@@ -834,16 +965,19 @@ function untilMonday(){
 }
 function fmtLeft(ms){const m=Math.max(1,Math.ceil(ms/6e4)),d=Math.floor(m/1440),h=Math.floor(m%1440/60),mi=m%60;return d?d+" nap "+h+" óra":h?h+" óra "+mi+" perc":mi+" perc"}
 function spinState(){
+  const bal=user?user.coins||0:0,b=$("#spinBtn");
   $("#spinDot").classList.toggle("off",spun);
-  $("#spinStateTxt").textContent=spun?"Következő pörgetés: "+fmtLeft(untilMonday())+" múlva":"Ezen a héten még pörgethetsz";
-  $("#spinBtn").disabled=spun||spinning;
+  $("#spinStateTxt").textContent=spun?"Ingyenes pörgetés "+fmtLeft(untilMonday())+" múlva":"Van ingyenes pörgetésed";
+  b.innerHTML=spun?"Pörgetés<small>"+spinCost+" IC</small>":"Pörgetés";
+  b.disabled=spinning||(spun&&bal<spinCost);
+  $("#spinInfo").innerHTML=!spun?"A heti első pörgetésed <b>ingyenes</b>.":bal<spinCost?"A heti ingyenes pörgetést már elhasználtad. Újabb pörgetéshez <b>"+spinCost+" IceCoin</b> kell. <a href=\"#vasarlas\">Feltöltés</a>":"A heti ingyenes pörgetést már elhasználtad. Újabb pörgetés: <b>"+spinCost+" IceCoin</b>.";
 }
 setInterval(()=>{if(location.hash==="#szerencsekerek")spinState()},3e4);
 async function loadWheel(){
   const d=await api("/api/wheel");
   if(!d.slots)return;
-  slots=d.slots;drawWheel();
-  if(!spinning){spun=!!d.spun;spinState();if(spun&&$("#winBox").hidden&&$("#loseBox").hidden)msg("#spinMsg","Ezen a héten már pörgettél, hétfőn újra próbálkozhatsz.")}
+  slots=d.slots;if(d.cost)spinCost=d.cost;drawWheel();
+  if(!spinning){spun=!!d.spun;spinState()}
 }
 function spinTo(from,to,dur,done){
   const g=$("#wheelRot"),ptr=$("#pointer"),st=360/slots.length,ease=p=>1-Math.pow(1-p,4);
@@ -866,22 +1000,32 @@ function confetti(){
 }
 drawWheel();
 $("#spinBtn").onclick=async()=>{
-  if(spinning||spun)return;
-  const btn=$("#spinBtn");spinning=true;btn.disabled=true;btn.classList.add("busy");
+  if(spinning)return;
+  const btn=$("#spinBtn"),paid=spun;
+  if(paid&&(!user||(user.coins||0)<spinCost))return msg("#spinMsg","Nincs elég IceCoinod a pörgetéshez.","e");
+  spinning=true;btn.disabled=true;btn.classList.add("busy");
   $("#winBox").hidden=true;$("#loseBox").hidden=true;msg("#spinMsg","");
-  const d=await api("/api/spin",{});
-  if(d.error){spinning=false;btn.classList.remove("busy");if(d.s===429)spun=true;spinState();return msg("#spinMsg",d.error,"e")}
+  const d=await api("/api/spin",{paid});
+  if(d.error){spinning=false;btn.classList.remove("busy");if(d.s===429)spun=true;if(d.user){user=d.user;render()}spinState();return msg("#spinMsg",d.error,"e")}
+  if(paid&&user){user.coins=Math.max(0,(user.coins||0)-spinCost);$("#cCoin").textContent=$("#setCoin").textContent=$("#shopBal").textContent=fmtN(user.coins)}
   const st=360/slots.length,target=((360-d.slot*st)%360+360)%360;
   const from=rot,rm=reduceMotion();
   rot+=360*(rm?1:6)+(((target-(rot%360))%360)+360)%360;
   spinTo(from,rot,rm?1400:5000,()=>{
     spinning=false;btn.classList.remove("busy");
-    if(d.daily!==false)spun=true;
-    spinState();
+    spun=d.spun!==false;
     if(d.user){user=d.user;render()}
-    if(d.win){
-      $("#winBox").innerHTML='<span class="pcoin"></span><div><div class="wt">Nyertél!</div><div class="wa">+'+fmtN(d.prize)+' IceCoin</div></div>';
-      $("#winBox").hidden=false;confetti();
+    spinState();
+    const wb=$("#winBox");
+    if(d.rank&&d.granted){
+      const r=RANKS.find(x=>x.name===d.rank);
+      wb.className="win r-"+(r?r.id:"bronz");
+      wb.innerHTML=gem()+'<div><div class="wt">Nyertél!</div><div class="wa">'+escH(d.rank)+' rang</div></div>';
+      wb.hidden=false;confetti();
+    }else if(d.win){
+      wb.className="win";
+      wb.innerHTML='<span class="pcoin"></span><div><div class="wt">'+(d.rank?escH(d.rank)+" rangot nyertél! Mivel már megvan, helyette:":"Nyertél!")+'</div><div class="wa">+'+fmtN(d.prize)+' IceCoin</div></div>';
+      wb.hidden=false;confetti();
     }else $("#loseBox").hidden=false;
   });
 };
@@ -943,7 +1087,12 @@ $("#rankGrid").onclick=async e=>{
   const b=e.target.closest("button");if(!b)return;
   const id=b.dataset.buy||b.dataset.ft,r=RANKS.find(x=>x.id===id);if(!r)return;
   const m=$(`[data-msg="${id}"]`);
-  if(b.dataset.ft){m.textContent="A forintos fizetés még nincs bekötve, hamarosan elérhető.";m.className="msg";return}
+  if(b.dataset.ft){
+    b.disabled=true;m.textContent="Átirányítás a biztonságos fizetési oldalra…";m.className="msg";$("#rankNote").innerHTML="";
+    const d=await api("/api/checkout",{rank:r.id});
+    if(d.error||!d.url){b.disabled=false;m.textContent=d.error||"Nem sikerült elindítani a fizetést.";m.className="msg e";return}
+    location.href=d.url;return;
+  }
   if(!confirm(r.name+" rang "+fmtN(r.ic)+" IceCoinért. Folytatod?"))return;
   b.disabled=true;
   const d=await api("/api/buy-rank",{rank:r.id});
@@ -972,8 +1121,37 @@ $("#packs").addEventListener("change",e=>{
   $("#coSel").textContent=fmtN(c)+" IceCoin";$("#coPrice").textContent=fmtN(p)+" Ft";
   $("#coBtn").disabled=false;msg("#buyMsg","");
 });
-$("#coBtn").onclick=()=>msg("#buyMsg","A fizetés még nincs bekötve, hamarosan elérhető.");
-
+$("#coBtn").onclick=async()=>{
+  const r=$("#packs input:checked");if(!r)return;
+  $("#payNote").innerHTML="";
+  const b=$("#coBtn"),c=PACKS[+r.value][0];
+  b.disabled=true;msg("#buyMsg","Átirányítás a biztonságos fizetési oldalra…");
+  const d=await api("/api/checkout",{ic:c});
+  if(d.error||!d.url){b.disabled=false;return msg("#buyMsg",d.error||"Nem sikerült elindítani a fizetést.","e")}
+  location.href=d.url;
+};
+addEventListener("pageshow",e=>{if(e.persisted){$("#coBtn").disabled=!$("#packs input:checked");msg("#buyMsg","");renderRanks()}});
+function pNote(box,t,s,ring){
+  box.innerHTML='<div class="pnote">'+(ring?'<i class="ring"></i>':'')+'<div><b></b><span></span></div></div>';
+  box.querySelector("b").textContent=t;box.querySelector(".pnote div span").textContent=s;
+}
+async function payResult(id,rang){
+  const box=$(rang?"#rankNote":"#payNote");
+  if(id==="megszakitva")return pNote(box,"A fizetés megszakadt","Nem történt terhelés, bármikor újrapróbálhatod.");
+  pNote(box,"Fizetés ellenőrzése…","Egy pillanat, máris jóváírjuk a vásárlásod.",true);
+  for(let k=0;k<8;k++){
+    const d=await api("/api/checkout-status",{id});
+    if(d.user){user=d.user;render()}
+    if(d.paid){
+      if(d.rank&&!d.ic){const r=RANKS.find(x=>x.name===d.rank);box.innerHTML='<div class="win r-'+(r?r.id:"bronz")+'">'+gem()+'<div><div class="wt">Sikeres fizetés! Mostantól a rangod:</div><div class="wa">'+escH(d.rank)+'</div></div></div>'}
+      else box.innerHTML='<div class="win"><span class="pcoin"></span><div><div class="wt">'+(d.rank?"Már volt ilyen rangod, ezért helyette:":"Sikeres fizetés!")+'</div><div class="wa">+'+fmtN(d.ic)+' IceCoin</div></div></div>';
+      confetti();return;
+    }
+    if(d.error)return pNote(box,"Nem sikerült ellenőrizni a fizetést",d.error);
+    await new Promise(r=>setTimeout(r,2500));
+  }
+  pNote(box,"A fizetésed feldolgozás alatt van","Pár percen belül megérkezik a fiókodra, utána frissítsd az oldalt.");
+}
 $$(".dtabs button").forEach(b=>b.onclick=()=>{
   $$(".dtabs button").forEach(x=>x.classList.toggle("on",x===b));
   $$(".doc").forEach(x=>x.classList.toggle("on",x.dataset.doc===b.dataset.d));
@@ -1056,11 +1234,14 @@ $("#pwform").onsubmit=async e=>{
     $("#rInfo").textContent="Add meg az új jelszavad.";
     return;
   }
+  const fz=location.search.match(/fizetes=(cs_(?:test|live)_[A-Za-z0-9]+|megszakitva)/),fzRang=/[?&]rang=1(&|$)/.test(location.search);
+  if(fz){try{history.replaceState(null,"",location.pathname+(fzRang?"#rangok":"#vasarlas"))}catch(e){}}
   if(token){
     const d=await api("/api/me");
     if(d.user){user=d.user}else if(d.s===401){saveTok(null)}
   }
   render();route();
+  if(fz&&user)payResult(fz[1],fzRang);
 })();
 })();
 </script>

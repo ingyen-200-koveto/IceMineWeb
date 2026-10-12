@@ -11,6 +11,8 @@ try {
 } catch (e) {}
 const app = express();
 app.set("trust proxy", 1);
+app.post("/api/stripe-webhook", express.raw({ type: "*/*", limit: "1mb" }), (req, res) => stripeHook(req, res));
+app.post("/api/skin", express.json({ limit: "64kb" }), (req, res) => skinLimit(req, res, () => saveSkin(req, res)));
 app.use(express.json({ limit: "10kb" }));
 
 const FILE = path.join(__dirname, "data.json");
@@ -52,7 +54,7 @@ async function boot() {
   const certFile = path.join(__dirname, "cert.pem"), keyFile = path.join(__dirname, "key.pem");
   const tls = fs.existsSync(certFile) && fs.existsSync(keyFile);
   const server = tls ? require("https").createServer({ cert: fs.readFileSync(certFile), key: fs.readFileSync(keyFile) }, app) : require("http").createServer(app);
-  const ready = () => { console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); };
+  const ready = () => { console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); (async () => { await checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); await checkStripe().catch(e => console.log("Fizetés: ellenőrzési hiba – " + e.message)); })(); };
   host ? server.listen(port, host, ready) : server.listen(port, ready);
 }
 
@@ -62,7 +64,7 @@ const same = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.
 const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const makeCode = () => Array.from({ length: 12 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
-const pub = u => ({ name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default" });
+const pub = u => ({ name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", skin: u.skin || null });
 const fail = (res, code, error) => res.status(code).json({ error });
 
 const hits = {};
@@ -113,6 +115,72 @@ async function checkMail() {
     }
   } catch (e) {}
   say("rendben, a Brevo kapcsolat működik (feladó: " + mask(MAIL_FROM) + ").");
+}
+const STRIPE_KEY = String(process.env.STRIPE_SECRET_KEY || "").replace(/[^\w]/g, ""), STRIPE_WH = String(process.env.STRIPE_WEBHOOK_SECRET || "").replace(/[^\w]/g, "");
+const PACKS = [[500, 499], [1000, 899], [2000, 1690], [3500, 2990], [5000, 3990], [7500, 5990], [10000, 7990], [15000, 11990]];
+function formBody(obj, prefix, out = []) {
+  for (const [k, v] of Object.entries(obj)) {
+    if (v === undefined || v === null) continue;
+    const key = prefix ? prefix + "[" + k + "]" : k;
+    if (typeof v === "object") formBody(v, key, out);
+    else out.push(encodeURIComponent(key) + "=" + encodeURIComponent(v));
+  }
+  return out;
+}
+async function stripe(method, p, params) {
+  let r;
+  try {
+    r = await fetch("https://api.stripe.com/v1" + p, { method, headers: { authorization: "Bearer " + STRIPE_KEY, "content-type": "application/x-www-form-urlencoded" }, body: params ? formBody(params).join("&") : undefined, signal: AbortSignal.timeout(20000) });
+  } catch (e) { throw new Error("a szerver nem éri el a Stripe-ot (" + netErr(e) + ")."); }
+  const d = await r.json().catch(() => ({}));
+  if (r.status === 401) throw new Error("a Stripe nem fogadja el a kulcsot. Másold be újra: Stripe > Developers > API keys > Secret key.");
+  if (!r.ok) throw new Error("Stripe " + r.status + ": " + String((d.error && d.error.message) || "ismeretlen hiba").slice(0, 200));
+  return d;
+}
+function fulfill(s) {
+  if (!s || s.object !== "checkout.session" || s.payment_status !== "paid") return false;
+  db.payments = db.payments || {};
+  if (db.payments[s.id]) return true;
+  const m = s.metadata || {}, ic = Number(m.ic), ri = m.rank ? RANKS.findIndex(r => r.id === m.rank) : -1;
+  const u = m.uid ? Object.values(db.users).find(x => x.id === m.uid) : null;
+  const okItem = m.rank ? ri >= 0 : Number.isInteger(ic) && ic > 0 && ic <= 1e6;
+  if (!u || !okItem) { if (m.uid) console.error("Fizetés: nem sikerült jóváírni, nincs ilyen fiók vagy termék (" + s.id + ")."); return false; }
+  const rec = { t: Date.now(), uid: u.id, user: u.name, huf: (s.amount_total || 0) / 100 };
+  if (m.rank) {
+    const r = RANKS[ri], cur = RANKS.findIndex(x => x.name === u.rank);
+    rec.rank = r.name;
+    if (cur < ri) { u.rank = r.name; u.rankSince = Date.now(); console.log("Fizetés: " + u.name + " megkapta a(z) " + r.name + " rangot (" + s.id + ")."); }
+    else { rec.ic = r.ic; u.coins = (u.coins || 0) + r.ic; console.log("Fizetés: " + u.name + " már " + u.rank + " rangú volt, helyette +" + r.ic + " IceCoin (" + s.id + ")."); }
+  } else {
+    rec.ic = ic; u.coins = (u.coins || 0) + ic;
+    console.log("Fizetés: " + u.name + " +" + ic + " IceCoin jóváírva (" + s.id + ").");
+  }
+  db.payments[s.id] = rec;
+  save();
+  return true;
+}
+function stripeHook(req, res) {
+  const raw = Buffer.isBuffer(req.body) ? req.body : Buffer.from(typeof req.body === "string" ? req.body : "");
+  const parts = String(req.get("stripe-signature") || "").split(","), t = (parts.find(x => x.startsWith("t=")) || "").slice(2);
+  const ok = STRIPE_WH && t && Math.abs(Date.now() / 1000 - Number(t)) < 600 && (() => {
+    const exp = crypto.createHmac("sha256", STRIPE_WH).update(Buffer.concat([Buffer.from(t + "."), raw])).digest("hex");
+    return parts.some(x => x.startsWith("v1=") && same(x.slice(3), exp));
+  })();
+  if (!ok) return res.status(400).send("Hibás aláírás.");
+  let ev;
+  try { ev = JSON.parse(raw.toString("utf8")); } catch (e) { return res.status(400).send("Hibás adat."); }
+  if (ev.type === "checkout.session.completed" || ev.type === "checkout.session.async_payment_succeeded") fulfill(ev.data && ev.data.object);
+  res.json({ received: true });
+}
+async function checkStripe() {
+  const say = t => console.log("Fizetés: " + t);
+  if (!STRIPE_KEY) return say("nincs beállítva (a STRIPE_SECRET_KEY hiányzik a .env fájlból).");
+  if (!/^(sk|rk)_(test|live)_/.test(STRIPE_KEY)) return say("HIBA – a STRIPE_SECRET_KEY nem sk_test_ vagy sk_live_ kezdetű. Stripe > Developers > API keys > Secret key.");
+  const mode = /_test_/.test(STRIPE_KEY) ? "TESZT mód" : "ÉLES mód";
+  try { await stripe("GET", "/checkout/sessions?limit=1"); } catch (e) { return say("HIBA – " + e.message); }
+  if (!STRIPE_WH) return say("a Stripe kapcsolat működik (" + mode + "), de a STRIPE_WEBHOOK_SECRET hiányzik, így az IceCoin csak akkor kerül jóváírásra, ha a vásárló visszatér az oldalra.");
+  if (!STRIPE_WH.startsWith("whsec_")) return say("figyelem: a STRIPE_WEBHOOK_SECRET nem whsec_ kezdetű, nézd meg újra (Stripe > Webhooks > Signing secret).");
+  say("rendben, a Stripe kapcsolat működik (" + mode + ").");
 }
 const base = req => process.env.BASE_URL || process.env.RENDER_EXTERNAL_URL || req.protocol + "://" + req.get("host");
 
@@ -250,7 +318,17 @@ app.post("/api/transfer", limit(30, 6e5), (req, res) => {
   res.json({ ok: true, user: pub(u), to: r.name });
 });
 
-const WHEEL = [0, 10, 0, 50, 100, 0, 10, 150, 0, 50];
+const SPIN_COST = 50;
+const WHEEL = [
+  { ic: 0, w: 150 }, { ic: 10, w: 100 }, { ic: 0, w: 150 }, { ic: 50, w: 100 }, { ic: 100, w: 60 },
+  { ic: 0, w: 150 }, { ic: 10, w: 100 }, { ic: 150, w: 35 }, { ic: 0, w: 150 }, { rank: "bronz", w: 5 }
+];
+const WHEEL_TOTAL = WHEEL.reduce((a, x) => a + x.w, 0);
+function pickSlot() {
+  let n = crypto.randomInt(WHEEL_TOTAL);
+  for (let i = 0; i < WHEEL.length; i++) { n -= WHEEL[i].w; if (n < 0) return i; }
+  return 0;
+}
 const weekKey = () => {
   const d = new Date(new Date().toLocaleString("en-US", { timeZone: "Europe/Budapest" }));
   d.setDate(d.getDate() - ((d.getDay() + 6) % 7));
@@ -259,25 +337,136 @@ const weekKey = () => {
 app.get("/api/wheel", (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
-  res.json({ slots: WHEEL, spun: u.lastSpin === weekKey() });
+  res.json({ slots: WHEEL.map(x => x.rank ? { rank: RANKS.find(r => r.id === x.rank).name } : { ic: x.ic }), spun: u.lastSpin === weekKey(), cost: SPIN_COST });
 });
-app.post("/api/spin", limit(60, 6e5), (req, res) => {
+app.post("/api/spin", limit(120, 6e5), (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
-  if (u.lastSpin === weekKey()) return fail(res, 429, "Ezen a héten már pörgettél, hétfőn újra próbálkozhatsz.");
-  const slot = crypto.randomInt(WHEEL.length), prize = WHEEL[slot];
-  u.lastSpin = weekKey();
+  const free = u.lastSpin !== weekKey();
+  if (!free) {
+    if (!(req.body || {}).paid) return fail(res, 429, "Ezen a héten már pörgettél ingyen. Újabb pörgetés " + SPIN_COST + " IceCoinba kerül.");
+    if ((u.coins || 0) < SPIN_COST) return fail(res, 402, "Nincs elég IceCoinod. Egy pörgetés " + SPIN_COST + " IceCoinba kerül.");
+    u.coins -= SPIN_COST;
+  } else u.lastSpin = weekKey();
+  const slot = pickSlot(), x = WHEEL[slot];
+  let prize = x.ic || 0, rank = null, granted = false;
+  if (x.rank) {
+    const ri = RANKS.findIndex(r => r.id === x.rank), cur = RANKS.findIndex(r => r.name === u.rank);
+    rank = RANKS[ri].name;
+    if (cur < ri) { u.rank = rank; u.rankSince = Date.now(); granted = true; }
+    else prize = RANKS[ri].ic;
+    console.log("Szerencsekerék: " + u.name + " " + rank + " rangot nyert" + (granted ? "." : ", de már megvolt, helyette +" + prize + " IceCoin."));
+  }
   if (prize > 0) u.coins = (u.coins || 0) + prize;
   save();
-  res.json({ ok: true, slot, win: prize > 0, prize, user: pub(u) });
+  res.json({ ok: true, slot, win: prize > 0 || granted, prize, rank, granted, free, spun: true, user: pub(u) });
 });
 
 const RANKS = [
-  { id: "bronz", name: "Bronz", ic: 950 },
-  { id: "abyss", name: "Abyss", ic: 2700 },
-  { id: "iceking", name: "IceKing", ic: 4850 },
-  { id: "yeti", name: "Yeti", ic: 8000 }
+  { id: "bronz", name: "Bronz", ic: 950, ft: 1000 },
+  { id: "abyss", name: "Abyss", ic: 2700, ft: 2000 },
+  { id: "iceking", name: "IceKing", ic: 4850, ft: 4150 },
+  { id: "yeti", name: "Yeti", ic: 8000, ft: 9990 }
 ];
+const SKIN_DIR = path.join(__dirname, "skins"), PNG_SIG = Buffer.from([137, 80, 78, 71, 13, 10, 26, 10]);
+const skinLimit = limit(30, 6e5);
+function cleanPng(buf) {
+  if (buf.length < 57 || buf.length > 32768 || !buf.subarray(0, 8).equals(PNG_SIG)) return null;
+  const keep = ["IHDR", "PLTE", "tRNS", "IDAT", "IEND"], out = [PNG_SIG];
+  let off = 8, seen = {};
+  while (off + 12 <= buf.length) {
+    const len = buf.readUInt32BE(off), type = buf.toString("latin1", off + 4, off + 8), end = off + 12 + len;
+    if (end > buf.length || !/^[A-Za-z]{4}$/.test(type)) return null;
+    if (off === 8 && type !== "IHDR") return null;
+    if (keep.includes(type)) { out.push(buf.subarray(off, end)); seen[type] = 1; }
+    off = end;
+    if (type === "IEND") break;
+  }
+  if (!seen.IHDR || !seen.IDAT || !seen.IEND) return null;
+  return Buffer.concat(out);
+}
+function saveSkin(req, res) {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const b = req.body || {};
+  if (!u.id) u.id = crypto.randomBytes(9).toString("hex");
+  const file = path.join(SKIN_DIR, u.id + ".png");
+  if (b.reset) {
+    try { fs.unlinkSync(file); } catch (e) {}
+    delete u.skin; save();
+    return res.json({ ok: true, user: pub(u) });
+  }
+  const png = cleanPng(Buffer.from(String(b.data || "").replace(/^data:image\/png;base64,/, ""), "base64"));
+  if (!png) return fail(res, 400, "Csak PNG formátumú skin tölthető fel (legfeljebb 32 KB).");
+  const w = png.readUInt32BE(16), h = png.readUInt32BE(20);
+  if (w !== 64 || (h !== 64 && h !== 32)) return fail(res, 400, "A skin 64×64 pixeles PNG legyen. A te képed " + w + "×" + h + " pixeles.");
+  try { fs.mkdirSync(SKIN_DIR, { recursive: true }); fs.writeFileSync(file, png); }
+  catch (e) { console.error("Skin mentési hiba: " + e.message); return fail(res, 500, "Nem sikerült elmenteni a skint. Próbáld újra."); }
+  u.skin = { v: Date.now(), slim: !!b.slim };
+  save();
+  res.json({ ok: true, user: pub(u) });
+}
+app.get("/skin/:file", (req, res) => {
+  const m = /^([A-Za-z0-9_]{3,16})\.png$/.exec(req.params.file || "");
+  const u = m && db.users[m[1].toLowerCase()];
+  if (!u || !u.skin || !u.id) return res.status(404).type("text/plain").send("Nincs ilyen skin.");
+  res.set({ "Cache-Control": "public, max-age=300", "X-Content-Type-Options": "nosniff", "Access-Control-Allow-Origin": "*" });
+  res.sendFile(path.join(SKIN_DIR, u.id + ".png"), err => { if (err && !res.headersSent) res.status(404).type("text/plain").send("Nincs ilyen skin."); });
+});
+app.post("/api/checkout", limit(20, 6e5), async (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  if (!STRIPE_KEY) return fail(res, 503, "A fizetés jelenleg nem elérhető. Próbáld később.");
+  const body = req.body || {};
+  let item;
+  if (body.rank !== undefined) {
+    const ri = RANKS.findIndex(r => r.id === String(body.rank)), cur = RANKS.findIndex(r => r.name === u.rank);
+    if (ri < 0) return fail(res, 400, "Ismeretlen rang.");
+    if (ri <= cur) return fail(res, 409, ri === cur ? "Már ez a rangod." : "Már magasabb rangod van.");
+    item = { name: RANKS[ri].name + " rang", huf: RANKS[ri].ft, meta: { rank: RANKS[ri].id }, back: "&rang=1" };
+  } else {
+    const pack = PACKS.find(p => p[0] === Number(body.ic));
+    if (!pack) return fail(res, 400, "Ismeretlen csomag.");
+    item = { name: pack[0].toLocaleString("hu-HU") + " IceCoin", huf: pack[1], meta: { ic: pack[0] }, back: "" };
+  }
+  if (!u.id) { u.id = crypto.randomBytes(9).toString("hex"); save(); }
+  const b = base(req), meta = Object.assign({ uid: u.id, user: u.name }, item.meta);
+  try {
+    const s = await stripe("POST", "/checkout/sessions", {
+      mode: "payment",
+      locale: "hu",
+      customer_email: u.email,
+      client_reference_id: u.id,
+      success_url: b + "/?fizetes={CHECKOUT_SESSION_ID}" + item.back,
+      cancel_url: b + "/?fizetes=megszakitva" + item.back,
+      line_items: [{ quantity: 1, price_data: { currency: "huf", unit_amount: item.huf * 100, product_data: { name: item.name, description: "IceMine – " + u.name + " fiókjára", images: b.startsWith("https://") ? [b + "/favicon.png"] : undefined } } }],
+      metadata: meta,
+      payment_intent_data: { description: item.name + " – " + u.name, metadata: meta }
+    });
+    res.json({ url: s.url });
+  } catch (e) {
+    console.error("Fizetés: nem sikerült elindítani – " + e.message);
+    fail(res, 502, "Nem sikerült elindítani a fizetést. Próbáld később.");
+  }
+});
+
+app.post("/api/checkout-status", limit(60, 6e5), async (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const id = String((req.body || {}).id || "");
+  if (!/^cs_(test|live)_[A-Za-z0-9]{10,200}$/.test(id)) return fail(res, 400, "Hibás fizetési azonosító.");
+  db.payments = db.payments || {};
+  let pending = false;
+  if (!db.payments[id] && STRIPE_KEY && u.id) {
+    try {
+      const s = await stripe("GET", "/checkout/sessions/" + id);
+      if (s.metadata && s.metadata.uid === u.id) { fulfill(s); pending = s.status === "complete" && s.payment_status !== "paid"; }
+    } catch (e) { console.error("Fizetés: ellenőrzési hiba – " + e.message); }
+  }
+  const p = db.payments[id], mine = !!(p && p.uid === u.id);
+  res.json({ paid: mine, pending, ic: mine ? p.ic || 0 : 0, rank: mine ? p.rank || null : null, user: pub(u) });
+});
+
 app.post("/api/buy-rank", limit(20, 6e5), (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
