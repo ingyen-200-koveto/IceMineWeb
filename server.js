@@ -322,6 +322,37 @@ app.post("/api/resend", limit(10, 6e5), async (req, res) => {
   res.json({ ok: true, mail: mask(u.email) });
 });
 
+app.post("/api/forgot", limit(8, 6e5), async (req, res) => {
+  const id = String((req.body || {}).id || "").trim().toLowerCase();
+  if (!id || id.length > 100) return fail(res, 400, "Add meg a felhasználóneved vagy az e-mail címed.");
+  const u = id.includes("@") ? Object.values(db.users).find(x => x.email === id && x.verified) : db.users[id];
+  if (u && u.verified && !(u.r && Date.now() - u.r.sent < 6e4)) {
+    const code = makeCode();
+    u.r = { h: sha(u.salt + code), exp: Date.now() + 36e5, tries: 0, sent: Date.now() };
+    save();
+    try { await sendReset(req, u, code); }
+    catch (e) { delete u.r; save(); console.error("E-mail hiba: " + e.message); return fail(res, 502, "Nem sikerült elküldeni az e-mailt. Próbáld újra pár perc múlva."); }
+  }
+  res.json({ ok: true });
+});
+
+app.post("/api/reset", limit(20, 6e5), (req, res) => {
+  const { name = "", code = "", password = "" } = req.body || {};
+  if (typeof password !== "string" || password.length < 6 || password.length > 100) return fail(res, 400, "Az új jelszó legalább 6 karakter legyen.");
+  const u = db.users[String(name).trim().toLowerCase()];
+  if (!u || !u.r) return fail(res, 400, "Hibás felhasználónév vagy kód.");
+  if (Date.now() > u.r.exp) { delete u.r; save(); return fail(res, 400, "A kód lejárt. Kérj új kódot az Elfelejtettem a jelszavam gombbal."); }
+  if (u.r.tries >= 5) return fail(res, 429, "Túl sok hibás próbálkozás. Kérj új kódot.");
+  if (!same(u.r.h, sha(u.salt + String(code).trim().toUpperCase()))) { u.r.tries++; save(); return fail(res, 400, "Hibás felhasználónév vagy kód."); }
+  delete u.r;
+  u.salt = crypto.randomBytes(16).toString("hex");
+  u.hash = hashPw(password, u.salt);
+  const key = u.name.toLowerCase();
+  for (const h of Object.keys(db.sessions)) if (db.sessions[h].k === key) delete db.sessions[h];
+  save();
+  res.json({ ok: true });
+});
+
 app.post("/api/login", limit(30, 6e5), async (req, res) => {
   const { name = "", password = "" } = req.body || {};
   const u = db.users[String(name).toLowerCase()];
