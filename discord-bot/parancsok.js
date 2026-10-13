@@ -378,11 +378,5 @@ module.exports = [
         .setDescription("Rang, ami egy adott szinttől jár")
         .addIntegerOption((o) => o.setName("szint").setDescription("Hányadik szinttől").setMinValue(1).setMaxValue(500).setRequired(true))
         .addRoleOption((o) => o.setName("rang").setDescription("A rang (ha üresen hagyod, törli)")),
-    )
-    .addSubcommand((s) =>
-      s
-        .setName("ai")
-        .setDescription("AI asszisztens a ticketekben be/ki")
-        .addBooleanOption((o) => o.setName("be").setDescription("Bekapcsolva legyen?").setRequired(true)),
     ),
 ];

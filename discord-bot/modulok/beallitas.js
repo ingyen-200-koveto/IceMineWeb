@@ -1,7 +1,6 @@
 const { P, ment, beall, kartya, rejtett, hiba, siker, tudIrni } = require("../kozos");
 const statusz = require("./statusz");
 const weboldal = require("./weboldal");
-const ai = require("./ai");
 
 const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások" };
 const NAPLO_TIPUSOK = {
@@ -57,13 +56,7 @@ async function beallitas(i) {
           : ["-# Még nincsenek beállítva: `/rangok-letrehozas`"]),
       )
       .elvalaszto()
-      .szoveg(
-        "**🎫 Ticketek és rangok**",
-        `📁 Ticket kategória: ${cs(b.ticketKategoria)}`,
-        `🛡️ Staff rang: ${rg(b.staffRang)}`,
-        `🤖 AI asszisztens: ${!ai.vanKulcs() ? "⚫ nincs AI kulcs a szerveren" : kapcs(!b.aiKi)}`,
-        `🎭 Autorang: ${rg(b.autorang)}`,
-      )
+      .szoveg("**🎫 Ticketek és rangok**", `📁 Ticket kategória: ${cs(b.ticketKategoria)}`, `🛡️ Staff rang: ${rg(b.staffRang)}`, `🎭 Autorang: ${rg(b.autorang)}`)
       .elvalaszto()
       .szoveg(
         "**🧩 Funkciók**",
@@ -170,21 +163,6 @@ async function beallitas(i) {
     ment();
     if (!be) return siker(i, "Kikapcsoltam a szintrendszert. Az eddigi XP megmarad.");
     return siker(i, ch ? `Bekapcsolva, a szintlépések ide mennek: ${ch}` : "Bekapcsolva, a szintlépést abba a csatornába írom, ahol épp írt az illető.");
-  }
-
-  if (sub === "ai") {
-    const be = i.options.getBoolean("be");
-    if (be) delete b.aiKi;
-    else b.aiKi = true;
-    ment();
-    if (!be) return siker(i, "Kikapcsoltam az AI asszisztenst. Az új ticketeknél újra a staff kap értesítést azonnal.");
-    if (!ai.vanKulcs()) {
-      return siker(
-        i,
-        "Bekapcsolva, de még nincs AI kulcs a szerveren, ezért most nem fog válaszolni.\n👉 A VPS-en futtasd: `bash /opt/icemine-bot/discord-bot/ai-kulcs.sh`",
-      );
-    }
-    return siker(i, "Bekapcsolva. Az új ticketekben először az AI válaszol, és ha kell, szól a staffnak.");
   }
 
   if (sub === "szintrang") {

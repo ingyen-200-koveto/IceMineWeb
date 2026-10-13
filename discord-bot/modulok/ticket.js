@@ -1,6 +1,5 @@
 const { ButtonStyle, StringSelectMenuBuilder, ChannelType, OverwriteType, AttachmentBuilder, MessageFlags } = require("discord.js");
 const { K, P, V2, adat, ment, beall, embed, kartya, sor, gomb, vagas, valasz, hiba, rejtett, csatorna, tudIrni, naplo, dm, staffE, unix, avatar, v2E } = require("../kozos");
-const ai = require("./ai");
 
 const TIPUSOK = {
   segitseg: { nev: "Kérdés, segítség", emoji: "❓", leiras: "Bármi, amiben elakadtál", tipp: "" },
@@ -21,14 +20,11 @@ function tipusTopicbol(ch) {
   return Object.values(TIPUSOK).find((t) => t.nev === nev) || { nev, emoji: "🎫", tipp: "" };
 }
 
-function ticketKartya(ch, user, tipus, staffRang, kezelo, aiBe) {
-  const udv = aiBe
-    ? `Szia ${user}! Írd le, miben segíthetünk. Először az AI asszisztensünk válaszol, és ha kell, azonnal szól a staffnak. 👋`
-    : `Szia ${user}! Írd le, miben segíthetünk, valaki a staffból hamarosan ránéz. 👋`;
+function ticketKartya(ch, user, tipus, staffRang, kezelo) {
   const k = kartya(kezelo ? K.ZOLD : K.SZIN)
     .szoveg(`${user} <@&${staffRang}>`)
     .kepes(
-      [`### ${tipus.emoji} ${tipus.nev}`, udv, tipus.tipp ? `\n💡 ${tipus.tipp}` : null]
+      [`### ${tipus.emoji} ${tipus.nev}`, `Szia ${user}! Írd le, miben segíthetünk, valaki a staffból hamarosan ránéz. 👋`, tipus.tipp ? `\n💡 ${tipus.tipp}` : null]
         .filter(Boolean)
         .join("\n"),
       avatar(user),
@@ -139,15 +135,7 @@ async function nyitas(i) {
     ],
   });
 
-  const aiBe = ai.aktiv(i.guild.id);
-  await ch.send(ticketKartya(ch, i.user, tipus, b.staffRang, null, aiBe).uzenet({ allowedMentions: { users: [i.user.id], roles: aiBe ? [] : [b.staffRang] } }));
-  if (aiBe) {
-    const ok = await ai.ticketNyitva(ch, i.user, tipus).catch((e) => {
-      console.error("AI ticket:", e.message);
-      return false;
-    });
-    if (!ok) await ch.send({ content: `<@&${b.staffRang}>`, allowedMentions: { roles: [b.staffRang] } }).catch(() => {});
-  }
+  await ch.send(ticketKartya(ch, i.user, tipus, b.staffRang, null).uzenet({ allowedMentions: { users: [i.user.id], roles: [b.staffRang] } }));
   await valasz(i, kartya(K.ZOLD).szoveg(`✅ Kész a ticketed: ${ch}`));
   return naplo(i.guild, embed().setTitle("🎫 Új ticket").setDescription(`**Ticket:** ${ch}\n**Nyitotta:** ${i.user}\n**Téma:** ${tipus.emoji} ${tipus.nev}`));
 }
@@ -161,11 +149,9 @@ async function atvetel(i) {
   if (kezelo) return hiba(i, `Ezt már <@${kezelo}> intézi.`);
   adat.ticketKezelo[i.channel.id] = i.user.id;
   ment();
-  const aiVolt = !!adat.aiTicket[i.channel.id];
-  ai.leallit(i.channel.id);
   if (v2E(i.message)) {
     const user = (await i.client.users.fetch(tulaj).catch(() => null)) || { id: tulaj, username: "?", toString: () => `<@${tulaj}>`, displayAvatarURL: () => K.LOGO };
-    await i.update(ticketKartya(i.channel, user, tipusTopicbol(i.channel), beall(i.guild.id).staffRang, i.user.id, aiVolt).uzenet());
+    await i.update(ticketKartya(i.channel, user, tipusTopicbol(i.channel), beall(i.guild.id).staffRang, i.user.id).uzenet());
   } else {
     const atvesz = gomb("ticket:atvesz", vagas(`Kezeli: ${i.user.username}`, 80), ButtonStyle.Secondary).setDisabled(true);
     await i.update({ components: [sor(atvesz, gomb("ticket:lezaras", "Lezárás", ButtonStyle.Danger, "🔒"))] });
@@ -213,7 +199,6 @@ async function lezaras(i) {
     await naploCh.send({ embeds: [e], files, allowedMentions: { parse: [] } }).catch(() => {});
   }
   delete adat.ticketKezelo[ch.id];
-  ai.torol(ch.id);
   ment();
   if (tulaj !== i.user.id) {
     const user = await i.client.users.fetch(tulaj).catch(() => null);

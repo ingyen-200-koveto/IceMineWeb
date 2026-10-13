@@ -81,15 +81,12 @@ fi
 
 if [ "$KEEP" != "i" ]; then
   kek "Beállítások mentése"
-  AI_SOROK=""
-  [ -f "$APP_DIR/.env" ] && AI_SOROK=$(grep -E '^(ANTHROPIC_API_KEY|AI_NAPI_LIMIT|AI_MODELL)=' "$APP_DIR/.env" || true)
   umask 077
   {
     printf 'DISCORD_TOKEN=%s\n' "$TOKEN"
     printf 'DATA_DIR=%s\n' "$APP_HOME"
     printf 'WEBOLDAL=%s\n' "$WEB"
     [ -n "$BEDROCK" ] && printf 'BEDROCK_PORT=%s\n' "$BEDROCK"
-    [ -n "$AI_SOROK" ] && printf '%s\n' "$AI_SOROK"
     true
   } > "$APP_DIR/.env"
   umask 022
