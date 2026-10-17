@@ -25,16 +25,15 @@ function udvozloKartya(m) {
     .kepes(
       [
         `## 👋 Szia, ${m.user.username}!`,
-        `Jó, hogy itt vagy, ${m}! Te vagy a **${m.guild.memberCount}.** tagunk. 🎉`,
+        `Köszönjük, ${m}! Hogy csatlakoztál hozzánk igy már te vagy a **${m.guild.memberCount}.** tagunk. 🎉`,
       ].join("\n"),
       avatar(m.user),
     )
     .elvalaszto()
     .szoveg(
-      `🎮 **Szerver:** \`${K.MC_HOST}\` · Java és Bedrock`,
+      `🎮 **Szerver:** \`${K.MC_HOST}\`,
       `🧩 **Verziók:** ${K.VERZIOK}`,
-      `🌐 **Fiók, IceCoin, rangok:** a weboldalon`,
-      `🎫 **Segítség kell?** Nyiss egy ticketet!`,
+      `🌐 **Rangok, IceCoin, Szerencsekerék:** a weboldalon`,
     )
     .sor(linkGomb("Weboldal", K.WEB, "🌐"), linkGomb("YouTube", K.YOUTUBE, "▶️"))
     .lab();
