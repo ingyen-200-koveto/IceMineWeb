@@ -31,7 +31,7 @@ function udvozloKartya(m) {
     )
     .elvalaszto()
     .szoveg(
-      `🎮 **Szerver:** \`${K.MC_HOST}\`,
+      `🎮 **Szerver:** \`${K.MC_HOST}\`· Java`,
       `🧩 **Verziók:** ${K.VERZIOK}`,
       `🌐 **Rangok, IceCoin, Szerencsekerék:** a weboldalon`,
     )
