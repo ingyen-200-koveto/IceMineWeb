@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="hu">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Idealtherm</title>
+<meta name="description" content="Klímák, hőszivattyúk és szellőztetéstechnika otthonra és irodába.">
+<meta name="theme-color" content="#ffffff">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Idealtherm">
+<meta property="og:title" content="Idealtherm">
+<meta property="og:description" content="Klímák, hőszivattyúk és szellőztetéstechnika otthonra és irodába.">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<link rel="preload" href="/fonts/jakarta.woff" as="font" type="font/woff" crossorigin>
+<link rel="stylesheet" href="/css/stilus.css">
+</head>
+<body>
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-telefon" viewBox="0 0 24 24"><path d="M5 4h3.5l1.7 4.3-2.2 1.4a11 11 0 0 0 6.3 6.3l1.4-2.2L20 15.5V19a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/></symbol>
+  <symbol id="i-level" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3.5 6.5 12 13l8.5-6.5"/></symbol>
+  <symbol id="i-hely" viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></symbol>
+  <symbol id="i-kosar" viewBox="0 0 24 24"><path d="M3 4h2.2l2.3 11h10.8L20.5 7H6.4"/><circle cx="9.5" cy="19.5" r="1.5"/><circle cx="17" cy="19.5" r="1.5"/></symbol>
+  <symbol id="i-menu" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></symbol>
+  <symbol id="i-x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></symbol>
+  <symbol id="i-nyil" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></symbol>
+  <symbol id="i-jobbra" viewBox="0 0 24 24"><path d="M9 6l6 6-6 6"/></symbol>
+  <symbol id="i-klima" viewBox="0 0 24 24"><rect x="2.5" y="5" width="19" height="8.5" rx="2"/><path d="M6 10.5h12M7.5 17c0 1.4-1 1.9-1 3.2M12 17c0 1.4-1 1.9-1 3.2M16.5 17c0 1.4-1 1.9-1 3.2"/></symbol>
+  <symbol id="i-hoszivattyu" viewBox="0 0 24 24"><rect x="2.5" y="4.5" width="19" height="15" rx="2"/><circle cx="10" cy="12" r="4.2"/><path d="M10 7.8v8.4M5.8 12h8.4M17.5 8.5h.5M17.5 12h.5M17.5 15.5h.5"/></symbol>
+  <symbol id="i-szelloztetes" viewBox="0 0 24 24"><path d="M3 8h10.5a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/></symbol>
+  <symbol id="i-hideg" viewBox="0 0 24 24"><path d="M12 2.5v19M3.8 7.25l16.4 9.5M3.8 16.75l16.4-9.5M9.2 4.2 12 6.5l2.8-2.3M9.2 19.8 12 17.5l2.8 2.3"/></symbol>
+  <symbol id="i-meleg" viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2M12 19.5v2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M2.5 12h2M19.5 12h2M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/></symbol>
+  <symbol id="i-minusz" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
+  <symbol id="i-plusz" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></symbol>
+  <symbol id="i-dok" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></symbol>
+  <symbol id="i-iranytu" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5z"/></symbol>
+</svg>
+
+<a class="ugras" href="#tartalom">Ugrás a tartalomhoz</a>
+
+<div class="felso" id="felso" hidden>
+  <div class="keret">
+    <a id="felsoTel" href="#" hidden><svg class="ikon"><use href="#i-telefon"/></svg><span></span></a>
+    <a id="felsoEmail" href="#" hidden><svg class="ikon"><use href="#i-level"/></svg><span></span></a>
+  </div>
+</div>
+
+<header class="fejlec" id="fejlec">
+  <div class="keret">
+    <a class="marka" href="/" data-ut aria-label="Idealtherm, kezdőlap">
+      <img src="/kepek/logo.svg" alt="" width="38" height="38">
+      <b aria-hidden="true">Ideal<span>therm</span></b>
+    </a>
+    <nav class="fomenu" aria-label="Fő menü">
+      <a href="/" data-ut>Kezdőlap</a>
+      <a href="/klimak" data-ut>Klímák</a>
+      <a href="/hoszivattyuk" data-ut>Hőszivattyúk</a>
+      <a href="/szelloztetes" data-ut>Szellőztetéstechnika</a>
+      <a href="/kapcsolat" data-ut>Kapcsolat</a>
+    </nav>
+    <a class="kosargomb" href="/kosar" data-ut aria-label="Kosár, 0 termék, 0 Ft">
+      <span class="tart"><svg class="ikon"><use href="#i-kosar"/></svg><span class="db" id="kosarDb">0</span></span>
+      <span class="osszeg" id="kosarOsszeg">0 Ft</span>
+    </a>
+    <button class="menugomb" id="menuNyit" type="button" aria-label="Menü megnyitása" aria-expanded="false" aria-controls="mobilmenu"><svg class="ikon"><use href="#i-menu"/></svg></button>
+  </div>
+</header>
+
+<main id="tartalom" tabindex="-1">
+
+<section class="lap" data-lap="/" data-cim="">
+  <div class="fooldal-hos">
+    <div class="keret hos" id="hos">
+      <div>
+        <span class="felirat"><span class="pontok" aria-hidden="true"><i></i><i></i></span><span>Klíma · Hőszivattyú · Szellőztetés</span></span>
+        <h1>Mindig <em>ideális</em> hőmérséklet, nyáron és télen</h1>
+        <p class="lead">Klímák, hőszivattyúk és szellőztetési rendszerek otthonra és irodába. Válasszon kategóriát, vagy keressen minket bizalommal.</p>
+        <div class="gombsor">
+          <a class="gomb elso" href="/klimak" data-ut>Klímák megtekintése<svg class="ikon"><use href="#i-nyil"/></svg></a>
+          <a class="gomb masod" href="/kapcsolat" data-ut>Kapcsolat</a>
+        </div>
+      </div>
+      <div class="termosztat" id="termosztat" aria-label="Termosztát bemutató">
+        <div class="fej"><span>Nappali</span><span class="allapot"><i></i>Bekapcsolva</span></div>
+        <div class="kijelzo">
+          <svg viewBox="0 0 120 120" aria-hidden="true"><circle class="sav" cx="60" cy="60" r="52" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="245 82" transform="rotate(135 60 60)"/><circle class="ertek" id="ivErtek" cx="60" cy="60" r="52" fill="none" stroke-width="7" stroke-linecap="round" stroke-dasharray="245 82" transform="rotate(135 60 60)"/></svg>
+          <div class="szam" aria-live="polite"><b><span id="fok">22</span><small>°C</small></b><span class="modnev" id="modNev">Hűtés</span></div>
+        </div>
+        <div class="vezerlok">
+          <button class="kerekgomb" id="hoLe" type="button" aria-label="Hőmérséklet csökkentése"><svg class="ikon"><use href="#i-minusz"/></svg></button>
+          <div class="mod" role="group" aria-label="Üzemmód">
+            <button type="button" id="modHut" aria-pressed="true"><svg class="ikon"><use href="#i-hideg"/></svg>Hűtés</button>
+            <button type="button" id="modFut" class="fut" aria-pressed="false"><svg class="ikon"><use href="#i-meleg"/></svg>Fűtés</button>
+          </div>
+          <button class="kerekgomb" id="hoFel" type="button" aria-label="Hőmérséklet növelése"><svg class="ikon"><use href="#i-plusz"/></svg></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="keret szekcio">
+    <div class="szekcio-fej">
+      <h2>Termékeink</h2>
+      <p>Minden kategóriában folyamatosan bővül a kínálat.</p>
+    </div>
+    <div class="kategoriak">
+      <a class="kat" href="/klimak" data-ut>
+        <span class="jel"><svg class="ikon"><use href="#i-klima"/></svg></span>
+        <h3>Klímák</h3>
+        <p>Oldalfali, multi split és mobil klímák hűtésre és fűtésre.</p>
+        <span class="tovabb">Megnézem<svg class="ikon"><use href="#i-nyil"/></svg></span>
+      </a>
+      <a class="kat" href="/hoszivattyuk" data-ut>
+        <span class="jel meleg"><svg class="ikon"><use href="#i-hoszivattyu"/></svg></span>
+        <h3>Hőszivattyúk</h3>
+        <p>Levegő-víz hőszivattyúk a gazdaságos fűtéshez és a melegvízhez.</p>
+        <span class="tovabb">Megnézem<svg class="ikon"><use href="#i-nyil"/></svg></span>
+      </a>
+      <a class="kat" href="/szelloztetes" data-ut>
+        <span class="jel"><svg class="ikon"><use href="#i-szelloztetes"/></svg></span>
+        <h3>Szellőztetéstechnika</h3>
+        <p>Hővisszanyerős szellőztetés a friss, tiszta levegőért.</p>
+        <span class="tovabb">Megnézem<svg class="ikon"><use href="#i-nyil"/></svg></span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/klimak" data-cim="Klímák">
+  <div class="oldalfej"><div class="keret">
+    <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Klímák</li></ol>
+    <h1>Klímák</h1>
+    <p>Oldalfali, multi split és mobil klímák hűtésre és fűtésre, otthonra és irodába.</p>
+  </div></div>
+  <div class="keret szekcio">
+    <div class="ures">
+      <span class="jel"><svg class="ikon"><use href="#i-klima"/></svg></span>
+      <h2>A klímák hamarosan felkerülnek</h2>
+      <p>Itt jelennek majd meg a klímák árakkal és részletes adatokkal. Addig is keressen minket bátran.</p>
+      <div class="gombsor"><a class="gomb elso" href="/kapcsolat" data-ut>Kapcsolat</a><a class="gomb masod" href="/" data-ut>Vissza a kezdőlapra</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/hoszivattyuk" data-cim="Hőszivattyúk">
+  <div class="oldalfej"><div class="keret">
+    <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Hőszivattyúk</li></ol>
+    <h1>Hőszivattyúk</h1>
+    <p>Levegő-víz hőszivattyúk a gazdaságos fűtéshez, hűtéshez és a használati melegvízhez.</p>
+  </div></div>
+  <div class="keret szekcio">
+    <div class="ures">
+      <span class="jel"><svg class="ikon"><use href="#i-hoszivattyu"/></svg></span>
+      <h2>A hőszivattyúk hamarosan felkerülnek</h2>
+      <p>Itt jelennek majd meg a hőszivattyúk árakkal és részletes adatokkal. Addig is keressen minket bátran.</p>
+      <div class="gombsor"><a class="gomb elso" href="/kapcsolat" data-ut>Kapcsolat</a><a class="gomb masod" href="/" data-ut>Vissza a kezdőlapra</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/szelloztetes" data-cim="Szellőztetéstechnika">
+  <div class="oldalfej"><div class="keret">
+    <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Szellőztetéstechnika</li></ol>
+    <h1>Szellőztetéstechnika</h1>
+    <p>Hővisszanyerős szellőztetők és légtechnikai megoldások a friss, egészséges levegőért.</p>
+  </div></div>
+  <div class="keret szekcio">
+    <div class="ures">
+      <span class="jel"><svg class="ikon"><use href="#i-szelloztetes"/></svg></span>
+      <h2>A termékek hamarosan felkerülnek</h2>
+      <p>Itt jelennek majd meg a szellőztetési termékek árakkal és részletes adatokkal. Addig is keressen minket bátran.</p>
+      <div class="gombsor"><a class="gomb elso" href="/kapcsolat" data-ut>Kapcsolat</a><a class="gomb masod" href="/" data-ut>Vissza a kezdőlapra</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/kapcsolat" data-cim="Kapcsolat">
+  <div class="oldalfej"><div class="keret">
+    <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Kapcsolat</li></ol>
+    <h1>Kapcsolat</h1>
+    <p>Kérdése van egy termékkel kapcsolatban, vagy ajánlatot kérne? Itt éri el munkatársainkat.</p>
+  </div></div>
+  <div class="keret szekcio">
+    <div class="elerhetoseg">
+      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-telefon"/></svg></span><small>Telefon</small><b data-adat="telefon"></b></div>
+      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-level"/></svg></span><small>E-mail</small><b data-adat="email"></b></div>
+      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-hely"/></svg></span><small>Cím</small><b data-adat="cim"></b></div>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/kosar" data-cim="Kosár">
+  <div class="oldalfej"><div class="keret">
+    <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Kosár</li></ol>
+    <h1>Kosár</h1>
+  </div></div>
+  <div class="keret szekcio">
+    <div class="ures">
+      <span class="jel"><svg class="ikon"><use href="#i-kosar"/></svg></span>
+      <h2>A kosara üres</h2>
+      <p>Amint feltöltjük a termékeket, itt látja majd, amit kiválasztott.</p>
+      <div class="gombsor"><a class="gomb elso" href="/klimak" data-ut>Vissza a vásárláshoz</a></div>
+    </div>
+  </div>
+</section>
+
+<section class="lap" data-lap="/impresszum" data-cim="Impresszum" data-dok></section>
+<section class="lap" data-lap="/adatkezeles" data-cim="Adatkezelési tájékoztató" data-dok></section>
+<section class="lap" data-lap="/aszf" data-cim="Általános Szerződési Feltételek" data-dok></section>
+<section class="lap" data-lap="/elallas" data-cim="Elállás a szerződéstől" data-dok></section>
+
+<section class="lap" data-lap="404" data-cim="Az oldal nem található">
+  <div class="keret szekcio">
+    <div class="ures">
+      <span class="jel"><svg class="ikon"><use href="#i-iranytu"/></svg></span>
+      <h2>Ez az oldal nem található</h2>
+      <p>Lehet, hogy elírta a címet, vagy az oldal már nem létezik.</p>
+      <div class="gombsor"><a class="gomb elso" href="/" data-ut>Vissza a kezdőlapra</a></div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="lablec">
+  <div class="keret">
+    <div>
+      <a class="marka" href="/" data-ut aria-label="Idealtherm, kezdőlap">
+        <img src="/kepek/logo-feher.svg" alt="" width="38" height="38">
+        <b aria-hidden="true">Ideal<span>therm</span></b>
+      </a>
+      <p>Klímák, hőszivattyúk és szellőztetéstechnika egy helyen.</p>
+    </div>
+    <div>
+      <h3>Termékek</h3>
+      <ul>
+        <li><a href="/klimak" data-ut>Klímák</a></li>
+        <li><a href="/hoszivattyuk" data-ut>Hőszivattyúk</a></li>
+        <li><a href="/szelloztetes" data-ut>Szellőztetéstechnika</a></li>
+        <li><a href="/kapcsolat" data-ut>Kapcsolat</a></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Fontos dokumentumok</h3>
+      <ul>
+        <li><a href="/impresszum" data-ut>Impresszum</a></li>
+        <li><a href="/adatkezeles" data-ut>Adatkezelési tájékoztató</a></li>
+        <li><a href="/aszf" data-ut>Általános Szerződési Feltételek</a></li>
+        <li><a href="/elallas" data-ut>Elállás a szerződéstől</a></li>
+        <li><button class="link" type="button" id="sutiBeallitas">Süti beállítások</button></li>
+      </ul>
+    </div>
+    <div>
+      <h3>Elérhetőség</h3>
+      <ul>
+        <li data-adat="telefon"></li>
+        <li data-adat="email"></li>
+        <li data-adat="cim"></li>
+      </ul>
+    </div>
+  </div>
+  <div class="also"><div class="keret"><span>© <span id="ev">2026</span> Idealtherm</span><span>Minden jog fenntartva.</span></div></div>
+</footer>
+
+<div class="hatter" id="menuHatter" hidden></div>
+<aside class="mobilmenu" id="mobilmenu" aria-label="Menü" hidden>
+  <div class="fej">
+    <a class="marka" href="/" data-ut aria-label="Idealtherm, kezdőlap"><img src="/kepek/logo.svg" alt="" width="34" height="34"><b aria-hidden="true">Ideal<span>therm</span></b></a>
+    <button class="menugomb" id="menuZar" type="button" aria-label="Menü bezárása" style="display:grid"><svg class="ikon"><use href="#i-x"/></svg></button>
+  </div>
+  <nav aria-label="Mobil menü">
+    <a href="/" data-ut>Kezdőlap<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+    <a href="/klimak" data-ut>Klímák<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+    <a href="/hoszivattyuk" data-ut>Hőszivattyúk<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+    <a href="/szelloztetes" data-ut>Szellőztetéstechnika<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+    <a href="/kapcsolat" data-ut>Kapcsolat<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+    <a href="/kosar" data-ut>Kosár<svg class="ikon"><use href="#i-jobbra"/></svg></a>
+  </nav>
+  <div class="kapcs" id="menuKapcs" hidden></div>
+</aside>
+
+<div class="suti" id="suti" hidden>
+  <div class="suti-ablak" role="dialog" aria-modal="true" aria-labelledby="sutiCim" aria-describedby="sutiSzoveg">
+    <div class="marka"><img src="/kepek/logo.svg" alt="" width="34" height="34"><b>Ideal<span>therm</span></b></div>
+    <h2 id="sutiCim">Sütik ezen az oldalon</h2>
+    <p id="sutiSzoveg">Weboldalunk sütiket (cookie-kat) használ. A működéshez szükséges sütik mindig aktívak. Ha hozzájárul, statisztikai sütikkel mérjük a látogatottságot, hogy fejleszthessük az oldalt, a marketing sütikkel pedig az Önt érdeklő ajánlatokat mutathatjuk meg. Az „Összes elfogadása” gombbal mindegyiket engedélyezi, a „További lehetőségek” alatt pedig egyenként választhat. Döntését később az oldal alján, a Süti beállításoknál módosíthatja.</p>
+    <div class="valasztok" id="sutiValasztok" hidden>
+      <div class="valaszto"><b>Szükséges sütik</b><label class="kapcsolo" title="Mindig aktív"><input type="checkbox" id="sutiSzukseges" checked disabled aria-label="Szükséges sütik, mindig aktív"><i></i></label><span>Az oldal alapvető működéséhez kellenek, például a kosárhoz. Nem kapcsolhatók ki.</span></div>
+      <div class="valaszto"><b>Statisztika</b><label class="kapcsolo"><input type="checkbox" id="sutiStat" aria-label="Statisztikai sütik"><i></i></label><span>Névtelen adatok arról, hogyan használják a látogatók az oldalt.</span></div>
+      <div class="valaszto"><b>Marketing</b><label class="kapcsolo"><input type="checkbox" id="sutiMark" aria-label="Marketing sütik"><i></i></label><span>Az Önt érdeklő ajánlatok és hirdetések megjelenítése.</span></div>
+    </div>
+    <div class="suti-gombok">
+      <button class="gomb elso" type="button" id="sutiMind">ÖSSZES ELFOGADÁSA</button>
+      <button class="gomb masod" type="button" id="sutiNem">NEM FOGADOM EL</button>
+      <button class="gomb masod" type="button" id="sutiTobb">TOVÁBBI LEHETŐSÉGEK</button>
+    </div>
+    <a class="suti-link" href="/adatkezeles" data-ut id="sutiLink">Adatkezelési tájékoztató</a>
+  </div>
+</div>
+
+<div class="uzenet" id="uzenet" role="status" aria-live="polite"></div>
+
+<script src="/js/oldal.js"></script>
+</body>
+</html>
