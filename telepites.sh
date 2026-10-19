@@ -8,6 +8,7 @@ APP_DIR=/opt/idealtherm
 APP_USER=idealtherm
 APP_HOME=/var/lib/idealtherm
 CONF=/etc/caddy/idealtherm.caddy
+UZENET_PORT=3100
 
 piros(){ printf '\033[1;31m%s\033[0m\n' "$*"; }
 zold(){ printf '\033[1;32m%s\033[0m\n' "$*"; }
@@ -18,6 +19,10 @@ hiba(){ piros "HIBA: $*"; exit 1; }
 command -v caddy >/dev/null 2>&1 || hiba "Nincs Caddy a gépen."
 [ -f /etc/caddy/Caddyfile ] || hiba "Nincs /etc/caddy/Caddyfile."
 command -v git >/dev/null 2>&1 || { apt-get update -y >/dev/null && apt-get install -y git >/dev/null; }
+node_ok(){ command -v node >/dev/null 2>&1 && [ "$(node -p 'process.versions.node.split(".")[0]')" -ge 18 ]; }
+node_ok || { apt-get update -y >/dev/null && apt-get install -y nodejs >/dev/null || true; }
+node_ok || hiba "Legalább 18-as Node.js kell a kapcsolat űrlaphoz."
+NODE_BIN=$(command -v node)
 cd /
 as_app(){ runuser -u "$APP_USER" -- env HOME="$APP_HOME" GIT_TERMINAL_PROMPT=0 "$@"; }
 
@@ -44,7 +49,9 @@ as_app(){ runuser -u idealtherm -- env HOME=/var/lib/idealtherm GIT_TERMINAL_PRO
 cd /opt/idealtherm
 as_app git fetch --quiet origin
 if [ "$(as_app git rev-parse HEAD)" != "$(as_app git rev-parse origin/main)" ] || [ "${1:-}" = "--most" ]; then
+  VALTOZOTT=$(as_app git diff --name-only HEAD origin/main -- szerver)
   as_app git reset --hard --quiet origin/main
+  if [ -n "$VALTOZOTT" ] || [ "${1:-}" = "--most" ]; then systemctl restart idealtherm-uzenet || true; fi
   echo "Idealtherm frissítve: $(as_app git log -1 --format='%h %s')"
 else
   echo "Nincs új változás a GitHubon."
@@ -72,22 +79,56 @@ OnUnitActiveSec=5min
 [Install]
 WantedBy=timers.target
 EOF
+kek "Kapcsolat űrlap szolgáltatás"
+if ss -ltn 2>/dev/null | grep -q "127.0.0.1:$UZENET_PORT " && ! systemctl is-active --quiet idealtherm-uzenet; then
+  hiba "A $UZENET_PORT port már foglalt. Írd át a UZENET_PORT értékét a telepítő elején."
+fi
+cat > /etc/systemd/system/idealtherm-uzenet.service <<UNIT
+[Unit]
+Description=Idealtherm kapcsolat urlap (e-mail kuldes)
+After=network-online.target
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=$APP_USER
+Group=$APP_USER
+WorkingDirectory=$APP_DIR/szerver
+ExecStart=$NODE_BIN uzenet.js
+Environment=PORT=$UZENET_PORT
+Environment=HOST=127.0.0.1
+Restart=always
+RestartSec=5
+NoNewPrivileges=true
+ProtectSystem=full
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+UNIT
 systemctl daemon-reload
 systemctl enable --now --quiet idealtherm-frissites.timer
+systemctl enable --quiet idealtherm-uzenet
+systemctl restart idealtherm-uzenet
 
 kek "HTTPS beállítása: $DOMAIN"
 [ -f "$CONF" ] && cp "$CONF" "$CONF.regi"
 cat > "$CONF" <<EOF
 $DOMAIN, www.$DOMAIN {
 	encode zstd gzip
-	root * $APP_DIR
-	@rejtett path /.git /.git/* /telepites.sh /README.md
-	respond @rejtett 404
-	@nemfont not path /fonts/*
-	header @nemfont Cache-Control "no-cache"
-	header /fonts/* Cache-Control "public, max-age=31536000"
-	try_files {path} /index.html
-	file_server
+	handle /api/* {
+		reverse_proxy 127.0.0.1:$UZENET_PORT
+	}
+	handle {
+		root * $APP_DIR
+		@rejtett path /.git /.git/* /szerver /szerver/* /telepites.sh /email-beallitas.sh /README.md
+		respond @rejtett 404
+		@nemfont not path /fonts/*
+		header @nemfont Cache-Control "no-cache"
+		header /fonts/* Cache-Control "public, max-age=31536000"
+		try_files {path} /index.html
+		file_server
+	}
 }
 EOF
 UJ_IMPORT=""
@@ -105,9 +146,18 @@ fi
 rm -f "$CONF.regi" /etc/caddy/Caddyfile.idealtherm-elott /tmp/idealtherm-caddy.txt
 systemctl reload caddy 2>/dev/null || systemctl restart caddy
 
+if [ ! -f /var/lib/idealtherm/uzenet.env ]; then
+  VALASZ=""
+  read -r -p "Beállítod most a kapcsolat űrlap e-mail küldését? (i/n) [i]: " VALASZ </dev/tty || true
+  if [ "${VALASZ:-i}" = "i" ]; then
+    bash "$APP_DIR/email-beallitas.sh" || piros "Az e-mail beállítás nem sikerült. Később újra futtathatod: bash $APP_DIR/email-beallitas.sh"
+  fi
+fi
+
 zold "
 KÉSZ! Az Idealtherm weboldal fut: https://$DOMAIN
 
 A GitHubról 5 percenként magától frissül.
-Azonnali frissítés:  idealtherm-frissites --most
+Azonnali frissítés:              idealtherm-frissites --most
+E-mail küldés újbóli beállítása: bash $APP_DIR/email-beallitas.sh
 "

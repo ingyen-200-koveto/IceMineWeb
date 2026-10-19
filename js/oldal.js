@@ -278,6 +278,114 @@
     termRajzol();
   }
 
+  const urlap = $("#urlap");
+  let urlapKezdet = Date.now();
+  const EMAIL_RE = /^[^\s@<>()",;:\\]{1,64}@[^\s@<>()",;:\\]{1,190}\.[a-z]{2,24}$/i;
+  const TEL_RE = /^[+\d][\d\s()/-]{5,24}$/;
+  const mezok = {
+    vezeteknev: ["#uVezetek", (v) => (v ? "" : "Kérjük, adja meg a vezetéknevét.")],
+    keresztnev: ["#uKereszt", (v) => (v ? "" : "Kérjük, adja meg a keresztnevét.")],
+    email: ["#uEmail", (v) => (!v ? "Kérjük, adja meg az e-mail címét." : EMAIL_RE.test(v) ? "" : "Ez nem tűnik érvényes e-mail címnek.")],
+    telefon: [
+      "#uTelefon",
+      (v) => (!v ? ($("#uMod").value === "telefon" ? "A visszahíváshoz kérjük, adja meg a telefonszámát." : "") : TEL_RE.test(v) ? "" : "Kérjük, ellenőrizze a telefonszámot."),
+    ],
+    uzenet: ["#uUzenet", (v) => (v.length >= 5 ? "" : "Kérjük, írja meg röviden, miben segíthetünk.")],
+  };
+
+  function mezoHiba(el, uz) {
+    el.setAttribute("aria-invalid", uz ? "true" : "false");
+    const h = $("#" + el.id + "Hiba");
+    if (h) h.textContent = uz;
+  }
+
+  function telefonCimke() {
+    const kell = $("#uMod").value === "telefon";
+    $("#uTelOpc").hidden = kell;
+    $("#uTelefon").required = kell;
+    if ($("#uTelefon").getAttribute("aria-invalid") === "true") mezoHiba($("#uTelefon"), mezok.telefon[1]($("#uTelefon").value.trim()));
+  }
+
+  if (urlap) {
+    $("#uMod").addEventListener("change", telefonCimke);
+    telefonCimke();
+    Object.values(mezok).forEach(([sel, f]) => {
+      const el = $(sel);
+      el.addEventListener("blur", () => {
+        if (el.value.trim() || el.getAttribute("aria-invalid") === "true") mezoHiba(el, f(el.value.trim()));
+      });
+      el.addEventListener("input", () => {
+        if (el.getAttribute("aria-invalid") === "true") mezoHiba(el, f(el.value.trim()));
+      });
+    });
+    $("#uAdat").addEventListener("change", () => {
+      if ($("#uAdat").checked) mezoHiba($("#uAdat"), "");
+    });
+
+    urlap.addEventListener("submit", async (e) => {
+      e.preventDefault();
+      $("#uHiba").hidden = true;
+      let elsoHibas = null;
+      const adat = {};
+      for (const [nev, [sel, f]] of Object.entries(mezok)) {
+        const el = $(sel);
+        const v = el.value.trim();
+        adat[nev] = v;
+        const uz = f(v);
+        mezoHiba(el, uz);
+        if (uz && !elsoHibas) elsoHibas = el;
+      }
+      const adatEl = $("#uAdat");
+      mezoHiba(adatEl, adatEl.checked ? "" : "Az elküldéshez kérjük, fogadja el az adatkezelési tájékoztatót.");
+      if (!adatEl.checked && !elsoHibas) elsoHibas = adatEl;
+      if (elsoHibas) {
+        elsoHibas.focus();
+        return;
+      }
+      adat.mod = $("#uMod").value;
+      adat.adatkezeles = true;
+      adat.weboldal = $("#uWeb").value;
+      adat.ido = Date.now() - urlapKezdet;
+      const gomb = $("#uKuld");
+      gomb.disabled = true;
+      gomb.textContent = "KÜLDÉS…";
+      try {
+        const r = await fetch("/api/uzenet", {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(adat),
+          signal: AbortSignal.timeout ? AbortSignal.timeout(30000) : undefined,
+        });
+        const d = await r.json().catch(() => ({}));
+        if (!r.ok || !d.ok) throw new Error(d.hiba || "");
+        $("#uSikerSzoveg").textContent =
+          adat.mod === "email" ? `Hamarosan válaszolunk a(z) ${adat.email} címre.` : `Hamarosan visszahívjuk a(z) ${adat.telefon} számon.`;
+        urlap.hidden = true;
+        $("#uSiker").hidden = false;
+        $("#uSiker").focus();
+        urlap.reset();
+        telefonCimke();
+      } catch (err) {
+        const tel = CEG.telefon.trim(), email = CEG.email.trim();
+        const alap = err && err.message && !/fetch|network|abort|timeout/i.test(err.message) ? err.message : "Most nem sikerült elküldeni az üzenetet. Kérjük, próbálja újra később.";
+        const elerheto = [email ? `<a href="mailto:${esc(email)}">${esc(email)}</a>` : "", tel ? `<a href="tel:${tel.replace(/[^\d+]/g, "")}">${esc(tel)}</a>` : ""].filter(Boolean).join(", ");
+        const h = $("#uHiba");
+        h.innerHTML = esc(alap) + (elerheto ? ` Ha sürgős, keressen minket közvetlenül: ${elerheto}.` : "");
+        h.hidden = false;
+      } finally {
+        gomb.disabled = false;
+        gomb.textContent = "KÜLDÉS";
+      }
+    });
+
+    $("#uUjra").addEventListener("click", () => {
+      $("#uSiker").hidden = true;
+      urlap.hidden = false;
+      urlapKezdet = Date.now();
+      $("#uVezetek").focus();
+    });
+  }
+
   adatok();
   dokumentumok();
   arnyek();

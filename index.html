@@ -34,6 +34,7 @@
   <symbol id="i-minusz" viewBox="0 0 24 24"><path d="M6 12h12"/></symbol>
   <symbol id="i-plusz" viewBox="0 0 24 24"><path d="M12 6v12M6 12h12"/></symbol>
   <symbol id="i-dok" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/></symbol>
+  <symbol id="i-pipa" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></symbol>
   <symbol id="i-iranytu" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5 13.5 13.5 8.5 15.5 10.5 10.5z"/></symbol>
 </svg>
 
@@ -178,13 +179,46 @@
   <div class="oldalfej"><div class="keret">
     <ol class="morzsa"><li><a href="/" data-ut>Kezdőlap</a></li><li aria-current="page">Kapcsolat</li></ol>
     <h1>Kapcsolat</h1>
-    <p>Kérdése van egy termékkel kapcsolatban, vagy ajánlatot kérne? Itt éri el munkatársainkat.</p>
+    <p>Kérdése van egy termékkel kapcsolatban, vagy ajánlatot kérne? Írjon nekünk az űrlapon, vagy hívjon minket bátran.</p>
   </div></div>
   <div class="keret szekcio">
-    <div class="elerhetoseg">
-      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-telefon"/></svg></span><small>Telefon</small><b data-adat="telefon"></b></div>
-      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-level"/></svg></span><small>E-mail</small><b data-adat="email"></b></div>
-      <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-hely"/></svg></span><small>Helyszín</small><b data-adat="cim"></b></div>
+    <div class="kapcsolat-racs">
+      <div class="elerhetoseg">
+        <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-telefon"/></svg></span><small>Telefon</small><b data-adat="telefon"></b></div>
+        <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-level"/></svg></span><small>E-mail</small><b data-adat="email"></b></div>
+        <div class="elem"><span class="jel"><svg class="ikon"><use href="#i-hely"/></svg></span><small>Helyszín</small><b data-adat="cim"></b></div>
+      </div>
+      <div class="urlap-kartya">
+        <form class="urlap" id="urlap" novalidate>
+          <div class="urlap-fej">
+            <h2>Írjon nekünk</h2>
+            <p>Töltse ki az űrlapot, és hamarosan felvesszük Önnel a kapcsolatot.</p>
+          </div>
+          <div class="mezosor">
+            <div class="mezo"><label for="uVezetek">Vezetéknév</label><input id="uVezetek" name="vezeteknev" autocomplete="family-name" maxlength="60" required aria-describedby="uVezetekHiba"><span class="mezo-hiba" id="uVezetekHiba"></span></div>
+            <div class="mezo"><label for="uKereszt">Keresztnév</label><input id="uKereszt" name="keresztnev" autocomplete="given-name" maxlength="60" required aria-describedby="uKeresztHiba"><span class="mezo-hiba" id="uKeresztHiba"></span></div>
+          </div>
+          <div class="mezosor">
+            <div class="mezo"><label for="uEmail">E-mail</label><input id="uEmail" name="email" type="email" inputmode="email" autocomplete="email" maxlength="254" required aria-describedby="uEmailHiba"><span class="mezo-hiba" id="uEmailHiba"></span></div>
+            <div class="mezo"><label for="uTelefon">Telefonszám <span class="opc" id="uTelOpc" hidden>(nem kötelező)</span></label><input id="uTelefon" name="telefon" type="tel" inputmode="tel" autocomplete="tel" maxlength="30" placeholder="+36 30 123 4567" aria-describedby="uTelefonHiba"><span class="mezo-hiba" id="uTelefonHiba"></span></div>
+          </div>
+          <div class="mezo"><label for="uMod">Hogyan vegyük fel Önnel a kapcsolatot?</label><select id="uMod" name="mod"><option value="telefon">Telefonon kérek visszahívást</option><option value="email">E-mailben kérek választ</option></select></div>
+          <div class="mezo"><label for="uUzenet">Üzenet</label><textarea id="uUzenet" name="uzenet" rows="5" maxlength="4000" required placeholder="Például: 3,5 kW-os klímát szeretnék a nappaliba, kérek ajánlatot." aria-describedby="uUzenetHiba"></textarea><span class="mezo-hiba" id="uUzenetHiba"></span></div>
+          <div class="rejtett-mezo" aria-hidden="true"><label for="uWeb">Weboldal</label><input id="uWeb" name="weboldal" tabindex="-1" autocomplete="off"></div>
+          <div class="mezo">
+            <label class="jelolo" for="uAdat"><input type="checkbox" id="uAdat" aria-describedby="uAdatHiba"><span>Elfogadom az <a href="/adatkezeles" data-ut>Adatkezelési tájékoztatóban</a> foglaltakat.</span></label>
+            <span class="mezo-hiba" id="uAdatHiba"></span>
+          </div>
+          <p class="urlap-hiba" id="uHiba" role="alert" hidden></p>
+          <button class="gomb elso kuldes" type="submit" id="uKuld">KÜLDÉS</button>
+        </form>
+        <div class="urlap-siker" id="uSiker" tabindex="-1" hidden>
+          <span class="pipa"><svg class="ikon"><use href="#i-pipa"/></svg></span>
+          <h2>Köszönjük, megkaptuk az üzenetét!</h2>
+          <p id="uSikerSzoveg">Hamarosan jelentkezünk.</p>
+          <button class="gomb masod" type="button" id="uUjra">Új üzenet írása</button>
+        </div>
+      </div>
     </div>
   </div>
 </section>
