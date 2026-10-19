@@ -90,28 +90,18 @@ button{font:inherit;color:inherit}
 .gomb.masod:hover{box-shadow:inset 0 0 0 1.5px var(--hideg);color:var(--hideg-sotet)}
 .gomb:active{transform:translateY(1px)}
 
-.termosztat{justify-self:end;width:100%;max-width:400px;padding:26px;border-radius:24px;background:var(--lap);box-shadow:var(--arnyek),inset 0 0 0 1px var(--vonal)}
-.termosztat .fej{display:flex;align-items:center;justify-content:space-between;font-size:13px;font-weight:700;color:var(--halvany)}
-.termosztat .fej .allapot{display:inline-flex;align-items:center;gap:7px}
-.termosztat .fej .allapot i{width:8px;height:8px;border-radius:50%;background:#22a565;box-shadow:0 0 0 4px #22a5652b}
-.kijelzo{position:relative;display:grid;place-items:center;margin:22px auto 20px;width:min(100%,250px);aspect-ratio:1;max-width:100%}
-.kijelzo svg{position:absolute;inset:0;width:100%;height:100%}
-.kijelzo .sav{stroke:var(--vonal)}
-.kijelzo .ertek{stroke:var(--hideg);transition:stroke .4s,stroke-dashoffset .35s}
-.termosztat.meleg .kijelzo .ertek{stroke:var(--meleg)}
-.kijelzo .szam{position:relative;text-align:center;font-variant-numeric:tabular-nums}
-.kijelzo .szam b{display:block;font-size:64px;font-weight:800;letter-spacing:-.04em;line-height:1}
-.kijelzo .szam b small{font-size:26px;font-weight:700;letter-spacing:0;vertical-align:28px;margin-left:2px}
-.kijelzo .szam .modnev{display:block;margin-top:6px;font-size:13px;font-weight:700;color:var(--halvany)}
-.vezerlok{display:grid;grid-template-columns:52px 1fr 52px;gap:10px;align-items:center}
-.kerekgomb{display:grid;place-items:center;width:52px;height:52px;border:0;border-radius:50%;cursor:pointer;background:var(--papir);box-shadow:inset 0 0 0 1px var(--vonal);transition:background .15s}
-.kerekgomb:hover{background:var(--hideg-hatter)}
-.kerekgomb:disabled{opacity:.4;cursor:default}
-.mod{display:grid;grid-template-columns:1fr 1fr;gap:4px;padding:4px;border-radius:12px;background:var(--papir);box-shadow:inset 0 0 0 1px var(--vonal)}
-.mod button{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;border:0;border-radius:9px;cursor:pointer;background:transparent;font-weight:700;font-size:14px;color:var(--halvany)}
-.mod button .ikon{width:17px;height:17px}
-.mod button[aria-pressed="true"]{background:var(--lap);color:var(--hideg);box-shadow:var(--arnyek)}
-.mod button.fut[aria-pressed="true"]{color:var(--meleg-szoveg)}
+.szolgaltatas{justify-self:end;display:grid;gap:18px;width:100%;max-width:420px;padding:28px;border-radius:24px;background:var(--lap);box-shadow:var(--arnyek),inset 0 0 0 1px var(--vonal)}
+.szolgaltatas h2{font-size:22px}
+.szolg-lista{display:grid;gap:4px;margin:0;padding:0;list-style:none}
+.szolg-lista li{display:flex;align-items:center;gap:14px;padding:10px 0;border-bottom:1px solid var(--vonal);font-weight:700;font-size:16px;line-height:1.35}
+.szolg-lista li:last-child{border-bottom:0}
+.szolg-lista .jel{display:grid;place-items:center;flex:none;width:44px;height:44px;border-radius:12px;background:var(--hideg-hatter);color:var(--hideg)}
+.szolg-lista .jel.meleg{background:var(--meleg-hatter);color:var(--meleg-szoveg)}
+.szolg-lista .jel .ikon{width:22px;height:22px}
+.szolgaltatas .gomb{width:100%}
+.szolg-tel{margin-top:-4px;text-align:center;color:var(--halvany);font-size:15px}
+.szolg-tel a{font-weight:750;text-decoration:none;white-space:nowrap}
+.szolg-tel a:hover{text-decoration:underline}
 
 .szekcio{padding-block:64px}
 .szekcio-fej{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:28px}
@@ -243,8 +233,8 @@ button{font:inherit;color:inherit}
 
 @media (min-width:640px){.suti{align-items:center}.suti-gombok{grid-template-columns:1fr 1fr}.suti-gombok .gomb:first-child{grid-column:1 / -1}}
 @media (max-width:1060px){.fomenu{display:none}.menugomb{display:grid}}
-@media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.termosztat{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.kapcsolat-racs{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.lablec .keret{grid-template-columns:repeat(3,minmax(0,1fr))}.lablec .keret>div:first-child{grid-column:1 / -1}}
-@media (max-width:560px){.fejlec .keret{height:78px;gap:8px}.fejlec .marka .logo{height:62px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .elotag,.felso .jobb{display:none}.felso .keret{flex-wrap:nowrap;gap:16px}.ures{padding:36px 20px}.mezosor{grid-template-columns:minmax(0,1fr)}.urlap-kartya{padding:22px 18px}.termosztat{padding:20px}.kijelzo .szam b{font-size:56px}}
+@media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.szolgaltatas{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.kapcsolat-racs{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.lablec .keret{grid-template-columns:repeat(3,minmax(0,1fr))}.lablec .keret>div:first-child{grid-column:1 / -1}}
+@media (max-width:560px){.fejlec .keret{height:78px;gap:8px}.fejlec .marka .logo{height:62px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .elotag,.felso .jobb{display:none}.felso .keret{flex-wrap:nowrap;gap:16px}.ures{padding:36px 20px}.mezosor{grid-template-columns:minmax(0,1fr)}.urlap-kartya{padding:22px 18px}.szolgaltatas{padding:22px 20px}}
 @media (max-width:400px){#felsoEmail{display:none!important}}
-@media (max-width:360px){.fejlec .marka .logo{height:56px}.kosargomb{height:42px;padding:0 10px}.menugomb{width:42px;height:42px}.felirat{letter-spacing:.08em}.vezerlok{grid-template-columns:46px 1fr 46px;gap:8px}.kerekgomb{width:46px;height:46px}.mod button .ikon{display:none}}
+@media (max-width:360px){.fejlec .marka .logo{height:56px}.kosargomb{height:42px;padding:0 10px}.menugomb{width:42px;height:42px}.felirat{letter-spacing:.08em}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

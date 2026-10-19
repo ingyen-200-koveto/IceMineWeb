@@ -70,6 +70,15 @@
         h.hidden = false;
         $("span", h).textContent = cim;
       }
+      if (tel) {
+        const sz = $("#szolgTel");
+        if (sz) {
+          sz.hidden = false;
+          const a = $("a", sz);
+          a.href = telLink;
+          a.textContent = tel;
+        }
+      }
       const k = $("#menuKapcs");
       k.hidden = false;
       k.innerHTML =
@@ -242,41 +251,6 @@
   });
   window.idealthermSuti = sutiDontes();
 
-  const MIN = 16, MAX = 30, LEPES = 0.5, IV = 245;
-  let fok = 22, meleg = false;
-  const termosztat = $("#termosztat");
-  function termRajzol() {
-    $("#fok").textContent = String(fok).replace(".", ",");
-    $("#modNev").textContent = meleg ? "Fűtés" : "Hűtés";
-    $("#ivErtek").style.strokeDasharray = `${IV * ((fok - MIN) / (MAX - MIN)) + 0.01} 400`;
-    $("#hoLe").disabled = fok <= MIN;
-    $("#hoFel").disabled = fok >= MAX;
-    $("#modHut").setAttribute("aria-pressed", String(!meleg));
-    $("#modFut").setAttribute("aria-pressed", String(meleg));
-    termosztat.classList.toggle("meleg", meleg);
-    $("#hos").classList.toggle("meleg", meleg);
-  }
-  if (termosztat) {
-    $("#hoLe").addEventListener("click", () => {
-      fok = Math.max(MIN, fok - LEPES);
-      termRajzol();
-    });
-    $("#hoFel").addEventListener("click", () => {
-      fok = Math.min(MAX, fok + LEPES);
-      termRajzol();
-    });
-    $("#modHut").addEventListener("click", () => {
-      meleg = false;
-      if (fok > 24) fok = 22;
-      termRajzol();
-    });
-    $("#modFut").addEventListener("click", () => {
-      meleg = true;
-      if (fok < 20) fok = 22;
-      termRajzol();
-    });
-    termRajzol();
-  }
 
   const urlap = $("#urlap");
   let urlapKezdet = Date.now();
