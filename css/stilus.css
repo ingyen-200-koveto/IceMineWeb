@@ -1,19 +1,21 @@
 @font-face{font-family:"Plus Jakarta Sans";src:url(../fonts/jakarta.woff) format("woff");font-weight:200 800;font-display:swap}
 :root{
-  --papir:#f5f8fa;
+  --papir:#f5f7f8;
   --lap:#ffffff;
-  --tinta:#0d1b2a;
-  --halvany:#5b6b7a;
-  --vonal:#dbe4ec;
-  --hideg:#0a74c9;
-  --hideg-sotet:#085a9c;
-  --hideg-hatter:#e6f1fa;
-  --meleg:#ee6a1f;
-  --meleg-hatter:#fdeee4;
-  --mely:#0b2440;
-  --mely-szoveg:#c9d7e4;
+  --tinta:#121316;
+  --halvany:#5c6870;
+  --vonal:#dfe5e8;
+  --hideg:#087f94;
+  --hideg-sotet:#066a7b;
+  --hideg-hatter:#e1f5f8;
+  --hideg-elenk:#0ab2c8;
+  --meleg:#ffa424;
+  --meleg-szoveg:#c96b00;
+  --meleg-hatter:#fff1dc;
+  --mely:#131619;
+  --mely-szoveg:#b9c2c7;
   --betu:"Plus Jakarta Sans",system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
-  --arnyek:0 1px 2px #0d1b2a0f,0 8px 24px -12px #0d1b2a2e;
+  --arnyek:0 1px 2px #1213160f,0 8px 24px -12px #1213162e;
   --kerek:14px;
   --szel:1200px;
   color-scheme:light;
@@ -38,26 +40,28 @@ button{font:inherit;color:inherit}
 .felso .keret{display:flex;flex-wrap:wrap;align-items:center;gap:6px 22px;min-height:38px;padding-block:6px}
 .felso a{display:inline-flex;align-items:center;gap:7px;color:#fff;text-decoration:none;font-weight:600}
 .felso a:hover{text-decoration:underline}
-.felso .ikon{width:16px;height:16px;color:#8fc4ee}
+.felso .ikon{width:16px;height:16px;color:var(--hideg-elenk)}
+.felso .jobb{display:inline-flex;align-items:center;gap:7px;color:#fff;font-weight:600}
 .felso .jobb{margin-left:auto}
 
-.fejlec{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--lap);border-bottom:1px solid var(--vonal)}
-.fejlec.arnyekos{box-shadow:0 6px 20px -16px #0d1b2a66}
-.fejlec .keret{display:flex;align-items:center;gap:18px;height:72px}
+.fejlec{position:sticky;top:env(safe-area-inset-top,0px);z-index:40;background:var(--lap)}
+.fejlec::after,.lablec::before{content:"";display:block;height:4px;background:linear-gradient(var(--meleg) 50%,var(--hideg-elenk) 50%)}
+.fejlec::after{position:absolute;left:0;right:0;bottom:-4px}
+.fejlec.arnyekos{box-shadow:0 10px 24px -18px #12131666}
+.fejlec .keret{display:flex;align-items:center;gap:18px;height:76px}
 .marka{display:inline-flex;align-items:center;gap:10px;margin-right:auto;color:var(--tinta);text-decoration:none;border-radius:10px}
-.marka img{width:38px;height:38px}
-.marka b{font-size:23px;font-weight:800;letter-spacing:-.03em;line-height:1}
-.marka b span{color:var(--hideg)}
+.marka .jel{display:block;height:48px;width:auto;color:var(--tinta)}
+.marka .nev{display:block;height:15px;width:auto;color:var(--tinta)}
 .fomenu{display:flex;align-items:center;gap:2px}
 .fomenu a{position:relative;padding:10px 13px;border-radius:10px;color:var(--tinta);text-decoration:none;font-weight:650;font-size:15px;white-space:nowrap;transition:background .15s,color .15s}
 .fomenu a:hover{background:var(--hideg-hatter);color:var(--hideg-sotet)}
 .fomenu a[aria-current="page"]{color:var(--hideg)}
 .fomenu a[aria-current="page"]::after{content:"";position:absolute;left:13px;right:13px;bottom:2px;height:2px;border-radius:2px;background:var(--hideg)}
 .kosargomb{display:inline-flex;align-items:center;gap:10px;height:46px;padding:0 16px 0 12px;border-radius:12px;background:var(--hideg-hatter);color:var(--hideg-sotet);text-decoration:none;font-weight:750;font-variant-numeric:tabular-nums;transition:background .15s}
-.kosargomb:hover{background:#d6e8f7}
+.kosargomb:hover{background:#cdeef3}
 .kosargomb .tart{position:relative;display:grid;place-items:center}
 .kosargomb .ikon{width:22px;height:22px}
-.kosargomb .db{position:absolute;top:-8px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--meleg);color:#fff;font-size:11px;font-weight:800;line-height:18px;text-align:center}
+.kosargomb .db{position:absolute;top:-8px;right:-9px;min-width:18px;height:18px;padding:0 5px;border-radius:9px;background:var(--meleg);color:var(--tinta);font-size:11px;font-weight:800;line-height:18px;text-align:center}
 .menugomb{display:none;place-items:center;width:46px;height:46px;border:0;border-radius:12px;background:transparent;cursor:pointer}
 .menugomb:hover{background:var(--papir)}
 .menugomb .ikon{width:24px;height:24px}
@@ -72,7 +76,7 @@ button{font:inherit;color:inherit}
 .felirat i+i{background:var(--meleg)}
 .hos h1{margin-top:16px;font-size:clamp(34px,5.4vw,58px);letter-spacing:-.035em}
 .hos h1 em{font-style:normal;color:var(--hideg);transition:color .4s}
-.hos.meleg h1 em{color:var(--meleg)}
+.hos.meleg h1 em{color:var(--meleg-szoveg)}
 .hos p.lead{margin-top:18px;max-width:34em;font-size:clamp(16px,1.6vw,18.5px);color:var(--halvany)}
 .gombsor{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .gomb{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:50px;padding:0 22px;border:0;border-radius:12px;cursor:pointer;font-weight:750;font-size:15.5px;text-decoration:none;transition:background .15s,box-shadow .15s,transform .15s}
@@ -104,7 +108,7 @@ button{font:inherit;color:inherit}
 .mod button{display:inline-flex;align-items:center;justify-content:center;gap:6px;height:42px;border:0;border-radius:9px;cursor:pointer;background:transparent;font-weight:700;font-size:14px;color:var(--halvany)}
 .mod button .ikon{width:17px;height:17px}
 .mod button[aria-pressed="true"]{background:var(--lap);color:var(--hideg);box-shadow:var(--arnyek)}
-.mod button.fut[aria-pressed="true"]{color:var(--meleg)}
+.mod button.fut[aria-pressed="true"]{color:var(--meleg-szoveg)}
 
 .szekcio{padding-block:64px}
 .szekcio-fej{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:12px 24px;margin-bottom:28px}
@@ -114,7 +118,7 @@ button{font:inherit;color:inherit}
 .kat{display:grid;align-content:start;gap:12px;padding:26px 24px 22px;border-radius:var(--kerek);background:var(--lap);box-shadow:inset 0 0 0 1px var(--vonal);color:var(--tinta);text-decoration:none;transition:box-shadow .2s,transform .2s}
 .kat:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1.5px var(--hideg),var(--arnyek)}
 .kat .jel{display:grid;place-items:center;width:52px;height:52px;border-radius:14px;background:var(--hideg-hatter);color:var(--hideg)}
-.kat .jel.meleg{background:var(--meleg-hatter);color:var(--meleg)}
+.kat .jel.meleg{background:var(--meleg-hatter);color:var(--meleg-szoveg)}
 .kat .jel .ikon{width:26px;height:26px}
 .kat h3{font-size:20px}
 .kat p{color:var(--halvany);font-size:15px}
@@ -144,9 +148,8 @@ button{font:inherit;color:inherit}
 .elem b.nincs{font-weight:600;color:var(--halvany)}
 
 .lablec{margin-top:24px;background:var(--mely);color:var(--mely-szoveg);font-size:15px}
+.lablec .marka .jel,.lablec .marka .nev{color:#fff}
 .lablec .keret{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:32px;padding-block:52px 40px}
-.lablec .marka{color:#fff}
-.lablec .marka b span{color:#8fc4ee}
 .lablec p{margin-top:14px;max-width:30em}
 .lablec h3{margin-bottom:14px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
 .lablec ul{display:grid;gap:9px;margin:0;padding:0;list-style:none}
@@ -156,11 +159,13 @@ button{font:inherit;color:inherit}
 .lablec .also{border-top:1px solid #ffffff1f}
 .lablec .also .keret{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;padding-block:18px calc(18px + env(safe-area-inset-bottom,0px));font-size:13.5px}
 
-.hatter{position:fixed;inset:0;z-index:70;background:#0b1c2e8c;opacity:0;transition:opacity .2s}
+.hatter{position:fixed;inset:0;z-index:70;background:#1213168c;opacity:0;transition:opacity .2s}
 .hatter.lat{opacity:1}
 .mobilmenu{position:fixed;top:0;right:0;bottom:0;z-index:80;display:flex;flex-direction:column;width:min(86vw,360px);padding:calc(14px + env(safe-area-inset-top,0px)) max(18px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) 18px;background:var(--lap);box-shadow:-20px 0 40px -20px #0d1b2a66;transform:translateX(105%);transition:transform .25s ease;overflow-y:auto}
 .mobilmenu.nyitva{transform:none}
 .mobilmenu .fej{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.mobilmenu .fej .marka .jel{height:42px}
+.mobilmenu .fej .marka .nev{height:12px}
 .mobilmenu nav{display:grid;gap:2px}
 .mobilmenu nav a{display:flex;align-items:center;justify-content:space-between;padding:14px 12px;border-radius:12px;color:var(--tinta);text-decoration:none;font-weight:700;font-size:17px}
 .mobilmenu nav a:hover{background:var(--papir)}
@@ -169,12 +174,12 @@ button{font:inherit;color:inherit}
 .mobilmenu .kapcs{display:grid;gap:10px;margin-top:auto;padding-top:20px;border-top:1px solid var(--vonal);font-size:15px}
 .mobilmenu .kapcs a{display:flex;align-items:center;gap:10px;color:var(--tinta);text-decoration:none;font-weight:650}
 
-.suti{position:fixed;inset:0;z-index:90;display:grid;align-items:end;justify-items:center;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#0b1c2e99;overflow-y:auto}
+.suti{position:fixed;inset:0;z-index:90;display:grid;align-items:end;justify-items:center;padding:16px max(16px,env(safe-area-inset-right,0px)) calc(16px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));background:#12131699;overflow-y:auto}
 .suti-ablak{width:100%;max-width:560px;max-height:100%;overflow-y:auto;padding:26px 26px 22px;border-radius:20px;background:var(--lap);box-shadow:0 30px 70px -20px #0d1b2a99;animation:fel .3s ease}
 @keyframes fel{from{transform:translateY(24px);opacity:0}}
 .suti-ablak .marka{margin:0 0 16px}
-.suti-ablak .marka img{width:34px;height:34px}
-.suti-ablak .marka b{font-size:20px}
+.suti-ablak .marka .jel{height:42px}
+.suti-ablak .marka .nev{height:13px}
 .suti-ablak h2{font-size:19px;margin-bottom:8px}
 .suti-ablak p{color:#35475a;font-size:15px;line-height:1.6}
 .suti-gombok{display:grid;gap:10px;margin-top:22px}
@@ -201,6 +206,9 @@ button{font:inherit;color:inherit}
 @media (min-width:640px){.suti{align-items:center}.suti-gombok{grid-template-columns:1fr 1fr}.suti-gombok .gomb:first-child{grid-column:1 / -1}}
 @media (max-width:1060px){.fomenu{display:none}.menugomb{display:grid}}
 @media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.termosztat{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:minmax(0,1fr)}.lablec .keret{grid-template-columns:repeat(3,minmax(0,1fr))}.lablec .keret>div:first-child{grid-column:1 / -1}}
-@media (max-width:560px){.fejlec .keret{height:64px;gap:8px}.marka img{width:34px;height:34px}.marka b{font-size:21px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .jobb{margin-left:0}.ures{padding:36px 20px}.termosztat{padding:20px}.kijelzo .szam b{font-size:56px}}
-@media (max-width:360px){.felirat{letter-spacing:.08em}.vezerlok{grid-template-columns:46px 1fr 46px;gap:8px}.kerekgomb{width:46px;height:46px}.mod button .ikon{display:none}}
+@media (max-width:560px){.fejlec .keret{height:66px;gap:8px}.fejlec .marka{gap:8px}.fejlec .marka .jel{height:42px}.fejlec .marka .nev{height:12px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .elotag,.felso .jobb{display:none}.felso .keret{flex-wrap:nowrap;gap:16px}.ures{padding:36px 20px}.termosztat{padding:20px}.kijelzo .szam b{font-size:56px}}
+.lablec .marka .jel{height:52px}
+.lablec .marka .nev{height:15px}
+@media (max-width:400px){#felsoEmail{display:none!important}}
+@media (max-width:360px){.fejlec .marka .jel{height:38px}.fejlec .marka .nev{height:10px}.kosargomb{height:42px;padding:0 10px}.menugomb{width:42px;height:42px}.felirat{letter-spacing:.08em}.vezerlok{grid-template-columns:46px 1fr 46px;gap:8px}.kerekgomb{width:46px;height:46px}.mod button .ikon{display:none}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

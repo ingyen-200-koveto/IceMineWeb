@@ -3,9 +3,9 @@
 
   const CEG = {
     nev: "Idealtherm",
-    telefon: "",
-    email: "",
-    cim: "",
+    telefon: "+36 30 583 2871",
+    email: "kapcsolat@idealtherm.hu",
+    cim: "Mosonmagyaróvár",
   };
 
   const SUTI_KULCS = "idealtherm-suti";
@@ -44,7 +44,7 @@
     $$("[data-adat]").forEach((el) => {
       const k = el.dataset.adat, v = ertekek[k];
       if (el.tagName === "LI") {
-        const nev = { telefon: "Telefon", email: "E-mail", cim: "Cím" }[k];
+        const nev = { telefon: "Telefon", email: "E-mail", cim: "Helyszín" }[k];
         el.innerHTML = v ? v : `${nev}: hamarosan`;
       } else {
         el.innerHTML = v || "Hamarosan";
@@ -57,13 +57,18 @@
         const a = $("#felsoTel");
         a.hidden = false;
         a.href = telLink;
-        $("span", a).textContent = "Hívjon minket: " + tel;
+        $("span", a).innerHTML = `<span class="elotag">Hívjon minket: </span>${esc(tel)}`;
       }
       if (email) {
         const a = $("#felsoEmail");
         a.hidden = false;
         a.href = "mailto:" + email;
         $("span", a).textContent = email;
+      }
+      if (cim) {
+        const h = $("#felsoHely");
+        h.hidden = false;
+        $("span", h).textContent = cim;
       }
       const k = $("#menuKapcs");
       k.hidden = false;
