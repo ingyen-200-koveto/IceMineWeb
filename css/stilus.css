@@ -177,10 +177,8 @@ button{font:inherit;color:inherit}
 .elem b.nincs{font-weight:600;color:var(--halvany)}
 
 .lablec{margin-top:24px;background:var(--mely);color:var(--mely-szoveg);font-size:15px}
-.lablec .marka{padding:12px 18px;border-radius:16px;background:#fff}
-.lablec .marka .logo{height:84px}
-.lablec .keret{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(3,minmax(0,1fr));gap:32px;padding-block:52px 40px}
-.lablec p{margin-top:14px;max-width:30em}
+
+.lablec .keret{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:32px;padding-block:48px 40px}
 .lablec h3{margin-bottom:14px;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#fff}
 .lablec ul{display:grid;gap:9px;margin:0;padding:0;list-style:none}
 .lablec li{min-width:0;overflow-wrap:anywhere}
@@ -233,7 +231,7 @@ button{font:inherit;color:inherit}
 
 @media (min-width:640px){.suti{align-items:center}.suti-gombok{grid-template-columns:1fr 1fr}.suti-gombok .gomb:first-child{grid-column:1 / -1}}
 @media (max-width:1060px){.fomenu{display:none}.menugomb{display:grid}}
-@media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.szolgaltatas{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.kapcsolat-racs{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.lablec .keret{grid-template-columns:repeat(3,minmax(0,1fr))}.lablec .keret>div:first-child{grid-column:1 / -1}}
+@media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.szolgaltatas{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.kapcsolat-racs{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.lablec .keret{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.fejlec .keret{height:78px;gap:8px}.fejlec .marka .logo{height:62px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .elotag,.felso .jobb{display:none}.felso .keret{flex-wrap:nowrap;gap:16px}.ures{padding:36px 20px}.mezosor{grid-template-columns:minmax(0,1fr)}.urlap-kartya{padding:22px 18px}.szolgaltatas{padding:22px 20px}}
 @media (max-width:400px){#felsoEmail{display:none!important}}
 @media (max-width:360px){.fejlec .marka .logo{height:56px}.kosargomb{height:42px;padding:0 10px}.menugomb{width:42px;height:42px}.felirat{letter-spacing:.08em}}

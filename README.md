@@ -32,10 +32,12 @@ A látogató döntése a böngészőben, `idealtherm-suti` néven tárolódik. K
 
 ## Telepítés a VPS-re
 
+Az oldal egyelőre az IceMineWeb tároló `idealtherm` ágában van (a `main` ág az IceMine oldalé, ahhoz nem nyúl). Ha lesz saját tároló, a `telepites.sh` elején a `REPO` és a `BRANCH` átírása után a telepítőt újra kell futtatni.
+
 Rootként, egyszer:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/ingyen-200-koveto/Idealtherm/main/telepites.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ingyen-200-koveto/IceMineWeb/idealtherm/telepites.sh | bash
 ```
 
 Utána a szerver 5 percenként magától frissül a GitHubról. Azonnal: `idealtherm-frissites --most`

@@ -3,7 +3,8 @@ set -euo pipefail
 
 DOMAIN="${1:-idealtherm.hu}"
 DOMAIN=${DOMAIN#https://}; DOMAIN=${DOMAIN#http://}; DOMAIN=${DOMAIN#www.}; DOMAIN=${DOMAIN%%/*}
-REPO=https://github.com/ingyen-200-koveto/Idealtherm
+REPO=https://github.com/ingyen-200-koveto/IceMineWeb
+BRANCH=idealtherm
 APP_DIR=/opt/idealtherm
 APP_USER=idealtherm
 APP_HOME=/var/lib/idealtherm
@@ -31,12 +32,14 @@ id "$APP_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "$AP
 install -d -o "$APP_USER" -g "$APP_USER" "$APP_HOME"
 if [ -d "$APP_DIR/.git" ]; then
   chown -R "$APP_USER:$APP_USER" "$APP_DIR"
-  as_app git -C "$APP_DIR" fetch --quiet origin
-  as_app git -C "$APP_DIR" reset --hard --quiet origin/main
+  as_app git -C "$APP_DIR" remote set-url origin "$REPO"
+  as_app git -C "$APP_DIR" fetch --quiet origin "+refs/heads/$BRANCH:refs/remotes/origin/$BRANCH"
+  as_app git -C "$APP_DIR" checkout --quiet -B "$BRANCH" "origin/$BRANCH"
+  as_app git -C "$APP_DIR" reset --hard --quiet "origin/$BRANCH"
 else
   [ -d "$APP_DIR" ] && [ -n "$(ls -A "$APP_DIR" 2>/dev/null)" ] && hiba "$APP_DIR már létezik, de nem GitHub-tároló."
   install -d -o "$APP_USER" -g "$APP_USER" "$APP_DIR"
-  as_app git clone --quiet "$REPO" "$APP_DIR" || hiba "Nem sikerült letölteni: $REPO"
+  as_app git clone --quiet --branch "$BRANCH" --single-branch "$REPO" "$APP_DIR" || hiba "Nem sikerült letölteni: $REPO ($BRANCH)"
 fi
 [ -f "$APP_DIR/index.html" ] || hiba "A tárolóban nincs index.html."
 chmod 755 "$APP_DIR"
@@ -47,10 +50,11 @@ cat > /usr/local/bin/idealtherm-frissites <<'EOF'
 set -euo pipefail
 as_app(){ runuser -u idealtherm -- env HOME=/var/lib/idealtherm GIT_TERMINAL_PROMPT=0 "$@"; }
 cd /opt/idealtherm
-as_app git fetch --quiet origin
-if [ "$(as_app git rev-parse HEAD)" != "$(as_app git rev-parse origin/main)" ] || [ "${1:-}" = "--most" ]; then
-  VALTOZOTT=$(as_app git diff --name-only HEAD origin/main -- szerver)
-  as_app git reset --hard --quiet origin/main
+AG=$(as_app git rev-parse --abbrev-ref HEAD)
+as_app git fetch --quiet origin "+refs/heads/$AG:refs/remotes/origin/$AG"
+if [ "$(as_app git rev-parse HEAD)" != "$(as_app git rev-parse "origin/$AG")" ] || [ "${1:-}" = "--most" ]; then
+  VALTOZOTT=$(as_app git diff --name-only HEAD "origin/$AG" -- szerver)
+  as_app git reset --hard --quiet "origin/$AG"
   if [ -n "$VALTOZOTT" ] || [ "${1:-}" = "--most" ]; then systemctl restart idealtherm-uzenet || true; fi
   echo "Idealtherm frissítve: $(as_app git log -1 --format='%h %s')"
 else
