@@ -5,7 +5,8 @@
     nev: "Idealtherm",
     telefon: "+36 30 583 2871",
     email: "kapcsolat@idealtherm.hu",
-    cim: "Mosonmagyaróvár",
+    telefon2: "+36 30 378 2992",
+    cim: "Mosonmagyaróvár, Új utca 16/a",
   };
 
   const SUTI_KULCS = "idealtherm-suti";
@@ -35,9 +36,11 @@
 
   function adatok() {
     const tel = CEG.telefon.trim(), email = CEG.email.trim(), cim = CEG.cim.trim();
+    const tel2 = (CEG.telefon2 || "").trim();
     const telLink = "tel:" + tel.replace(/[^\d+]/g, "");
+    const telLink2 = "tel:" + tel2.replace(/[^\d+]/g, "");
     const ertekek = {
-      telefon: tel ? `<a href="${telLink}">${esc(tel)}</a>` : "",
+      telefon: [tel ? `<a href="${telLink}">${esc(tel)}</a>` : "", tel2 ? `<a href="${telLink2}">${esc(tel2)}</a>` : ""].filter(Boolean).join("<br>"),
       email: email ? `<a href="mailto:${esc(email)}">${esc(email)}</a>` : "",
       cim: cim ? esc(cim) : "",
     };
@@ -83,6 +86,7 @@
       k.hidden = false;
       k.innerHTML =
         (tel ? `<a href="${telLink}">${ikon("i-telefon")}${esc(tel)}</a>` : "") +
+        (tel2 ? `<a href="${telLink2}">${ikon("i-telefon")}${esc(tel2)}</a>` : "") +
         (email ? `<a href="mailto:${esc(email)}">${ikon("i-level")}${esc(email)}</a>` : "");
     }
     $("#ev").textContent = new Date().getFullYear();
