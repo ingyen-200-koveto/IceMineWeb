@@ -109,7 +109,7 @@
     jelenlegi = lap.dataset.lap === "404" ? ut : lap.dataset.lap;
     lapok.forEach((l) => l.classList.toggle("aktiv", l === lap));
     const cim = lap.dataset.cim;
-    document.title = cim ? `${cim} | ${CEG.nev}` : `${CEG.nev} | Klíma, hőszivattyú, szellőztetés`;
+    document.title = cim ? `${cim} | ${CEG.nev}` : `${CEG.nev} | Víz-, fűtés-, hűtésszerelés`;
     $$("a[data-ut]").forEach((a) => {
       const sajat = utvonal(a.getAttribute("href")) === jelenlegi && !a.classList.contains("marka") && !a.closest(".morzsa");
       if (sajat) a.setAttribute("aria-current", "page");
