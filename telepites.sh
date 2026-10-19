@@ -3,8 +3,8 @@ set -euo pipefail
 
 DOMAIN="${1:-idealtherm.hu}"
 DOMAIN=${DOMAIN#https://}; DOMAIN=${DOMAIN#http://}; DOMAIN=${DOMAIN#www.}; DOMAIN=${DOMAIN%%/*}
-REPO=https://github.com/ingyen-200-koveto/IceMineWeb
-BRANCH=idealtherm
+REPO=https://github.com/ingyen-200-koveto/IdealTherm
+BRANCH=main
 APP_DIR=/opt/idealtherm
 APP_USER=idealtherm
 APP_HOME=/var/lib/idealtherm

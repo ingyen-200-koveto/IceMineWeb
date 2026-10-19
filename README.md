@@ -6,8 +6,10 @@ Az idealtherm.hu weboldal: klímák, hőszivattyúk és szellőztetéstechnika.
 
 - `index.html` – az összes oldal (Kezdőlap, Klímák, Hőszivattyúk, Szellőztetéstechnika, Kapcsolat, Kosár, dokumentumok)
 - `css/stilus.css` – a kinézet
-- `js/oldal.js` – menü, oldalváltás, süti ablak, termosztát
+- `js/oldal.js` – menü, oldalváltás, süti ablak, kapcsolat űrlap
 - `kepek/` – logó
+- `szerver/uzenet.js` – a kapcsolat űrlap levélküldője
+- `telepites.sh`, `email-beallitas.sh` – telepítés és e-mail beállítás a VPS-en
 - `fonts/` – Plus Jakarta Sans betűtípus (OFL licenc)
 
 ## Elérhetőségek
@@ -32,12 +34,12 @@ A látogató döntése a böngészőben, `idealtherm-suti` néven tárolódik. K
 
 ## Telepítés a VPS-re
 
-Az oldal egyelőre az IceMineWeb tároló `idealtherm` ágában van (a `main` ág az IceMine oldalé, ahhoz nem nyúl). Ha lesz saját tároló, a `telepites.sh` elején a `REPO` és a `BRANCH` átírása után a telepítőt újra kell futtatni.
+A szerver ebből a tárolóból (`IdealTherm`, `main` ág) frissül. A telepítő újrafuttatása nem írja felül az e-mail beállítást.
 
 Rootként, egyszer:
 
 ```
-curl -fsSL https://raw.githubusercontent.com/ingyen-200-koveto/IceMineWeb/idealtherm/telepites.sh | bash
+curl -fsSL https://raw.githubusercontent.com/ingyen-200-koveto/IdealTherm/main/telepites.sh | bash
 ```
 
 Utána a szerver 5 percenként magától frissül a GitHubról. Azonnal: `idealtherm-frissites --most`
