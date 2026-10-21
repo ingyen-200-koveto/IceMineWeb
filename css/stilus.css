@@ -233,6 +233,7 @@ button{font:inherit;color:inherit}
 @media (max-width:1060px){.fomenu{display:none}.menugomb{display:grid}}
 @media (max-width:900px){.hos{grid-template-columns:minmax(0,1fr);gap:36px;padding-block:44px 52px}.szolgaltatas{justify-self:stretch;max-width:none}.kategoriak{grid-template-columns:minmax(0,1fr)}.kapcsolat-racs{grid-template-columns:minmax(0,1fr)}.elerhetoseg{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}.lablec .keret{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.fejlec .keret{height:78px;gap:8px}.fejlec .marka .logo{height:62px}.kosargomb{padding:0 12px}.kosargomb .osszeg{display:none}.szekcio{padding-block:44px}.lablec .keret{grid-template-columns:1fr;gap:28px}.felso .elotag,.felso .jobb{display:none}.felso .keret{flex-wrap:nowrap;gap:16px}.ures{padding:36px 20px}.mezosor{grid-template-columns:minmax(0,1fr)}.urlap-kartya{padding:22px 18px}.szolgaltatas{padding:22px 20px}}
-@media (max-width:400px){#felsoEmail{display:none!important}}
+@media (max-width:560px){.felso .keret{flex-wrap:wrap;gap:2px 16px}}
+@media (max-width:360px){.felso .keret{gap:2px 12px}}
 @media (max-width:360px){.fejlec .marka .logo{height:56px}.kosargomb{height:42px;padding:0 10px}.menugomb{width:42px;height:42px}.felirat{letter-spacing:.08em}}
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}*,*::before,*::after{transition:none!important;animation:none!important}}

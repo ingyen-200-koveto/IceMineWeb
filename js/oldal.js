@@ -62,6 +62,12 @@
         a.href = telLink;
         $("span", a).innerHTML = `<span class="elotag">Hívjon minket: </span>${esc(tel)}`;
       }
+      if (tel2) {
+        const a = $("#felsoTel2");
+        a.hidden = false;
+        a.href = telLink2;
+        $("span", a).textContent = tel2;
+      }
       if (email) {
         const a = $("#felsoEmail");
         a.hidden = false;
