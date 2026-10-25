@@ -272,6 +272,7 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .rown{display:flex;align-items:center;justify-content:center;gap:8px;padding:13px;border-radius:10px;background:color-mix(in srgb,var(--ok) 14%,var(--solid));color:var(--ok);font:800 14.5px Sora,sans-serif}
 .rown svg{width:18px;height:18px;stroke-width:3}
 .rown.dim{background:var(--bg2);color:var(--mute)}
+.rexp{margin:-2px 0 10px;text-align:center;color:var(--mute);font-size:13.5px;font-weight:700}
 .rcard .msg:empty{display:none}
 .page[data-page="vasarlas"]{max-width:860px}
 .shophero{position:relative;overflow:hidden;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:16px;padding:26px 24px;margin-bottom:22px;border-radius:24px;color:#fff;background:radial-gradient(60% 130% at 100% 0,#7fd3ff70,transparent 62%),linear-gradient(135deg,#1c6fd6,#0b3a5b)}
@@ -709,7 +710,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         </div>
         <div class="stats">
           <div class="tile gold"><span class="ti"><span class="pcoin"></span></span><small>IceCoin</small><b id="cCoin">0</b><a href="#vasarlas">Feltöltés →</a></div>
-          <div class="tile"><span class="ti" id="cRankIco"><svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><small>Rang</small><b id="cRankN">default</b><span>Lejárat: soha</span></div>
+          <div class="tile"><span class="ti" id="cRankIco"><svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg></span><small>Rang</small><b id="cRankN">default</b><span id="cRankExp">Nincs aktív rang</span></div>
           <div class="tile"><span class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><small>Regisztrált</small><b id="cDate">–</b><span id="cTime"></span></div>
           <div class="tile"><span class="ti"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="M3 7l9 6 9-6"/></svg></span><small>E-mail cím</small><b class="mail" id="cMail">–</b></div>
         </div>
@@ -748,11 +749,12 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
 
       <section class="page" data-page="rangok">
         <div class="shophero">
-          <div><h2>Rangok</h2><p>Válassz rangot, és vedd meg IceCoinért vagy forintért.</p></div>
+          <div><h2>Rangok</h2><p>Válassz rangot 30 vagy 60 napra, és vedd meg IceCoinért vagy forintért.</p></div>
           <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="rankBal">0</b></div>
         </div>
         <div id="rankNote" role="status" aria-live="polite"></div>
         <label class="chk consent" id="rkConsentRow" style="margin:0 0 16px"><input type="checkbox" id="rkConsent"><span>Forintos vásárlásnál: kérem a rang azonnali jóváírását, és tudomásul veszem, hogy ezzel elveszítem a 14 napos elállási jogomat. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
+        <div class="rbar"><small>Időtartam:</small><div class="rmodes" id="rNap" role="group" aria-label="Időtartam"><button type="button" data-nap="30" aria-pressed="true">30 nap</button><button type="button" data-nap="60" aria-pressed="false">60 nap</button></div></div>
         <div class="rbar"><small>Jutalmak ebben a játékmódban:</small><div class="rmodes" id="rModes" role="group" aria-label="Játékmód"></div></div>
         <div class="msg" id="rankMsg" aria-live="polite"></div>
         <div class="rgrid" id="rankGrid"></div>
@@ -929,7 +931,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <ul>
             <li>Megvásárolható termékek: IceCoin csomagok (Vásárlás oldal, csomagonként legfeljebb 10 darab egyszerre), rangok (Rangok oldal), valamint a büntetés csökkentése vagy feloldása (Kitiltás csökkentése oldal), az ott feltüntetett áron. A rangok és a némítás feloldása IceCoinért is megvásárolhatók.</li>
             <li>Az árak magyar forintban értendők. <mark class="todo">[ÁFA: „Az árak az áfát tartalmazzák.” VAGY „A Szolgáltató alanyi adómentes.”]</mark></li>
-            <li>A megvásárolt rang lejárat nélküli, a szerver működéséig érvényes. A rangokhoz tartozó játékbeli jutalmak a Rangok oldalon olvashatók. A Szolgáltató a játékmódokat és a jutalmakat módosíthatja, de a már megvásárolt rang lényeges előnyeit indokolatlanul nem csökkenti.</li>
+            <li>A rang 30 vagy 60 napra vásárolható meg, a 60 napos ár a 30 naposnak a kétszerese. Az érvényesség a vásárlástól számít; ha a vásárló ugyanazt a rangot hosszabbítja meg, az új időtartam a jelenlegi lejárathoz adódik hozzá, magasabb rang vásárlásakor pedig a vásárlástól indul. Lejárat után a rang megszűnik, és újra megvásárolható. A rangokhoz tartozó játékbeli jutalmak a Rangok oldalon olvashatók. A Szolgáltató a játékmódokat és a jutalmakat módosíthatja, de a már megvásárolt rang lényeges előnyeit indokolatlanul nem csökkenti.</li>
             <li>Ha a weboldalon nyilvánvalóan hibás ár jelenik meg (pl. 0 Ft vagy a valós ár töredéke), a Szolgáltató nem köteles a hibás áron teljesíteni. Ilyenkor felajánlja a helyes áron történő teljesítést, vagy visszatéríti a kifizetett összeget.</li>
           </ul>
 
@@ -1485,6 +1487,7 @@ function render(){
   if(!user)return;
   const coins=fmtN(user.coins||0),rank=user.rank||"default";
   $("#cRank").textContent=rank;$("#cRankN").textContent=rank;
+  $("#cRankExp").textContent=user.rankUntil?"Lejár: "+dayHu(user.rankUntil):rank==="default"?"Nincs aktív rang":"Lejárat: –";
   {const rr=RANKS.find(x=>x.name===rank),ico=$("#cRankIco");if(rr&&ico.dataset.r!==rr.id){ico.dataset.r=rr.id;ico.innerHTML=rankImg(rr.id,"")}else if(!rr&&ico.dataset.r){ico.dataset.r="";ico.innerHTML='<svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>'}}
   $("#cNick").textContent=user.name;
   $("#cCoin").textContent=coins;$("#setCoin").textContent=coins;$("#shopBal").textContent=coins;
@@ -1626,7 +1629,8 @@ const RANKS=[
   SkyPvP:[["Kulcscsomag","75× Abyss kulcs"],["Heti jutalom","30× Abyss kulcs"],["Kit","Yeti Kit"]],
   Gens:[["Kulcscsomag","45× FORTUNE kulcs"],["Napi jutalom","15× Mini Elixir Bónusz + 15× Mini XP Bónusz"],["Heti jutalom","30× Elixir Booster + 15× Pénz Booster"]]}}
 ];
-let rMode="Kingdoms";
+let rMode="Kingdoms",rNap=30;
+const rAr=(r,mi,nap)=>r[mi]*(nap||rNap)/30;
 const RCHECK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
 const RANK_ART={"bronz": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACP0lEQVR42s1XTUgbQRT+NggBuwdlEaQ0B5cQhVDw4s3CnEoJBoWCsOBFPHgWQUV6llaQnnsovRQEoQeJ7HlBUIIXSQn+waokBDHmIG4PntJD3LA/M7tv4pb6TrM7++b73vdm3ttREGEFXW3z3pu2oyTl0xe1kJHWAAATI28w+mUcP2f3OpM62rwFvT5zO1M4Wz3G0WU90ieF/2xCAqbtKNuPLQDA0WUdZ6vHmNuZAgAYaS0kdVT0248tYQpergIyKvQa/ctXIE6FoMlGH3kMKWakNUBHV/5/okDQRCqEzj3RSAqYtqMEI60fOmBLDEzgQ5FfOgVsiQnn6ocOXs1kwZCF9dVKNgUFXW1/W/tIWvC6eoqR98NkAoos+EAm65tvVMq+52aj2R1vlKqxaUjJgqvvFoTgADD0eqg7Xi/mhd0xloAI3Nn/7gPPrZSeRYK0B4TgxjKJhLQCvE0XBI+zk5MrAMDBxQ3YmCZUIUWJnpfznLEMZBhQs4Ca5VPBBb+7/4PE6oCan0Tuw6fIb1wSOQC782+Tq4SNShmolAFsdUBqnELjvsswMjgpBcGcn28WO9LzTBK89/+BmhUm0QM4iUD/YEyrzYj7w/ntQ28ETNtRFj//6tZ230Zzd7836qfn6R+/uSDWaUv+XuAFbzaaocLildsdewlQoo9tRgVdba8X86Hq5p5zivRR0ZO7oZdEXHGRAScR4JE4uLiJ9aGAk4+haTvKRqmaODhZAd7Nl41pIVDK7flZBKKu4TKgXvsLCKxKZLYjjucAAAAASUVORK5CYII=", "abyss": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB2ElEQVR42s1XsWoCQRCdW2w8sAxXXpHPkDPYCZIUMV8RGwmBNJZpAiHY3BfYBoVIIJ1ESZHOwlbQJiBXBky5KZIJe+vs7tx5iXnl3e2b997sriPAjgj8SMK+EPiRPG8u5a+IcJFi8belZInIJDLwI/k6llbSwI9+irsEcPgyKdbdc0VQz4Xpo/Vm6pmIWvU+dOMQrtur1LtWvW8shHz6e6ESPzxOnM6xuAk2EVQNoSo8adaMznXo7jmgaggqJqol6J4DTitIAVTcgR9JtTjVe64ISpSwFUciAIBqI4Rqg1d8Nh/CbD40GlKfl7iRIrpxCOMRwMvTiizsMuRMgNtrTMTk2MSnpyDyFOe45kJQzooEZUhNIXUR3d1MoH6cjjcL7p87zuKsU6CnwY357KjHSlPlE6r7onuMadr4thIYj74WFglbkgKvx4urGossr0BTksIW3y4bkIuSzWkW6BvQhcODU4AEpHB92L7s5O49tsuWZmoe4O6DPEJMRkSRG62Qq/iv8b8EqPtAPwXxbS/TCVkkA+u7RTKA9WbqsROwEbo2oM6z3kw9nA09aoColEN4/1htDZPqIFEpb//Q6GtMPNaL6PsDSY3n2jOJFwqmQ6yR3DF/b3/PPwH+vjbV+1IbTQAAAABJRU5ErkJggg==", "iceking": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABlklEQVR42u1WoW6DUBQ9kAbJ1H6gEGwNqYWqupplakFNN1MTVZurmFqaqQU1udTUTUHdsswsm2lT+g1bp1rzJhYIhccFHmOYHkN4cO85975zHwAcKIbF0BQUw2LeJ2N1iCicsy5ysjBR0jJxJLlI26tsVypGNAlj/ys8lejqvVoH5KambbecS5UEKIbFRlMfAKCajrCJ5SYOoDiPHF98evELiVAMi63e/L21ol1I8sjxPel3bWwXtIjwmbsSq3y78NHv2pEHWsmXrj/yK88iV00HG4CFyXk4PnOzPRBiNM3ugt6xhfddNR3ahJSIsPrQ+VngeSGLPHcM4yJ2y7kkUj1FDgASNd8hxid2JIiHu7GbWtu8PkQdSa7HPUJ24FwHSZwHqvJCAuJuLyuiCHmj34KDAHIKkuf8X0Hv2Eieki3ei9Z9sHe/HmpoTwJu0t5AgzfjP6PiCm/BeqjB//q98sgfL27QG2il4koJaE8C2EfgVuLNApzeXnI7QMWVNiGVJKv9eXGkB76f/eamoM5fM+o/4YDG8ANzgtzHirWZpAAAAABJRU5ErkJggg==", "yeti": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACvklEQVR42sVXTWgTQRT+dsnFQxEsIihrwFDQaCLkFsrmkB4klXgU1ItFMWrFUy9tIIdAf5CepAftxYsguSkBo4fmkFCX9NBCEqMYiklWpEUMlZZ6EdZDspudzczs5gfyIJB982be976d780sQDHJK2uwMckra1ppVnMS63RNSF5Zk7yy9mPvgFjYOllPrh18YIKwzk+9y2n6+uY40RykZNNQsumuhRopP7cC6zhrzuryIlaXFwm/aE7Os8anuMFQI+UHpCigpqksNlJ+7lpmECItIBiOQq3kBVqldizQYtRKXpibj1PnidbqWckJEIzqeQCtIHQWRIzYxL6ko6YdJ7CTn0DbhMFwtEXp51zLUX7CpJ1ntdMrAIBQeNqgXbe5+TjUSl6gMqBk053klqrv/Vnr+J4JrV/biDGT5bLvieRcBjYLRdy8IRNB+cSJvt6vNPuLeN4q7HQxIFgb0bkzJwfeWLX9I+bYVmHHSG4wQDQRK/UDAihXVWLscSxGyHzkMnQ5DdzI1Hta2BMYdxQnmLXKov9b5bAlhHrTdsGvX34a/6/f8XW9gisTkiFLtZIXXHbvfSNTh+Q+heTCGwDATOwaF4CSK7V6SciH3e3fwBhdlu3+oLnUSl44fzlku/kSS7eg1pt49fIjFYjuD4Z8jqgPhac7jagNgn2Q1JtQ601MRdwoFRWUikpXzOu3D1AqKlhfW3ecnFCBHQgAuHphpq8xVvK+ZChP3u9rjKsCXiPqVX5mFVy8dBZ/x465jcjVK+LE04fYrGYwOREh/Lrv9qPE8O4DI7+QsMxaPcs31FZstqWAh+pf2N4dPoCpiJvYiMnnL/CPEZu8S25CT2Ac5eqxcxXwjuRhHEbWHkAFYAXBu1z0YrTk3E1Y2z8aWnL9AKLdkEXWR4R+ZJorGPSZ98HDvNN/3zs0vmgHfabZf8S/kjQ5Qj11AAAAAElFTkSuQmCC"};
 const rankImg=(id,cls)=>RANK_ART[id]?'<img class="'+(cls||"rart")+'" src="'+RANK_ART[id]+'" alt="" aria-hidden="true">':gem();
@@ -1634,17 +1638,19 @@ const gem=()=>'<svg class="gem" viewBox="0 0 40 40" aria-hidden="true"><path d="
 function renderRanks(){
   const cur=user?RANKS.findIndex(r=>r.name===user.rank):-1,bal=user?user.coins||0:0;
   $("#rankBal").textContent=fmtN(bal);
+  $$("#rNap button").forEach(b=>b.setAttribute("aria-pressed",+b.dataset.nap===rNap));
   if(!$("#rModes").children.length)$("#rModes").innerHTML=MODES.map(m=>`<button type="button" data-m="${m}">${m}</button>`).join("");
   $$("#rModes button").forEach(b=>b.setAttribute("aria-pressed",b.dataset.m===rMode));
   $("#rankGrid").innerHTML=RANKS.map((r,i)=>{
-    const miss=r.ic-bal;let act;
-    if(i===cur)act=`<div class="rown">${RCHECK}Ez a jelenlegi rangod</div>`;
+    const ic=rAr(r,"ic"),ft=rAr(r,"ft"),miss=ic-bal;let act;
+    const gombok=(cimke)=>`<button class="btn mc" type="button" data-buy="${r.id}"${miss>0?" disabled":""}>${cimke} ${fmtN(ic)} IC-ért</button><div class="rftrow"><button class="btn mc alt" type="button" data-ft="${r.id}">Fizetés forintban: ${fmtN(ft)} Ft</button><button class="btn mc alt cadd" type="button" data-cart="rank" data-id="${r.id}" aria-label="${r.name} rang kosárba, ${rNap} nap" title="Kosárba">${CARTADD}</button></div>`+(miss>0?`<p class="rmiss">Még ${fmtN(miss)} IceCoin hiányzik. <a href="#vasarlas">Feltöltés</a></p>`:"");
+    if(i===cur)act=`<div class="rown">${RCHECK}Ez a jelenlegi rangod</div>${user.rankUntil?`<p class="rexp">Lejár: ${dayHu(user.rankUntil)}</p>`:""}`+gombok("Meghosszabbítom "+rNap+" nappal,");
     else if(i<cur)act=`<div class="rown dim">Már magasabb rangod van</div>`;
-    else act=`<button class="btn mc" type="button" data-buy="${r.id}"${miss>0?" disabled":""}>Megveszem ${fmtN(r.ic)} IC-ért</button><div class="rftrow"><button class="btn mc alt" type="button" data-ft="${r.id}">Fizetés forintban: ${fmtN(r.ft)} Ft</button><button class="btn mc alt cadd" type="button" data-cart="rank" data-id="${r.id}" aria-label="${r.name} rang kosárba" title="Kosárba">${CARTADD}</button></div>`+(miss>0?`<p class="rmiss">Még ${fmtN(miss)} IceCoin hiányzik. <a href="#vasarlas">Feltöltés</a></p>`:"");
+    else act=gombok("Megveszem "+rNap+" napra");
     return `<article class="rcard r-${r.id}${i===cur?" own":""}">
       <header class="rhead"><div class="rtx"><small>Rang</small><h3>${r.name}</h3>${i===cur?'<span class="rtag">A te rangod</span>':""}</div>${rankImg(r.id)}</header>
       <div class="rbody">
-        <div class="rprice"><span class="pcoin"></span><b>${fmtN(r.ic)} IC</b><span class="or">vagy ${fmtN(r.ft)} Ft</span></div>
+        <div class="rprice"><span class="pcoin"></span><b>${fmtN(rAr(r,"ic"))} IC</b><span class="or">vagy ${fmtN(rAr(r,"ft"))} Ft · ${rNap} nap</span></div>
         <div class="rsec"><h4>Általános</h4><ul class="rgen">${r.gen.map(g=>`<li>${RCHECK}${g}</li>`).join("")}</ul></div>
         <div class="rsec"><h4>${rMode}</h4>${(r.modes[rMode]||[]).map(([k,v])=>`<div class="rrow"><span>${k}</span><b>${v}</b></div>`).join("")}</div>
         <div class="ract">${act}</div>
@@ -1654,24 +1660,26 @@ function renderRanks(){
   }).join("");
 }
 $("#rModes").onclick=e=>{const b=e.target.closest("button[data-m]");if(!b)return;rMode=b.dataset.m;renderRanks()};
+$("#rNap").onclick=e=>{const b=e.target.closest("button[data-nap]");if(!b)return;rNap=+b.dataset.nap;renderRanks()};
 $("#rankGrid").onclick=async e=>{
   const b=e.target.closest("button");if(!b)return;
-  if(b.dataset.cart)return cartAdd({t:"rank",id:b.dataset.id});
+  if(b.dataset.cart)return cartAdd({t:"rank",id:b.dataset.id,nap:rNap});
   const id=b.dataset.buy||b.dataset.ft,r=RANKS.find(x=>x.id===id);if(!r)return;
   const m=$(`[data-msg="${id}"]`);
   if(b.dataset.ft){
     if(!$("#rkConsent").checked){$("#rkConsentRow").classList.add("need");$("#rkConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});m.textContent="A forintos vásárláshoz jelöld be a nyilatkozatot az oldal tetején.";m.className="msg e";return}
     b.disabled=true;m.textContent="Átirányítás a biztonságos fizetési oldalra…";m.className="msg";$("#rankNote").innerHTML="";
-    const d=await api("/api/checkout",{rank:r.id,consent:true});
+    const d=await api("/api/checkout",{rank:r.id,nap:rNap,consent:true});
     if(d.error||!d.url){b.disabled=false;m.textContent=d.error||"Nem sikerült elindítani a fizetést.";m.className="msg e";return}
     location.href=d.url;return;
   }
-  if(!confirm(r.name+" rang "+fmtN(r.ic)+" IceCoinért. Folytatod?"))return;
+  const sajat=user&&user.rank===r.name;
+  if(!confirm(r.name+" rang "+(sajat?"meghosszabbítása ":"")+rNap+" napra, "+fmtN(rAr(r,"ic"))+" IceCoinért. Folytatod?"))return;
   b.disabled=true;
-  const d=await api("/api/buy-rank",{rank:r.id});
+  const d=await api("/api/buy-rank",{rank:r.id,nap:rNap});
   if(d.error){b.disabled=false;m.textContent=d.error;m.className="msg e";return}
   user=d.user;render();
-  msg("#rankMsg","Gratulálunk! Mostantól "+r.name+" rangod van.","o");
+  msg("#rankMsg",(sajat?"Meghosszabbítva! ":"Gratulálunk! Mostantól "+r.name+" rangod van. ")+(user.rankUntil?"Lejár: "+dayHu(user.rankUntil)+".":""),"o");
   $("#rankMsg").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});
 };
 
@@ -1764,7 +1772,7 @@ const UNBANS=[
  {id:"ban20",name:"Kitiltás csökkentése 20 nappal",ft:9990,desc:"A kitiltásod 20 nappal hamarabb jár le.",ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l3 2M9 2h6M4.5 6.5L3 5M19.5 6.5L21 5"/></svg>'},
  {id:"banfull",name:"Teljes kitiltás feloldása",ft:30000,desc:"A kitiltásod teljesen megszűnik, legyen az ideiglenes vagy végleges.",big:1,ico:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>'}
 ];
-const dayHu=t=>{const d=new Date(t);return d.getFullYear()+". "+pad(d.getMonth()+1)+". "+pad(d.getDate())+"."};
+function dayHu(t){const d=new Date(t),p2=n=>String(n).padStart(2,"0");return d.getFullYear()+". "+p2(d.getMonth()+1)+". "+p2(d.getDate())+"."}
 function renderUnban(){
   if(!user)return;
   const bal=user.coins||0,next=user.unbanNext||0,locked=next>Date.now(),pu=user.punish;
@@ -1929,11 +1937,11 @@ $("#pwform").onsubmit=async e=>{
 
 const CARTADD='<svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8h-4M13 4v6M10 7h6"/></svg>';
 let cart=[];
-try{const c=JSON.parse(localStorage.getItem("im_cart")||"[]");if(Array.isArray(c))cart=c.filter(x=>x&&(x.t==="ic"&&PACKS.some(p=>p[0]===x.ic)&&x.qty>=1&&x.qty<=MAXQ||x.t==="rank"&&RANKS.some(r=>r.id===x.id)||x.t==="unban"&&UNBANS.some(u=>u.id===x.id))).slice(0,12)}catch(e){}
+try{const c=JSON.parse(localStorage.getItem("im_cart")||"[]");if(Array.isArray(c))cart=c.filter(x=>x&&(x.t==="ic"&&PACKS.some(p=>p[0]===x.ic)&&x.qty>=1&&x.qty<=MAXQ||x.t==="rank"&&RANKS.some(r=>r.id===x.id)&&(x.nap=x.nap===60?60:30)||x.t==="unban"&&UNBANS.some(u=>u.id===x.id))).slice(0,12)}catch(e){}
 const saveCart=()=>{try{localStorage.setItem("im_cart",JSON.stringify(cart))}catch(e){}};
 function cartInfo(x){
   if(x.t==="ic"){const p=PACKS.find(z=>z[0]===x.ic);return {name:fmtN(x.ic)+" IceCoin",unit:p[1],qty:x.qty,img:'<span class="pcoin"></span>'}}
-  if(x.t==="rank"){const r=RANKS.find(z=>z.id===x.id),ri=RANKS.indexOf(r),cur=user?RANKS.findIndex(z=>z.name===user.rank):-1;return {name:r.name+" rang",unit:r.ft,qty:1,img:rankImg(r.id,"cimg"),warn:ri<=cur?(ri===cur?"Már ez a rangod.":"Már magasabb rangod van."):""}}
+  if(x.t==="rank"){const r=RANKS.find(z=>z.id===x.id),ri=RANKS.indexOf(r),cur=user?RANKS.findIndex(z=>z.name===user.rank):-1,nap=x.nap||30;return {name:r.name+" rang, "+nap+" nap"+(ri===cur?" (hosszabbítás)":""),unit:rAr(r,"ft",nap),qty:1,img:rankImg(r.id,"cimg"),warn:ri<cur?"Már magasabb rangod van.":""}}
   const u=UNBANS.find(z=>z.id===x.id),locked=user&&user.unbanNext>Date.now();
   return {name:u.name,unit:u.ft,qty:1,img:'<span class="cico">'+u.ico+'</span>',warn:locked?"Legközelebb "+dayHu(user.unbanNext)+" után vásárolhatsz ilyet.":""};
 }
@@ -1950,9 +1958,9 @@ function cartAdd(x){
     if(e){if(e.qty+x.qty>MAXQ)note="Egy csomagból legfeljebb "+MAXQ+" darab lehet a kosárban.";e.qty=Math.min(MAXQ,e.qty+x.qty)}
     else{if(cart.length>=12)return toast("A kosár megtelt.");cart.push({t:"ic",ic:x.ic,qty:x.qty})}
   }else{
-    if(cart.some(z=>z.t===x.t&&z.id===x.id))note="Ez már a kosaradban van.";
+    if(cart.some(z=>z.t===x.t&&z.id===x.id&&(z.nap||30)===(x.nap||30)))note="Ez már a kosaradban van.";
     else if(cart.some(z=>z.t===x.t))note=x.t==="rank"?"Kicseréltük a rangot a kosárban.":"Kicseréltük a terméket a kosárban.";
-    cart=cart.filter(z=>z.t!==x.t);cart.push({t:x.t,id:x.id});
+    cart=cart.filter(z=>z.t!==x.t);cart.push(x.t==="rank"?{t:"rank",id:x.id,nap:x.nap||30}:{t:x.t,id:x.id});
   }
   saveCart();renderCart();toast(note);
   const b=$("#cartBtn");b.classList.remove("bump");void b.offsetWidth;b.classList.add("bump");
@@ -1960,7 +1968,7 @@ function cartAdd(x){
 function paidHtml(d){
   const li=[];
   if(d.ic)li.push(['<span class="pcoin"></span>',"+"+fmtN(d.ic)+" IceCoin jóváírva"]);
-  if(d.rank){const r=RANKS.find(x=>x.name===d.rank);li.push([rankImg(r?r.id:"bronz","cimg"),d.rankComp?escH(d.rank)+" rang már megvolt, helyette +"+fmtN(d.rankComp)+" IceCoin":escH(d.rank)+" rang jóváírva"])}
+  if(d.rank){const r=RANKS.find(x=>x.name===d.rank);li.push([rankImg(r?r.id:"bronz","cimg"),d.rankComp?escH(d.rank)+" rang már megvolt, helyette +"+fmtN(d.rankComp)+" IceCoin":escH(d.rank)+" rang jóváírva"+(d.rankNap?" "+d.rankNap+" napra":"")])}
   if(d.unban){const x=UNBANS.find(z=>z.name===d.unban);li.push(['<span class="cico">'+(x?x.ico:"")+'</span>',escH(d.unban)+": a staff 24 órán belül elvégzi"])}
   return '<div class="pdone"><div class="pdh"><b>Sikeres fizetés!</b><span>Köszönjük a vásárlást, a visszaigazolást e-mailben is elküldtük.</span></div><ul>'+li.map(x=>"<li>"+x[0]+"<span>"+x[1]+"</span></li>").join("")+"</ul></div>";
 }
@@ -1999,7 +2007,7 @@ $("#cartPay").onclick=async()=>{
   if(!cart.length)return;
   if(!$("#cartConsent").checked){$("#cartConsentRow").classList.add("need");return msg("#cartMsg","A fizetéshez jelöld be a nyilatkozatot.","e")}
   const b=$("#cartPay");b.disabled=true;msg("#cartMsg","Átirányítás a biztonságos fizetési oldalra…");
-  const d=await api("/api/checkout",{cart:cart.map(x=>x.t==="ic"?{t:"ic",ic:x.ic,qty:x.qty}:{t:x.t,id:x.id}),consent:true});
+  const d=await api("/api/checkout",{cart:cart.map(x=>x.t==="ic"?{t:"ic",ic:x.ic,qty:x.qty}:x.t==="rank"?{t:"rank",id:x.id,nap:x.nap||30}:{t:x.t,id:x.id}),consent:true});
   if(d.error||!d.url){b.disabled=false;return msg("#cartMsg",d.error||"Nem sikerült elindítani a fizetést.","e")}
   try{sessionStorage.setItem("im_cart_pending","1")}catch(e){}
   location.href=d.url;

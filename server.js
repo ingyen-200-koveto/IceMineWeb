@@ -50,6 +50,14 @@ async function boot() {
     db.users = Object.assign(Object.create(null), db.users || {});
     db.sessions = db.sessions || {};
   }
+  if (!db.rangLejaratKesz) {
+    let n = 0;
+    for (const u of Object.values(db.users)) if (u && u.rank && u.rank !== "default" && !u.rankUntil) { u.rankUntil = Date.now() + 30 * NAP_MS; n++; }
+    db.rangLejaratKesz = 1;
+    save();
+    if (n) console.log("Rang lejárat: " + n + " meglévő rang 30 napot kapott mostantól.");
+  }
+  setInterval(() => { let v = false; for (const u of Object.values(db.users)) if (u && rangLejart(u)) v = true; if (v) save(); }, 6e5);
   let atnevezve = 0;
   for (const u of Object.values(db.users)) if (u && u.rank === "Abyss") { u.rank = "Wizard"; atnevezve++; }
   if (atnevezve) { save(); console.log("Rang átnevezés: " + atnevezve + " Abyss rangú fiók mostantól Wizard."); }
@@ -70,7 +78,7 @@ const same = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.
 const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const makeCode = () => Array.from({ length: 12 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
-const pub = u => ({ name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null });
+const pub = u => (rangLejart(u), { name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", rankUntil: u.rank && u.rank !== "default" ? u.rankUntil || null : null, skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null });
 const fail = (res, code, error) => res.status(code).json({ error });
 function esemeny(tipus, adat) {
   db.esemenyek = db.esemenyek || [];
@@ -163,8 +171,9 @@ function parseCart(code) {
       const pk = PACKS.find(p => p[0] === Number(mm[1])), q = Number(mm[2]);
       if (!pk || q < 1 || q > MAX_QTY) return null;
       out.ic += pk[0] * q; out.packs.push([pk[0], q]);
-    } else if ((mm = /^r:(\w+)$/.exec(part))) {
+    } else if ((mm = /^r:(\w+)(?::(\d+))?$/.exec(part))) {
       out.rank = RANKS.find(x => x.id === mm[1]) || null;
+      out.rankNap = rangNap(mm[2]);
       if (!out.rank) return null;
     } else if ((mm = /^u:(\w+)$/.exec(part))) {
       out.unban = UNBANS.find(z => z.id === mm[1]) || null;
@@ -192,10 +201,10 @@ function fulfill(s) {
     console.log("Fizetés: " + u.name + " +" + c.ic + " IceCoin jóváírva (" + s.id + ").");
   }
   if (c.rank) {
-    const ri = RANKS.indexOf(c.rank), cur = RANKS.findIndex(x => x.name === u.rank);
-    rec.rank = c.rank.name;
-    if (cur < ri) { u.rank = c.rank.name; u.rankSince = Date.now(); console.log("Fizetés: " + u.name + " megkapta a(z) " + c.rank.name + " rangot (" + s.id + ")."); }
-    else { rec.rankComp = c.rank.ic; u.coins = (u.coins || 0) + c.rank.ic; console.log("Fizetés: " + u.name + " már " + u.rank + " rangú volt, helyette +" + c.rank.ic + " IceCoin (" + s.id + ")."); }
+    const nap = rangNap(c.rankNap);
+    rec.rank = c.rank.name; rec.rankNap = nap;
+    if (rangAd(u, c.rank, nap)) console.log("Fizetés: " + u.name + " megkapta a(z) " + c.rank.name + " rangot " + nap + " napra (" + s.id + ").");
+    else { rec.rankComp = rangAr(c.rank, nap, "ic"); u.coins = (u.coins || 0) + rec.rankComp; console.log("Fizetés: " + u.name + " már " + u.rank + " rangú volt, helyette +" + rec.rankComp + " IceCoin (" + s.id + ")."); }
   }
   if (c.unban) {
     rec.unban = c.unban.name;
@@ -204,7 +213,7 @@ function fulfill(s) {
   db.payments[s.id] = rec;
   const tetelek = [];
   for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) tetelek.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin");
-  if (rec.rank) tetelek.push(rec.rank + " rang" + (rec.rankComp ? " (helyette " + rec.rankComp + " IceCoin)" : ""));
+  if (rec.rank) tetelek.push(rec.rank + " rang, " + (rec.rankNap || 30) + " nap" + (rec.rankComp ? " (helyette " + rec.rankComp + " IceCoin)" : ""));
   if (rec.unban) tetelek.push(rec.unban);
   esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ft", huf: rec.huf, tetelek, rendeles: rec.pi || s.id, rang: rec.rank && !rec.rankComp ? rec.rank : null });
   save();
@@ -216,10 +225,10 @@ async function sendReceipt(u, rec, sid) {
   const hu = n => Number(n).toLocaleString("hu-HU");
   const items = [], got = [], consent = [];
   for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) items.push(q > 1 ? q + " × " + hu(ic) + " IceCoin" : hu(ic) + " IceCoin");
-  if (rec.rank) items.push(rec.rank + " rang");
+  if (rec.rank) items.push(rec.rank + " rang, " + (rec.rankNap || 30) + " nap");
   if (rec.unban) items.push(rec.unban);
   if (rec.ic) got.push(hu(rec.ic) + " IceCoint jóváírtunk a fiókodon.");
-  if (rec.rank) got.push(rec.rankComp ? "Mivel már " + rec.rank + " vagy magasabb rangod volt, a rang helyett " + hu(rec.rankComp) + " IceCoint írtunk jóvá." : "A(z) " + rec.rank + " rangot jóváírtuk a fiókodon.");
+  if (rec.rank) got.push(rec.rankComp ? "Mivel már " + rec.rank + " vagy magasabb rangod volt, a rang helyett " + hu(rec.rankComp) + " IceCoint írtunk jóvá." : "A(z) " + rec.rank + " rangot " + (rec.rankNap || 30) + " napra jóváírtuk a fiókodon. Ha már megvolt, a lejáratát hosszabbítottuk meg.");
   if (rec.unban) got.push("A(z) „" + rec.unban + "” kérésedet továbbítottuk a staffnak, legkésőbb 24 órán belül elvégzik. Kliens ban esetén nincs feloldás, ilyenkor a vételárat visszatérítjük.");
   if (rec.ic || rec.rank) consent.push("A vásárlás előtt kifejezetten kérted a digitális tartalom (IceCoin, rang) azonnali jóváírását, és tudomásul vetted, hogy a teljesítés megkezdésével elveszíted a 14 napos elállási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés m) pont).");
   if (rec.unban) consent.push("A vásárlás előtt kifejezetten kérted a szolgáltatás (feloldás) azonnali teljesítését, és tudomásul vetted, hogy a szolgáltatás teljesítése után elveszíted a felmondási jogodat (45/2014. (II. 26.) Korm. rendelet 29. § (1) bekezdés a) pont).");
@@ -456,9 +465,9 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
   const slot = pickSlot(), x = WHEEL[slot];
   let prize = x.ic || 0, rank = null, granted = false;
   if (x.rank) {
-    const ri = RANKS.findIndex(r => r.id === x.rank), cur = RANKS.findIndex(r => r.name === u.rank);
+    const ri = RANKS.findIndex(r => r.id === x.rank);
     rank = RANKS[ri].name;
-    if (cur < ri) { u.rank = rank; u.rankSince = Date.now(); granted = true; }
+    if (rangAd(u, RANKS[ri], 30)) granted = true;
     else prize = RANKS[ri].ic;
     console.log("Szerencsekerék: " + u.name + " " + rank + " rangot nyert" + (granted ? "." : ", de már megvolt, helyette +" + prize + " IceCoin."));
   }
@@ -469,6 +478,25 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
   res.json({ ok: true, slot, win: prize > 0 || granted, prize, rank, granted, free, spun: true, user: pub(u) });
 });
 
+const NAP_MS = 864e5;
+const RANG_NAPOK = [30, 60];
+const rangNap = n => (RANG_NAPOK.includes(Number(n)) ? Number(n) : 30);
+const rangAr = (r, nap, mi) => r[mi] * rangNap(nap) / 30;
+function rangLejart(u) {
+  if (!u || !u.rank || u.rank === "default" || !u.rankUntil || Date.now() < u.rankUntil) return false;
+  console.log("Rang lejárt: " + u.name + " (" + u.rank + ").");
+  esemeny("rang", { user: u.name, discord: dcId(u), rang: "lejárt: " + u.rank, forras: "Lejárat" });
+  u.rank = "default"; delete u.rankUntil;
+  return true;
+}
+const aktivRang = u => (rangLejart(u), RANKS.findIndex(r => r.name === u.rank));
+function rangAd(u, r, nap) {
+  const ri = RANKS.indexOf(r), cur = aktivRang(u), most = Date.now(), hossz = rangNap(nap) * NAP_MS;
+  if (cur > ri) return false;
+  if (cur === ri) u.rankUntil = Math.max(most, u.rankUntil || most) + hossz;
+  else { u.rank = r.name; u.rankSince = most; u.rankUntil = most + hossz; }
+  return true;
+}
 const RANKS = [
   { id: "bronz", name: "Bronz", ic: 950, ft: 1000 },
   { id: "abyss", name: "Wizard", ic: 2700, ft: 2000 },
@@ -577,11 +605,11 @@ app.get("/mcskin/:file", async (req, res) => {
   res.set({ "Content-Type": "image/png", "Cache-Control": "public, max-age=3600", "X-Content-Type-Options": "nosniff" }).send(b);
 });
 function buildCart(u, body) {
-  const lines = Array.isArray(body.cart) ? body.cart : body.rank !== undefined ? [{ t: "rank", id: body.rank }] : body.unban !== undefined ? [{ t: "unban", id: body.unban }] : [{ t: "ic", ic: body.ic, qty: body.qty === undefined ? 1 : body.qty }];
+  const lines = Array.isArray(body.cart) ? body.cart : body.rank !== undefined ? [{ t: "rank", id: body.rank, nap: body.nap }] : body.unban !== undefined ? [{ t: "unban", id: body.unban }] : [{ t: "ic", ic: body.ic, qty: body.qty === undefined ? 1 : body.qty }];
   if (!lines.length) return { err: [400, "A kosár üres."] };
   if (lines.length > 12) return { err: [400, "Túl sok tétel van a kosárban."] };
   const ics = new Map();
-  let rank = null, unban = null;
+  let rank = null, unban = null, rankNap = 30;
   for (const l of lines) {
     const t = l && l.t;
     if (t === "ic") {
@@ -590,11 +618,11 @@ function buildCart(u, body) {
       if (!Number.isInteger(qty) || qty < 1 || qty > MAX_QTY || (ics.get(pack) || 0) + qty > MAX_QTY) return { err: [400, "Egy csomagból 1–" + MAX_QTY + " darabot vehetsz."] };
       ics.set(pack, (ics.get(pack) || 0) + qty);
     } else if (t === "rank") {
-      const ri = RANKS.findIndex(r => r.id === String(l.id)), cur = RANKS.findIndex(r => r.name === u.rank);
+      const ri = RANKS.findIndex(r => r.id === String(l.id)), cur = aktivRang(u);
       if (ri < 0) return { err: [400, "Ismeretlen rang."] };
       if (rank) return { err: [400, "Egyszerre csak egy rangot vehetsz."] };
-      if (ri <= cur) return { err: [409, (ri === cur ? "Már ez a rangod: " : "Már magasabb rangod van, mint: ") + RANKS[ri].name + "."] };
-      rank = RANKS[ri];
+      if (ri < cur) return { err: [409, "Már magasabb rangod van, mint: " + RANKS[ri].name + "."] };
+      rank = RANKS[ri]; rankNap = rangNap(l.nap);
     } else if (t === "unban") {
       const x = UNBANS.find(z => z.id === String(l.id));
       if (!x) return { err: [400, "Ismeretlen termék."] };
@@ -604,9 +632,9 @@ function buildCart(u, body) {
     } else return { err: [400, "Ismeretlen tétel a kosárban."] };
   }
   const items = [...ics].map(([p, q]) => ({ name: p[0].toLocaleString("hu-HU") + " IceCoin", huf: p[1], qty: q }));
-  if (rank) items.push({ name: rank.name + " rang", huf: rank.ft, qty: 1 });
+  if (rank) items.push({ name: rank.name + " rang, " + rankNap + " nap", huf: rangAr(rank, rankNap, "ft"), qty: 1 });
   if (unban) items.push({ name: unban.name, huf: unban.ft, qty: 1 });
-  const code = [...[...ics].map(([p, q]) => "ic" + p[0] + "x" + q), rank && "r:" + rank.id, unban && "u:" + unban.id].filter(Boolean).join(",");
+  const code = [...[...ics].map(([p, q]) => "ic" + p[0] + "x" + q), rank && "r:" + rank.id + ":" + rankNap, unban && "u:" + unban.id].filter(Boolean).join(",");
   const kinds = (ics.size ? 1 : 0) + (rank ? 1 : 0) + (unban ? 1 : 0);
   return { items, code, back: kinds > 1 ? "&tipus=kosar" : rank ? "&rang=1" : unban ? "&tipus=unban" : "" };
 }
@@ -654,7 +682,7 @@ app.post("/api/checkout-status", limit(60, 6e5), async (req, res) => {
     } catch (e) { console.error("Fizetés: ellenőrzési hiba – " + e.message); }
   }
   const p = db.payments[id], mine = !!(p && p.uid === u.id);
-  res.json({ paid: mine, pending, ic: mine ? (p.rank && p.ic && !p.packs ? 0 : p.ic || 0) : 0, packs: mine ? p.packs || null : null, rank: mine ? p.rank || null : null, rankComp: mine ? p.rankComp || (p.rank && p.ic && !p.packs ? p.ic : 0) : 0, unban: mine ? p.unban || null : null, user: pub(u) });
+  res.json({ paid: mine, pending, ic: mine ? (p.rank && p.ic && !p.packs ? 0 : p.ic || 0) : 0, packs: mine ? p.packs || null : null, rank: mine ? p.rank || null : null, rankNap: mine ? p.rankNap || null : null, rankComp: mine ? p.rankComp || (p.rank && p.ic && !p.packs ? p.ic : 0) : 0, unban: mine ? p.unban || null : null, user: pub(u) });
 });
 
 app.post("/api/unban-ic", limit(20, 6e5), (req, res) => {
@@ -678,15 +706,16 @@ app.post("/api/buy-rank", limit(20, 6e5), (req, res) => {
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
   const i = RANKS.findIndex(r => r.id === String((req.body || {}).rank || ""));
   if (i < 0) return fail(res, 400, "Ismeretlen rang.");
-  const cur = RANKS.findIndex(r => r.name === u.rank);
-  if (i <= cur) return fail(res, 409, i === cur ? "Már ez a rangod." : "Már magasabb rangod van.");
-  const r = RANKS[i], bal = u.coins || 0;
-  if (bal < r.ic) return fail(res, 402, "Nincs elég IceCoinod. Még " + (r.ic - bal) + " IceCoin hiányzik.");
-  u.coins = bal - r.ic; u.rank = r.name; u.rankSince = Date.now();
+  const cur = aktivRang(u);
+  if (i < cur) return fail(res, 409, "Már magasabb rangod van.");
+  const r = RANKS[i], bal = u.coins || 0, nap = rangNap((req.body || {}).nap), ar = rangAr(r, nap, "ic");
+  if (bal < ar) return fail(res, 402, "Nincs elég IceCoinod. Még " + (ar - bal) + " IceCoin hiányzik.");
+  u.coins = bal - ar;
+  rangAd(u, r, nap);
   db.purchases = db.purchases || [];
   const rid = rendelesId();
-  db.purchases.push({ t: Date.now(), user: u.name, rank: r.name, ic: r.ic, id: rid });
-  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: r.ic, tetelek: [r.name + " rang"], rendeles: rid, rang: r.name });
+  db.purchases.push({ t: Date.now(), user: u.name, rank: r.name, nap, ic: ar, id: rid });
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: ar, tetelek: [r.name + " rang, " + nap + " nap"], rendeles: rid, rang: r.name });
   if (db.purchases.length > 2000) db.purchases.splice(0, db.purchases.length - 2000);
   save();
   res.json({ ok: true, user: pub(u) });
@@ -717,6 +746,9 @@ function belso(req, res) {
     return kuld(200, { utolso: db.esemenySeq || 0, esemenyek: (db.esemenyek || []).filter(e => e.seq > utan).slice(0, 100) });
   }
   if (req.method === "GET" && url.pathname === "/rangok") {
+    let lejart = false;
+    for (const u of Object.values(db.users)) if (rangLejart(u)) lejart = true;
+    if (lejart) save();
     const tagok = Object.values(db.users).filter(u => u.verified && u.discord).map(u => ({ nev: u.name, rang: u.rank || "default", discord: u.discord.id }));
     return kuld(200, { rangok: RANKS.map(r => ({ id: r.id, nev: r.name })), tagok });
   }
