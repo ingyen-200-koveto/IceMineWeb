@@ -332,7 +332,7 @@ module.exports = [
             .setName("weboldal_rang")
             .setDescription("A weboldal rangja")
             .setRequired(true)
-            .addChoices({ name: "Bronz", value: "bronz" }, { name: "Abyss", value: "abyss" }, { name: "IceKing", value: "iceking" }, { name: "Yeti", value: "yeti" }),
+            .addChoices({ name: "Bronz", value: "bronz" }, { name: "Wizard", value: "abyss" }, { name: "IceKing", value: "iceking" }, { name: "Yeti", value: "yeti" }),
         )
         .addRoleOption((o) => o.setName("discord_rang").setDescription("A Discord rang (ha üresen hagyod, törli)")),
     )

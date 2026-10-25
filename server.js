@@ -50,6 +50,9 @@ async function boot() {
     db.users = Object.assign(Object.create(null), db.users || {});
     db.sessions = db.sessions || {};
   }
+  let atnevezve = 0;
+  for (const u of Object.values(db.users)) if (u && u.rank === "Abyss") { u.rank = "Wizard"; atnevezve++; }
+  if (atnevezve) { save(); console.log("Rang átnevezés: " + atnevezve + " Abyss rangú fiók mostantól Wizard."); }
   const port = process.env.PORT || process.env.SERVER_PORT || 3000, host = process.env.HOST;
   const certFile = path.join(__dirname, "cert.pem"), keyFile = path.join(__dirname, "key.pem");
   const tls = fs.existsSync(certFile) && fs.existsSync(keyFile);
@@ -468,7 +471,7 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
 
 const RANKS = [
   { id: "bronz", name: "Bronz", ic: 950, ft: 1000 },
-  { id: "abyss", name: "Abyss", ic: 2700, ft: 2000 },
+  { id: "abyss", name: "Wizard", ic: 2700, ft: 2000 },
   { id: "iceking", name: "IceKing", ic: 4850, ft: 4150 },
   { id: "yeti", name: "Yeti", ic: 8000, ft: 9990 }
 ];

@@ -5,7 +5,7 @@ const BELSO = (process.env.BELSO_URL || "http://127.0.0.1:3001").replace(/\/+$/,
 
 const RANG_ALAP = [
   { id: "bronz", nev: "Bronz" },
-  { id: "abyss", nev: "Abyss" },
+  { id: "abyss", nev: "Wizard" },
   { id: "iceking", nev: "IceKing" },
   { id: "yeti", nev: "Yeti" },
 ];
@@ -15,6 +15,7 @@ const RANG_STILUS = {
   iceking: { szin: 0x3fb4ff, emoji: "👑" },
   yeti: { szin: 0xf2b23a, emoji: "❄️" },
 };
+const REGI_NEVEK = { abyss: "Abyss" };
 const stilus = (id) => RANG_STILUS[id] || { szin: K.SZIN, emoji: "🎖️" };
 
 let elerheto = null;
@@ -98,6 +99,11 @@ async function szinkron(client, csakId) {
   for (const g of client.guilds.cache.values()) {
     const map = beall(g.id).webRangok;
     if (!map) continue;
+    for (const [rid, regi] of Object.entries(REGI_NEVEK)) {
+      const uj = (r.rangok || RANG_ALAP).find((x) => x.id === rid);
+      const role = map[rid] && g.roles.cache.get(map[rid]);
+      if (uj && role && role.name === regi && uj.nev !== regi) await role.setName(uj.nev, "Weboldal rang átnevezve").catch(() => {});
+    }
     const osszes = Object.values(map).filter((id) => g.roles.cache.has(id));
     const idk = new Set([...most.keys(), ...Object.keys(regi)]);
     for (const id of idk) {
