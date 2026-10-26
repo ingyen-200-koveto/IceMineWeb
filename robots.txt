@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /kosar
+Disallow: /api/
+
+Sitemap: https://idealtherm.hu/sitemap.xml

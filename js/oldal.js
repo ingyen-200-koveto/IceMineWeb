@@ -121,6 +121,29 @@
     return p || "/";
   }
 
+  const LEIRAS = {
+    "/": "Idealtherm – víz-, fűtés- és hűtésszerelés, klímák szerelése, telepítése és beüzemelése Mosonmagyaróváron és környékén. Kérjen ajánlatot!",
+    "/klimak": "Klímák szerelése, telepítése és beüzemelése Mosonmagyaróváron és környékén. Kérjen ajánlatot az Idealthermtől!",
+    "/hoszivattyuk": "Hőszivattyúk telepítése és beüzemelése Mosonmagyaróváron és környékén. Kérjen ajánlatot az Idealthermtől!",
+    "/szelloztetes": "Szellőztetéstechnikai rendszerek telepítése és beüzemelése Mosonmagyaróváron és környékén. Kérjen ajánlatot az Idealthermtől!",
+    "/referenciak": "Az Idealtherm elkészült munkái: víz-, fűtés-, hűtésszerelés és klímatelepítés.",
+    "/kapcsolat": "Lépjen kapcsolatba az Idealthermmel: +36 30 583 2871, +36 30 378 2992, kapcsolat@idealtherm.hu, Mosonmagyaróvár, Új utca 16/a.",
+  };
+  function metaAllit(sel, attr, ertek) {
+    const el = $(sel);
+    if (el) el.setAttribute(attr, ertek);
+  }
+  function seo(ut) {
+    const ismert = ut !== "404" && ut !== "/kosar";
+    const url = "https://idealtherm.hu" + (ut === "404" ? "/" : ut);
+    metaAllit('meta[name="robots"]', "content", ismert ? "index,follow" : "noindex,follow");
+    metaAllit('link[rel="canonical"]', "href", url);
+    metaAllit('meta[property="og:url"]', "content", url);
+    const leiras = LEIRAS[ut] || LEIRAS["/"];
+    metaAllit('meta[name="description"]', "content", leiras);
+    metaAllit('meta[property="og:description"]', "content", leiras);
+  }
+
   let jelenlegi = null;
   function mutat(ut, gorget) {
     const lapok = LAPOK();
@@ -128,7 +151,8 @@
     jelenlegi = lap.dataset.lap === "404" ? ut : lap.dataset.lap;
     lapok.forEach((l) => l.classList.toggle("aktiv", l === lap));
     const cim = lap.dataset.cim;
-    document.title = cim ? `${cim} | ${CEG.nev}` : `${CEG.nev} | Víz-, fűtés-, hűtésszerelés`;
+    document.title = cim ? `${cim} | ${CEG.nev}` : `${CEG.nev} | Víz-, fűtés-, hűtésszerelés és klímaszerelés Mosonmagyaróvár`;
+    seo(lap.dataset.lap);
     $$("a[data-ut]").forEach((a) => {
       const sajat = utvonal(a.getAttribute("href")) === jelenlegi && !a.classList.contains("marka") && !a.closest(".morzsa");
       if (sajat) a.setAttribute("aria-current", "page");
