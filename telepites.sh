@@ -190,16 +190,26 @@ systemctl start icemine-frissites.timer
 
 kek "HTTPS beállítása"
 install -d /etc/caddy
-[ -f /etc/caddy/Caddyfile ] && ! grep -q "reverse_proxy 127.0.0.1:$PORT" /etc/caddy/Caddyfile && cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.eredeti
-cat > /etc/caddy/Caddyfile <<EOF
+[ -f /etc/caddy/Caddyfile ] || printf 'import /etc/caddy/*.caddy\n' > /etc/caddy/Caddyfile
+cp /etc/caddy/Caddyfile /etc/caddy/Caddyfile.icemine-elott
+D_RE="${DOMAIN//./\\.}"
+awk -v re="^[[:space:]]*(https?://)?(www\\.)?$D_RE([,: ]|\\{|$)" '
+  !bent && $0 ~ re { bent=1; m=0 }
+  bent { n=gsub(/\{/,"{"); z=gsub(/\}/,"}"); m+=n-z; if (m<=0 && (n||z)) bent=0; next }
+  { print }' /etc/caddy/Caddyfile.icemine-elott > /etc/caddy/Caddyfile
+grep -qF 'import /etc/caddy/*.caddy' /etc/caddy/Caddyfile || printf '\nimport /etc/caddy/*.caddy\n' >> /etc/caddy/Caddyfile
+cat > /etc/caddy/icemine.caddy <<EOF
 $DOMAIN, www.$DOMAIN {
 	encode zstd gzip
 	reverse_proxy 127.0.0.1:$PORT
 }
-
-import /etc/caddy/*.caddy
 EOF
-caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1 || hiba "A Caddy beállítás hibás."
+if ! caddy validate --config /etc/caddy/Caddyfile --adapter caddyfile >/dev/null 2>&1; then
+  mv /etc/caddy/Caddyfile.icemine-elott /etc/caddy/Caddyfile
+  rm -f /etc/caddy/icemine.caddy
+  hiba "A Caddy beállítás hibás, a régi Caddyfile-t visszaállítottam."
+fi
+rm -f /etc/caddy/Caddyfile.icemine-elott
 systemctl enable --quiet caddy
 systemctl reload caddy 2>/dev/null || systemctl restart caddy
 

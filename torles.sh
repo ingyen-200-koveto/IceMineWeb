@@ -58,7 +58,7 @@ Nem nyúl hozzá: Idealtherm, CS2 szerver, a GitHub tároló, a Stripe fiók, a 
       !bent && $0 ~ re { bent=1; m=0 }
       bent { n=gsub(/\{/,"{"); z=gsub(/\}/,"}"); m+=n-z; if (m<=0 && (n||z)) bent=0; next }
       { print }' /etc/caddy/Caddyfile > "$UJ"
-    rm -f /etc/caddy/icemine-bot.caddy /etc/caddy/icemine-bot.caddy.regi /etc/caddy/Caddyfile.eredeti /etc/caddy/Caddyfile.bot-elott
+    rm -f /etc/caddy/icemine.caddy /etc/caddy/icemine-bot.caddy/etc/caddy/icemine-bot.caddy.regi /etc/caddy/Caddyfile.eredeti /etc/caddy/Caddyfile.bot-elott
     grep -qF 'import /etc/caddy/*.caddy' "$UJ" || printf '\nimport /etc/caddy/*.caddy\n' >> "$UJ"
     if caddy validate --config "$UJ" --adapter caddyfile >/dev/null 2>&1; then
       cat "$UJ" > /etc/caddy/Caddyfile
