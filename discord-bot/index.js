@@ -18,8 +18,9 @@ const kozosseg = require("./modulok/kozosseg");
 const staff = require("./modulok/staff");
 const panelek = require("./modulok/panelek");
 const weboldal = require("./modulok/weboldal");
+const felepites = require("./modulok/felepites");
 
-const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek, weboldal];
+const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek, weboldal, felepites];
 
 const parancsok = {};
 const komponensek = {};
@@ -30,6 +31,10 @@ for (const m of MODULOK) {
   Object.assign(komponensek, m.komponensek || {});
   Object.assign(elotagok, m.elotagok || {});
   Object.assign(modalok, m.modalok || {});
+}
+
+for (const m of MODULOK) {
+  for (const d of m.definiciok || []) if (!parancsLista.some((p) => p.name === d.name)) parancsLista.push(d);
 }
 
 for (const p of parancsLista) {

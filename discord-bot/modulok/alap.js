@@ -87,6 +87,7 @@ const SUGO = {
     nev: "Admin",
     emoji: "⚙️",
     sorok: [
+      ["szerver-felepites", "csatornák, rangok, panelek egyben"],
       ["beallitas", "minden beállítás"],
       ["rangok-letrehozas", "weboldal rangok a Discordon"],
       ["info-panel", "információs panel"],
