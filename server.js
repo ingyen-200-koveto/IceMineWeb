@@ -783,6 +783,14 @@ function belso(req, res) {
 app.get("/api/me", (req, res) => { const u = authUser(req); u ? res.json({ user: pub(u) }) : fail(res, 401, "Nem vagy bejelentkezve."); });
 app.post("/api/logout", (req, res) => { const t = (req.headers.authorization || "").slice(7); if (t) { delete db.sessions[sha(t)]; save(); } res.json({ ok: true }); });
 app.get("/api/status", (req, res) => res.json({ online: null }));
+app.get("/api/mc/coins", limit(400, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (key && !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const names = [...new Set(String(req.query.names || "").toLowerCase().split(",").map(s => s.trim()).filter(n => /^[a-z0-9_]{1,16}$/.test(n)))].slice(0, 200);
+  const players = {};
+  for (const n of names) { const u = db.users[n]; if (u && u.verified) { rangLejart(u); players[n] = { coins: u.coins || 0, rank: u.rank || "default" }; } }
+  res.set("Cache-Control", "no-store").json({ players });
+});
 
 app.get("/fonts/:file", (req, res) => {
   if (!/^(sora|manrope)\.woff$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen fájl.");
