@@ -792,6 +792,31 @@ app.get("/api/mc/coins", limit(400, 6e5), (req, res) => {
   res.set("Cache-Control", "no-store").json({ players });
 });
 
+const mcHibak = new Map();
+setInterval(() => { const n = Date.now(); for (const [k, v] of mcHibak) if (v.zar < n && n - v.t > 9e5) mcHibak.delete(k); }, 3e5).unref();
+app.post("/api/mc/login", limit(300, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (key && !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const { name = "", password = "" } = req.body || {};
+  const k = String(name).toLowerCase();
+  if (!/^[a-z0-9_]{1,16}$/.test(k) || typeof password !== "string" || !password || password.length > 100) return fail(res, 400, "Hibás kérés.");
+  const most = Date.now(), h = mcHibak.get(k);
+  if (h && h.zar > most) return res.status(429).json({ error: "Túl sok rossz jelszó.", wait: Math.ceil((h.zar - most) / 1000) });
+  const u = db.users[k];
+  res.set("Cache-Control", "no-store");
+  if (!u || !taken(u)) return res.json({ result: "nincs" });
+  if (!same(u.hash, hashPw(password, u.salt))) {
+    const x = h && most - h.t < 9e5 ? h : { n: 0, t: most, zar: 0 };
+    x.n++; x.t = most;
+    if (x.n >= 8) { x.zar = most + 9e5; x.n = 0; }
+    mcHibak.set(k, x);
+    return res.json({ result: "hibas" });
+  }
+  mcHibak.delete(k);
+  if (!u.verified) return res.json({ result: "megerosites" });
+  res.json({ result: "ok", name: u.name, created: u.created || 0 });
+});
+
 app.get("/fonts/:file", (req, res) => {
   if (!/^(sora|manrope)\.woff$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen fájl.");
   res.set({ "Content-Type": "font/woff", "Cache-Control": "public, max-age=2592000", "Access-Control-Allow-Origin": "*" });
