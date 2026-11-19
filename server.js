@@ -143,7 +143,7 @@ async function checkMail() {
   say("rendben, a Brevo kapcsolat működik (feladó: " + mask(MAIL_FROM) + ").");
 }
 const STRIPE_KEY = String(process.env.STRIPE_SECRET_KEY || "").replace(/[^\w]/g, ""), STRIPE_WH = String(process.env.STRIPE_WEBHOOK_SECRET || "").replace(/[^\w]/g, "");
-const PACKS = [[500, 499], [1000, 899], [2000, 1690], [3500, 2990], [5000, 3990], [7500, 5990], [10000, 7990], [15000, 11990]];
+const PACKS = [[500, 499, 0], [1000, 899, 0], [2000, 1690, 0], [3500, 2990, 0], [5000, 3990, 250], [7500, 5990, 500], [10000, 7990, 750], [15000, 11990, 1000]];
 function formBody(obj, prefix, out = []) {
   for (const [k, v] of Object.entries(obj)) {
     if (v === undefined || v === null) continue;
@@ -170,7 +170,7 @@ function parseCart(code) {
     if ((mm = /^ic(\d+)x(\d+)$/.exec(part))) {
       const pk = PACKS.find(p => p[0] === Number(mm[1])), q = Number(mm[2]);
       if (!pk || q < 1 || q > MAX_QTY) return null;
-      out.ic += pk[0] * q; out.packs.push([pk[0], q]);
+      out.ic += (pk[0] + pk[2]) * q; out.packs.push(pk[2] ? [pk[0], q, pk[2]] : [pk[0], q]);
     } else if ((mm = /^r:(\w+)(?::(\d+))?$/.exec(part))) {
       out.rank = RANKS.find(x => x.id === mm[1]) || null;
       out.rankNap = rangNap(mm[2]);
@@ -212,7 +212,7 @@ function fulfill(s) {
   }
   db.payments[s.id] = rec;
   const tetelek = [];
-  for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) tetelek.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin");
+  for (const [ic, q, bon] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) tetelek.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin" + (bon ? " + " + Number(bon).toLocaleString("hu-HU") + " bónusz" : ""));
   if (rec.rank) tetelek.push(rec.rank + " rang, " + (rec.rankNap || 30) + " nap" + (rec.rankComp ? " (helyette " + rec.rankComp + " IceCoin)" : ""));
   if (rec.unban) tetelek.push(rec.unban);
   esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ft", huf: rec.huf, tetelek, rendeles: rec.pi || s.id, rang: rec.rank && !rec.rankComp ? rec.rank : null });
@@ -224,7 +224,7 @@ async function sendReceipt(u, rec, sid) {
   const site = process.env.BASE_URL || "https://icemine.hu", when = new Date(rec.t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest" });
   const hu = n => Number(n).toLocaleString("hu-HU");
   const items = [], got = [], consent = [];
-  for (const [ic, q] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) items.push(q > 1 ? q + " × " + hu(ic) + " IceCoin" : hu(ic) + " IceCoin");
+  for (const [ic, q, bon] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) { const nev = hu(ic) + " IceCoin" + (bon ? " + " + hu(bon) + " bónusz" : ""); items.push(q > 1 ? q + " × " + nev : nev); }
   if (rec.rank) items.push(rec.rank + " rang, " + (rec.rankNap || 30) + " nap");
   if (rec.unban) items.push(rec.unban);
   if (rec.ic) got.push(hu(rec.ic) + " IceCoint jóváírtunk a fiókodon.");
@@ -631,7 +631,7 @@ function buildCart(u, body) {
       unban = x;
     } else return { err: [400, "Ismeretlen tétel a kosárban."] };
   }
-  const items = [...ics].map(([p, q]) => ({ name: p[0].toLocaleString("hu-HU") + " IceCoin", huf: p[1], qty: q }));
+  const items = [...ics].map(([p, q]) => ({ name: p[0].toLocaleString("hu-HU") + " IceCoin" + (p[2] ? " + " + p[2].toLocaleString("hu-HU") + " bónusz IceCoin" : ""), huf: p[1], qty: q }));
   if (rank) items.push({ name: rank.name + " rang, " + rankNap + " nap", huf: rangAr(rank, rankNap, "ft"), qty: 1 });
   if (unban) items.push({ name: unban.name, huf: unban.ft, qty: 1 });
   const code = [...[...ics].map(([p, q]) => "ic" + p[0] + "x" + q), rank && "r:" + rank.id + ":" + rankNap, unban && "u:" + unban.id].filter(Boolean).join(",");

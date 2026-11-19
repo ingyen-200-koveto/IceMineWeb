@@ -305,6 +305,9 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .pack .amt{font:800 27px Sora,sans-serif;letter-spacing:-.02em;line-height:1.1}
 .pack .unit{color:var(--mute);font-weight:700;font-size:14px}
 .pack .price{margin-top:10px;font:800 19px Sora,sans-serif;color:var(--ice)}
+.pack .bonus{display:inline-block;justify-self:start;align-self:start;width:max-content;max-width:100%;margin-top:6px;padding:3px 9px;border-radius:999px;background:#16a34a1f;color:#15803d;font-weight:800;font-size:13.5px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pack .bonus{background:#22c55e26;color:#4ade80}}
+:root[data-theme="dark"] .pack .bonus{background:#22c55e26;color:#4ade80}
 .pack .per{color:var(--mute);font-size:12.5px}
 .checkout{position:sticky;bottom:calc(env(safe-area-inset-bottom,0px) + 12px);z-index:5;display:flex;align-items:center;justify-content:space-between;gap:14px;margin-top:20px;padding:12px 12px 12px 20px;border-radius:20px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),0 -8px 30px -12px #0b3a5b66,0 20px 40px -18px #0b3a5b88}
 .checkout .sel{min-width:0}
@@ -1683,7 +1686,7 @@ $("#rankGrid").onclick=async e=>{
   $("#rankMsg").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});
 };
 
-const PACKS=[[500,499],[1000,899],[2000,1690],[3500,2990],[5000,3990],[7500,5990],[10000,7990],[15000,11990]];
+const PACKS=[[500,499,0],[1000,899,0],[2000,1690,0],[3500,2990,0],[5000,3990,250],[7500,5990,500],[10000,7990,750],[15000,11990,1000]];
 const BASE=PACKS[0][1]/PACKS[0][0];
 const TAGS={5000:["Legjobb ár",""],15000:["Legnagyobb","gold"]};
 function coinStack(n){
@@ -1692,17 +1695,17 @@ function coinStack(n){
   return s+"</svg>";
 }
 const CHECK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
-$("#packs").innerHTML=PACKS.map(([c,p],i)=>{
+$("#packs").innerHTML=PACKS.map(([c,p,bon],i)=>{
   const pct=Math.round((1-(p/c)/BASE)*100),tag=TAGS[c];
-  return `<label class="pack"><input type="radio" name="pack" value="${i}" aria-label="${fmtN(c)} IceCoin, ${fmtN(p)} forint"><div class="art">${tag?`<span class="badge ${tag[1]}">${tag[0]}</span>`:""}${pct>0?`<span class="save">−${pct}%</span>`:""}${coinStack(i+1)}<span class="check">${CHECK}</span></div><div class="info"><div class="amt">${fmtN(c)}</div><div class="unit">IceCoin</div><div class="price">${fmtN(p)} Ft</div><div class="per">${fmtN(Math.round(p/c*1000))} Ft / 1000 IceCoin</div></div></label>`;
+  return `<label class="pack"><input type="radio" name="pack" value="${i}" aria-label="${fmtN(c)} IceCoin${bon?" + "+fmtN(bon)+" bónusz":""}, ${fmtN(p)} forint"><div class="art">${tag?`<span class="badge ${tag[1]}">${tag[0]}</span>`:""}${pct>0?`<span class="save">−${pct}%</span>`:""}${coinStack(i+1)}<span class="check">${CHECK}</span></div><div class="info"><div class="amt">${fmtN(c)}</div><div class="unit">IceCoin</div>${bon?`<div class="bonus">+${fmtN(bon)} bónusz</div>`:""}<div class="price">${fmtN(p)} Ft</div><div class="per">${fmtN(Math.round(p/c*1000))} Ft / 1000 IceCoin</div></div></label>`;
 }).join("");
 let coQty=1;
 const MAXQ=10;
 function coUpdate(){
   const r=$("#packs input:checked");if(!r)return;
-  const [c,p]=PACKS[+r.value];
-  $("#coSel").textContent=fmtN(c*coQty)+" IceCoin";
-  $("#coSub").textContent=coQty>1?coQty+" × "+fmtN(c)+" IceCoin":"";
+  const [c,p,bon]=PACKS[+r.value];
+  $("#coSel").textContent=fmtN((c+bon)*coQty)+" IceCoin";
+  $("#coSub").textContent=bon?(coQty>1?coQty+" × ("+fmtN(c)+" + "+fmtN(bon)+" bónusz)":fmtN(c)+" + "+fmtN(bon)+" bónusz"):coQty>1?coQty+" × "+fmtN(c)+" IceCoin":"";
   $("#coPrice").textContent=fmtN(p*coQty)+" Ft";
   $("#coQty").textContent=coQty;
   $$("#coQtyW .qty button").forEach(b=>b.disabled=(+b.dataset.q<0&&coQty<=1)||(+b.dataset.q>0&&coQty>=MAXQ));
@@ -1940,7 +1943,7 @@ let cart=[];
 try{const c=JSON.parse(localStorage.getItem("im_cart")||"[]");if(Array.isArray(c))cart=c.filter(x=>x&&(x.t==="ic"&&PACKS.some(p=>p[0]===x.ic)&&x.qty>=1&&x.qty<=MAXQ||x.t==="rank"&&RANKS.some(r=>r.id===x.id)&&(x.nap=x.nap===60?60:30)||x.t==="unban"&&UNBANS.some(u=>u.id===x.id))).slice(0,12)}catch(e){}
 const saveCart=()=>{try{localStorage.setItem("im_cart",JSON.stringify(cart))}catch(e){}};
 function cartInfo(x){
-  if(x.t==="ic"){const p=PACKS.find(z=>z[0]===x.ic);return {name:fmtN(x.ic)+" IceCoin",unit:p[1],qty:x.qty,img:'<span class="pcoin"></span>'}}
+  if(x.t==="ic"){const p=PACKS.find(z=>z[0]===x.ic);return {name:fmtN(x.ic)+" IceCoin"+(p[2]?" + "+fmtN(p[2])+" bónusz":""),unit:p[1],qty:x.qty,img:'<span class="pcoin"></span>'}}
   if(x.t==="rank"){const r=RANKS.find(z=>z.id===x.id),ri=RANKS.indexOf(r),cur=user?RANKS.findIndex(z=>z.name===user.rank):-1,nap=x.nap||30;return {name:r.name+" rang, "+nap+" nap"+(ri===cur?" (hosszabbítás)":""),unit:rAr(r,"ft",nap),qty:1,img:rankImg(r.id,"cimg"),warn:ri<cur?"Már magasabb rangod van.":""}}
   const u=UNBANS.find(z=>z.id===x.id),locked=user&&user.unbanNext>Date.now();
   return {name:u.name,unit:u.ft,qty:1,img:'<span class="cico">'+u.ico+'</span>',warn:locked?"Legközelebb "+dayHu(user.unbanNext)+" után vásárolhatsz ilyet.":""};
