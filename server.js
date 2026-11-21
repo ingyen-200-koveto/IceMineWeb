@@ -332,17 +332,22 @@ function authUser(req) {
 const taken = (u) => u && (u.verified || (u.v && u.v.exp > Date.now()));
 
 app.post("/api/register", limit(10, 36e5), async (req, res) => {
-  const { name = "", email = "", password = "", accept, ref = "" } = req.body || {};
+  const { name = "", email = "", password = "", accept, ref = "", birth = "", kor } = req.body || {};
   if (accept !== true) return fail(res, 400, "A regisztrációhoz el kell fogadnod az ÁSZF-et és a Szabályzatot.");
+  const bm = typeof birth === "string" && /^(\d{4})-(\d{2})-(\d{2})$/.exec(birth), bd = bm && new Date(Date.UTC(+bm[1], +bm[2] - 1, +bm[3]));
+  if (!bd || bd.getUTCMonth() !== +bm[2] - 1 || bd.getUTCDate() !== +bm[3] || +bm[1] < 1920 || bd > Date.now() - 3 * 365 * 864e5) return fail(res, 400, "Adj meg érvényes születési dátumot.");
+  if (kor !== true) return fail(res, 400, "Erősítsd meg az életkorodat, vagy hogy a szülőd hozzájárult a regisztrációhoz.");
   if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return fail(res, 400, "A felhasználónév 3–16 karakter lehet: betű, szám, aláhúzás.");
   if (typeof email !== "string" || email.length > 100 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail(res, 400, "Adj meg érvényes e-mail címet.");
   if (typeof password !== "string" || password.length < 6 || password.length > 100) return fail(res, 400, "A jelszó legalább 6 karakter legyen.");
   const key = name.toLowerCase(), mail = email.toLowerCase();
   if (taken(db.users[key])) return fail(res, 409, "Ez a felhasználónév már foglalt.");
   if (Object.values(db.users).some(x => x.email === mail && taken(x))) return fail(res, 409, "Ezzel az e-mail címmel már van fiók.");
+  const rk = typeof ref === "string" ? ref.trim() : "", rkU = rk.toUpperCase();
+  const meghivo = !rk ? null : (/^[A-Z0-9]{8}$/.test(rkU) && Object.values(db.users).find(x => x.refKod === rkU && x.verified)) || (/^[A-Za-z0-9_]{3,16}$/.test(rk) && db.users[rk.toLowerCase()] && db.users[rk.toLowerCase()].verified && rk.toLowerCase() !== key ? db.users[rk.toLowerCase()] : null);
+  if (rk && !meghivo) { return fail(res, 400, "Nem találjuk a meghívót. Írd be a barátod pontos játékosnevét, vagy hagyd üresen."); }
   const salt = crypto.randomBytes(16).toString("hex");
-  const u = db.users[key] = { name, email: mail, salt, hash: hashPw(password, salt), verified: false, coins: Number(process.env.START_COINS) || 0, created: Date.now(), accepted: { t: Date.now(), v: TERMS_VERSION } };
-  const meghivo = typeof ref === "string" && /^[A-Z0-9]{8}$/.test(ref) ? Object.values(db.users).find(x => x.refKod === ref && x.verified) : null;
+  const u = db.users[key] = { name, email: mail, salt, hash: hashPw(password, salt), verified: false, coins: Number(process.env.START_COINS) || 0, created: Date.now(), accepted: { t: Date.now(), v: TERMS_VERSION }, birth };
   if (meghivo) { if (!meghivo.id) meghivo.id = crypto.randomBytes(9).toString("hex"); u.meghivtaId = meghivo.id; u.id = u.id || crypto.randomBytes(9).toString("hex"); }
   try { await issue(req, u); }
   catch (e) { delete db.users[key]; save(); console.error("E-mail hiba: " + e.message); return fail(res, 502, "Nem sikerült elküldeni az e-mailt. Ellenőrizd a címet, vagy próbáld később."); }
