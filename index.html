@@ -1299,13 +1299,13 @@ a.si.on svg{color:var(--ice)}
 
       <section class="page" data-page="szavazas">
         <div class="shophero">
-          <div><h2>Szavazás</h2><p>Szavazz az IceMine-ra a szerverlistákon, és minden szavazatért <b id="vReward">25</b> IceCoint kapsz. Oldalanként naponta egyszer szavazhatsz.</p></div>
+          <div><h2>Szavazás</h2><p>Szavazz az IceMine-ra a szerverlistákon, és minden szavazatért <b id="vReward">25</b> IceCoint kapsz. Minden listán naponta egyszer szavazhatsz, így több listával többet kapsz.</p></div>
           <div class="balpill"><span class="pcoin"></span>Szavazataid: <b id="vTotal">0</b></div>
         </div>
         <ol class="steps vsteps">
           <li><b>Kattints a Szavazás gombra</b><span>Új lapon megnyílik a szerverlista.</span></li>
           <li><b>Szavazáskor ezt a nevet add meg: <code id="vName"></code></b><span>Pontosan így írd be, különben nem találjuk meg a szavazatod.</span></li>
-          <li><b>Gyere vissza, és vedd át a jutalmat</b><span>A szavazat 1-2 perc alatt jelenik meg a listán.</span></li>
+          <li><b>Megkapod a jutalmat</b><span>A legtöbb listán magától jön pár percen belül. A Minecraft-MP-nél gyere vissza, és nyomd meg a Jutalom átvétele gombot.</span></li>
         </ol>
         <div class="vlist" id="vList"></div>
         <p class="legal">A szavazatért járó IceCoin csak akkor jár, ha a szerverlistán ugyanazt a nevet adtad meg, amivel itt be vagy jelentkezve.</p>
@@ -2435,6 +2435,12 @@ function renderVote(){
   $("#vReward").textContent=fmtN(d.reward);$("#vTotal").textContent=fmtN(d.total);
   $("#vList").innerHTML=d.sites.map(x=>{
     if(!x.ready)return `<article class="vsite off"><div class="vtop"><h3>${escH(x.name)}</h3><span class="vtag">Hamarosan</span></div><p>Ezen a listán hamarosan szavazhatsz az IceMine-ra.</p></article>`;
+    if(x.mod==="votifier"){
+      const ma=x.last&&Date.now()-x.last<864e5;
+      return `<article class="vsite"><div class="vtop"><h3>${escH(x.name)}</h3><span class="vtag ${ma?"done":"go"}">${ma?"Ma már szavaztál":"+"+fmtN(d.reward)+" IceCoin"}</span></div>
+      <p>${ma?"Utolsó szavazatod: "+idoHu(x.last)+". Holnap újra szavazhatsz.":"Szavazz, és a jutalom pár percen belül magától megérkezik. Nem kell visszajönnöd."}</p>
+      <div class="vbtns"><a class="btn${ma?" alt":""}" href="${escH(x.url)}" target="_blank" rel="noopener">Szavazás</a></div></article>`;
+    }
     const wait=x.next&&x.next>Date.now();
     return `<article class="vsite"><div class="vtop"><h3>${escH(x.name)}</h3><span class="vtag ${wait?"done":"go"}">${wait?"Ma már szavaztál":"+"+fmtN(d.reward)+" IceCoin"}</span></div>
       <p>${wait?"Legközelebb "+idoHu(x.next)+" után szavazhatsz újra.":"Szavazz, aztán gyere vissza, és vedd át a jutalmat."}</p>

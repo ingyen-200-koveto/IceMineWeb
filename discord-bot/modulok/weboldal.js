@@ -72,6 +72,7 @@ function webNaploEmbed(e) {
   if (e.tipus === "osszekotes") return embed(K.ZOLD).setTitle("🔗 Discord összekötés").setDescription(`${ki} ↔ <@${e.discord}> (${e.discordNev || "?"})`);
   if (e.tipus === "levalasztas") return embed(K.SZURKE).setTitle("✂️ Discord leválasztás").setDescription(`${ki} ✕ <@${e.discord}> (${e.discordNev || "?"})`);
   if (e.tipus === "rang") return embed(K.LILA).setTitle("🎡 Rangot nyert").setDescription(`${ki}: **${e.rang}** (${e.forras || "weboldal"})`);
+  if (e.tipus === "szavazas") return embed(K.ZOLD).setTitle("🗳️ Szavazás").setDescription(`${ki} szavazott: **${e.oldal}** (+${szam(e.ic)} IceCoin)`);
   if (e.tipus === "ranglejar") return embed(K.ARANY).setTitle("⏳ Hamarosan lejáró rang").setDescription(`${ki}: **${e.rang}**, lejár <t:${unix(e.lejar)}:R>${e.discord ? `\n💬 DM: ${e.dm ? "elküldve" : "nem sikerült (zárt DM)"}` : "\n💬 DM: nincs összekötött Discord"}`);
   return null;
 }

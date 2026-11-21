@@ -70,6 +70,7 @@ async function boot() {
   host ? server.listen(port, host, ready) : server.listen(port, ready);
   const bport = Number(process.env.INTERNAL_PORT) || 3001, bs = require("http").createServer((req, res) => belso(req, res));
   bs.on("error", e => console.error("Bot kapcsolat: nem indult el a belső API (" + e.message + ")."));
+  votifierInditas();
   bs.listen(bport, "127.0.0.1", () => console.log("Bot kapcsolat: belső API a 127.0.0.1:" + bport + " címen."));
 }
 
@@ -610,8 +611,16 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
 
 const VOTE_REWARD = Math.max(0, Math.floor(Number(process.env.VOTE_REWARD)) || 25);
 const VOTE_SITES = [
-  { id: "mcmp", name: "Minecraft-MP", api: process.env.VOTE_MCMP_API || "https://minecraft-mp.com/api/", url: String(process.env.VOTE_MCMP_URL || "").trim(), key: String(process.env.VOTE_MCMP_KEY || "").trim() }
+  { id: "mcmp", name: "Minecraft-MP", mod: "api", api: process.env.VOTE_MCMP_API || "https://minecraft-mp.com/api/", url: String(process.env.VOTE_MCMP_URL || "").trim(), key: String(process.env.VOTE_MCMP_KEY || "").trim(), szolg: ["minecraftmp"] },
+  { id: "mso", name: "MinecraftServers.org", mod: "votifier", url: String(process.env.VOTE_MSO_URL || "").trim(), szolg: ["minecraftserversorg"], nevParam: "username" },
+  { id: "mcsl", name: "Minecraft-Server-List", mod: "votifier", url: String(process.env.VOTE_MCSL_URL || "").trim(), szolg: ["minecraftserverlist", "mcsl"] },
+  { id: "topg", name: "TopG", mod: "votifier", url: String(process.env.VOTE_TOPG_URL || "").trim(), szolg: ["topg"] },
+  { id: "buzz", name: "Minecraft.Buzz", mod: "votifier", url: String(process.env.VOTE_BUZZ_URL || "").trim(), szolg: ["minecraftbuzz", "buzz"] },
+  { id: "mcs", name: "MC-Servers", mod: "votifier", url: String(process.env.VOTE_MCS_URL || "").trim(), szolg: ["mcserverscom", "mcservers"] }
 ];
+const VOTIFIER_SZUNET = 12 * 36e5;
+const szavazoOldal = szolgaltatas => { const n = String(szolgaltatas || "").toLowerCase().replace(/[^a-z0-9]/g, ""); return VOTE_SITES.find(s => s.szolg.some(x => n.includes(x))) || { id: "egyeb:" + (n.slice(0, 30) || "ismeretlen"), name: String(szolgaltatas || "ismeretlen").slice(0, 40), mod: "votifier" }; };
+const siteKesz = s => s.mod === "api" ? !!(s.url && s.key) : !!s.url;
 const voteZar = new Set();
 const idoHu = t => new Date(t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
 const voteNext = (u, s) => { const t = u.votes && u.votes[s.id]; return t && t + NAP_MS > Date.now() ? t + NAP_MS : null; };
@@ -625,13 +634,14 @@ async function voteApi(s, claim, name) {
 app.get("/api/vote", (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
-  res.json({ reward: VOTE_REWARD, total: u.voteCount || 0, sites: VOTE_SITES.map(s => ({ id: s.id, name: s.name, url: s.url || null, ready: !!(s.url && s.key), next: voteNext(u, s) })) });
+  const sajatUrl = s => s.url && s.nevParam ? s.url + (s.url.includes("?") ? "&" : "?") + s.nevParam + "=" + encodeURIComponent(u.name) : s.url || null;
+  res.json({ reward: VOTE_REWARD, total: u.voteCount || 0, sites: VOTE_SITES.filter(s => siteKesz(s) || s.id === "mcmp").map(s => ({ id: s.id, name: s.name, mod: s.mod, url: sajatUrl(s), ready: siteKesz(s), next: s.mod === "api" ? voteNext(u, s) : null, last: (u.votes && u.votes[s.id]) || null })) });
 });
 app.post("/api/vote/claim", limit(40, 6e5), async (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
   const s = VOTE_SITES.find(x => x.id === String((req.body || {}).site || ""));
-  if (!s) return fail(res, 400, "Ismeretlen szavazóoldal.");
+  if (!s || s.mod !== "api") return fail(res, 400, "Ismeretlen szavazóoldal.");
   if (!s.url || !s.key) return fail(res, 503, "Ezen az oldalon még nem lehet jutalmat átvenni.");
   const nx = voteNext(u, s);
   if (nx) return fail(res, 429, "Erről az oldalról ma már átvetted a jutalmat. Legközelebb " + idoHu(nx) + " után.");
@@ -657,6 +667,78 @@ app.post("/api/vote/claim", limit(40, 6e5), async (req, res) => {
   } finally { voteZar.delete(k); }
 });
 
+function szavazatJovair(nev, szolgaltatas) {
+  const u = typeof nev === "string" && /^[A-Za-z0-9_]{3,16}$/.test(nev) ? db.users[nev.toLowerCase()] : null;
+  const s = szavazoOldal(szolgaltatas);
+  if (!u || !u.verified) { console.log("Szavazás (" + s.name + "): " + String(nev).slice(0, 20) + " nevű fiók nincs a weboldalon, nem jár jutalom."); return "nincs"; }
+  const most = Date.now(), elozo = u.votes && u.votes[s.id];
+  if (elozo && most - elozo < VOTIFIER_SZUNET) { console.log("Szavazás (" + s.name + "): " + u.name + " ismételt szavazat, kihagyva."); return "ismetelt"; }
+  u.votes = u.votes || {}; u.votes[s.id] = most;
+  u.voteCount = (u.voteCount || 0) + 1;
+  u.coins = (u.coins || 0) + VOTE_REWARD;
+  esemeny("szavazas", { user: u.name, discord: dcId(u), oldal: s.name, ic: VOTE_REWARD });
+  save();
+  console.log("Szavazás: " + u.name + " +" + VOTE_REWARD + " IceCoin (" + s.name + ", Votifier).");
+  return "ok";
+}
+function votifierKulcsok() {
+  if (!db.votifier || !db.votifier.priv || !db.votifier.token) {
+    const { publicKey, privateKey } = crypto.generateKeyPairSync("rsa", { modulusLength: 2048 });
+    db.votifier = { priv: privateKey.export({ type: "pkcs8", format: "pem" }), pub: publicKey.export({ type: "spki", format: "der" }).toString("base64"), token: crypto.randomBytes(18).toString("base64url") };
+    save();
+    console.log("Votifier: új kulcsok készültek.");
+  }
+  return db.votifier;
+}
+function votifierV1(buf, k) {
+  let raw;
+  try { raw = crypto.privateDecrypt({ key: k.priv, padding: crypto.constants.RSA_NO_PADDING }, buf.subarray(0, 256)); } catch (e) { return null; }
+  if (raw[0] !== 0 || raw[1] !== 2) return null;
+  const nulla = raw.indexOf(0, 2);
+  if (nulla < 10) return null;
+  const sorok = raw.subarray(nulla + 1).toString("utf8").split("\n");
+  if (sorok[0] !== "VOTE") return null;
+  return { serviceName: sorok[1], username: sorok[2], address: sorok[3], timestamp: sorok[4] };
+}
+function votifierInditas() {
+  const port = Number(process.env.VOTIFIER_PORT) || 8192;
+  if (port <= 0) return;
+  const k = votifierKulcsok();
+  const srv = net.createServer(sock => {
+    const kihivas = crypto.randomBytes(16).toString("hex");
+    let buf = Buffer.alloc(0), kesz = false;
+    const vege = (valasz) => { if (kesz) return; kesz = true; try { if (valasz) sock.end(JSON.stringify(valasz) + "\r\n"); else sock.destroy(); } catch (e) {} };
+    sock.setTimeout(5000, () => vege(null));
+    sock.on("error", () => {});
+    sock.write("VOTIFIER 2 " + kihivas + "\n");
+    sock.on("data", d => {
+      if (kesz) return;
+      buf = Buffer.concat([buf, d]);
+      if (buf.length > 65536) return vege(null);
+      if (buf.length >= 2 && buf[0] === 0x73 && buf[1] === 0x3a) {
+        if (buf.length < 4) return;
+        const hossz = buf.readUInt16BE(2);
+        if (buf.length < 4 + hossz) return;
+        let uzenet, adat;
+        try { uzenet = JSON.parse(buf.subarray(4, 4 + hossz).toString("utf8")); adat = JSON.parse(uzenet.payload); } catch (e) { return vege({ status: "error", cause: "BadJson", error: "Hibás adat." }); }
+        const vart = crypto.createHmac("sha256", k.token).update(String(uzenet.payload)).digest();
+        let kapott; try { kapott = Buffer.from(String(uzenet.signature || ""), "base64"); } catch (e) { kapott = Buffer.alloc(0); }
+        if (kapott.length !== vart.length || !crypto.timingSafeEqual(kapott, vart)) { console.log("Votifier: hibás aláírás (" + String(adat.serviceName || "?").slice(0, 40) + "). Rossz tokent adtak meg a listán?"); return vege({ status: "error", cause: "BadSignature", error: "Hibás aláírás." }); }
+        if (adat.challenge !== kihivas) return vege({ status: "error", cause: "BadChallenge", error: "Hibás kihívás." });
+        szavazatJovair(adat.username, adat.serviceName);
+        return vege({ status: "ok" });
+      }
+      if (buf.length >= 256) {
+        const szav = votifierV1(buf, k);
+        if (!szav) { console.log("Votifier: nem sikerült visszafejteni egy szavazatot. Rossz nyilvános kulcsot adtak meg a listán?"); return vege(null); }
+        szavazatJovair(szav.username, szav.serviceName);
+        return vege(null);
+      }
+    });
+  });
+  srv.on("error", e => console.error("Votifier: nem indult el a " + port + " porton (" + e.message + ")."));
+  srv.listen(port, "0.0.0.0", () => console.log("Votifier: szavazatok fogadása a " + port + " porton."));
+}
 const NAP_MS = 864e5;
 const RANG_NAPOK = [30, 60];
 const rangNap = n => (RANG_NAPOK.includes(Number(n)) ? Number(n) : 30);
@@ -923,6 +1005,10 @@ function belso(req, res) {
   if (req.method === "GET" && url.pathname === "/esemenyek") {
     const utan = Number(url.searchParams.get("utan")) || 0;
     return kuld(200, { utolso: db.esemenySeq || 0, esemenyek: (db.esemenyek || []).filter(e => e.seq > utan).slice(0, 100) });
+  }
+  if (req.method === "GET" && url.pathname === "/votifier") {
+    const k = votifierKulcsok();
+    return kuld(200, { port: Number(process.env.VOTIFIER_PORT) || 8192, publicKey: k.pub, token: k.token, oldalak: VOTE_SITES.map(s => ({ id: s.id, nev: s.name, mod: s.mod, url: s.url || null })) });
   }
   if (req.method === "GET" && url.pathname === "/rangok") {
     let lejart = false;
