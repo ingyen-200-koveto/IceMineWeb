@@ -622,6 +622,56 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
 .faqmore .btn{text-decoration:none}
 @media (max-width:520px){.vbtns{grid-template-columns:1fr}.faq summary{padding:15px 16px;font-size:15.5px}.faq details>div{padding:0 16px 16px}.faqmore div{width:100%}.faqmore .btn{flex:1;text-align:center}}
 @media (prefers-reduced-motion:reduce){.faq summary::after{transition:none}}
+
+.sgrp{display:grid;gap:2px;margin-top:10px}
+.sgrp:first-of-type{margin-top:4px}
+.sgh{padding:0 14px 2px;font:700 12.5px Sora,sans-serif;color:var(--mute);opacity:.85}
+#side a.si{padding-top:10px;padding-bottom:10px}
+.srv{display:flex;align-items:center;gap:12px;width:100%;padding:12px 14px;border:0;border-radius:16px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh);color:var(--ink);text-align:left;cursor:pointer}
+.srv:hover{box-shadow:inset 0 0 0 1px var(--ice),var(--sh)}
+.stx{display:grid;gap:1px;min-width:0}
+.stx b{font:800 14.5px Sora,sans-serif}
+.stx small{font-size:12.5px;color:var(--mute);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stx small span{color:var(--ice);font-weight:700}
+.sdot{flex:none;width:10px;height:10px;border-radius:50%;background:#9aa7b4;box-shadow:0 0 0 4px #9aa7b433}
+.sdot.big{width:14px;height:14px;box-shadow:0 0 0 6px #9aa7b42e}
+body[data-srv="up"] .sdot{background:#22c55e;box-shadow:0 0 0 4px #22c55e33}
+body[data-srv="up"] .sdot.big{box-shadow:0 0 0 6px #22c55e2e}
+body[data-srv="down"] .sdot{background:#ef4444;box-shadow:0 0 0 4px #ef444433}
+.srvcard{display:grid;grid-template-columns:1.2fr 1fr auto;align-items:center;gap:16px 22px;margin-bottom:26px;padding:20px 22px;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.srvcard small{display:block;margin-bottom:4px;font-size:13px;font-weight:700;color:var(--mute)}
+.scmain{display:flex;align-items:center;gap:16px}
+.scmain b{font:800 22px Sora,sans-serif;line-height:1.15}
+.scver b{font-weight:800;font-size:15px;white-space:nowrap}
+.scmodes{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px;padding-top:14px;border-top:1px solid var(--line)}
+.scmodes span{display:inline-flex;align-items:baseline;gap:6px;padding:6px 12px;border-radius:999px;background:var(--bg2);font-weight:700;font-size:14px;color:var(--mute)}
+.scmodes b{color:var(--ink);font-family:Sora,sans-serif}
+#histCard,.rfcard{display:grid;gap:14px;padding:22px}
+.hist{display:grid}
+.hrow{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:12px 0;border-top:1px solid var(--line)}
+.hrow:first-child{border-top:0}
+.hmit{display:grid;gap:2px;min-width:0}
+.hmit b{font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.hmit small{font-size:13px;color:var(--mute)}
+.hid{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;user-select:all}
+.har{flex:none;font:800 15px Sora,sans-serif;white-space:nowrap}
+.har.ic{color:var(--ice)}
+.har.ok{color:#16a34a}
+.har.wait{font:700 13px Manrope,sans-serif;color:var(--mute)}
+.hempty{margin:6px 0 2px;color:var(--mute);font-size:14.5px;line-height:1.5}
+#histMore{margin-top:0}
+.srvcard .fcopy code{font:700 15px Sora,sans-serif}
+.srv+.sgrp{margin-top:14px}
+.rflink{display:grid;gap:10px;margin-bottom:22px;padding:20px 22px}
+.rflink>small{font-weight:700;color:var(--mute)}
+.rfrow{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.rfrow code{flex:1 1 260px;min-width:0;padding:13px 14px;border-radius:12px;background:var(--bg2);font:700 14.5px Sora,sans-serif;color:var(--ink);overflow-wrap:anywhere;user-select:all}
+.rflink .hint{margin:0}
+.refnote{margin:2px 0 0;padding:10px 12px;border-radius:12px;background:#16a34a1a;color:#15803d;font-weight:700;font-size:13.5px;line-height:1.45}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .refnote{background:#22c55e22;color:#4ade80}:root:not([data-theme="light"]) .har.ok{color:#4ade80}}
+:root[data-theme="dark"] .refnote{background:#22c55e22;color:#4ade80}
+:root[data-theme="dark"] .har.ok{color:#4ade80}
+@media (max-width:760px){.srvcard{grid-template-columns:1fr;gap:14px;padding:18px}.scmain b{font-size:20px}.rfrow .btn{flex:1}}
 </style>
 </head>
 <body>
@@ -651,6 +701,7 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         <label id="pass2Row" hidden>Jelszó újra
           <input name="pass2" type="password" autocomplete="new-password"></label>
         <label class="chk" id="accRow" hidden><input type="checkbox" name="accept"><span>Elfogadom az <a href="#aszf">Általános Szerződési Feltételeket</a> és a <a href="#szabalyzat">Szabályzatot</a>, és megismertem az <a href="#adatvedelem">Adatkezelési tájékoztatót</a>.</span></label>
+        <p class="refnote" id="refNote" hidden>Egy barátod meghívójával regisztrálsz. Ha fellépsz a szerverre, mindketten IceCoint kaptok.</p>
         <div class="msg" id="aMsg" aria-live="polite"></div>
         <button class="btn mc" type="submit" id="aBtn">Belépés</button>
         <button class="linkbtn" type="button" id="forgotBtn">Elfelejtettem a jelszavam</button>
@@ -708,20 +759,32 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
   </header>
   <div class="shell">
     <aside id="side">
+      <button class="srv" id="srvBox" type="button" aria-label="Szerver cím másolása: play.icemine.hu"><span class="sdot" aria-hidden="true"></span><span class="stx"><b id="srvTxt">Szerver állapota…</b><small>play.icemine.hu · <span id="srvCopy">Másolás</span></small></span></button>
+      <div class="sgrp"><span class="sgh">Játék</span>
       <a class="si" href="#kezdolap"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Kezdőlap</a>
       <a class="si" href="#jatekmodok"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Játékmódok</a>
+      </div>
+      <div class="sgrp"><span class="sgh">Fiókom</span>
       <a class="si" href="#karakter"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Karakter</a>
-      <a class="si" href="#webshop" hidden><svg class="i" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/></svg>WebShop</a>
-      <a class="si" href="#rangok"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Rangok</a>
+      <a class="si" href="#beallitasok"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Beállítások</a>
+      </div>
+      <div class="sgrp"><span class="sgh">Bolt</span>
       <a class="si" href="#vasarlas"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg>Vásárlás</a>
+      <a class="si" href="#rangok"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Rangok</a>
       <a class="si" href="#kitiltas"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>Kitiltás csökkentése</a>
+      <a class="si" href="#webshop" hidden><svg class="i" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/></svg>WebShop</a>
+      </div>
+      <div class="sgrp"><span class="sgh">Jutalmak</span>
       <a class="si" href="#szerencsekerek"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>Szerencsekerék</a>
       <a class="si" href="#szavazas"><svg class="i" viewBox="0 0 24 24"><path d="M4 13h3l2 6h6l2-6h3M7 13l2-9h6l2 9M10 9l1.5 1.5L14 8"/></svg>Szavazás</a>
-      <a class="si" href="#kliens" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Kliens letöltése</a>
+      <a class="si" href="#meghivo"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-5.5 6.5-5.5s6.5 1.9 6.5 5.5M18 8v6M15 11h6"/></svg>Meghívó</a>
+      </div>
+      <div class="sgrp"><span class="sgh">Segítség</span>
       <a class="si" href="#gyik"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4M12 17h.01"/></svg>GYIK</a>
       <a class="si" href="#dokumentumok"><svg class="i" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg>Dokumentumok</a>
+      <a class="si" href="#kliens" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Kliens letöltése</a>
+      </div>
       <div class="sp"></div>
-      <a class="si" href="#beallitasok"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Beállítások</a>
       <button class="sb" id="logout" type="button"><svg class="i" viewBox="0 0 24 24"><path d="M9 4H5v16h4M16 8l4 4-4 4M20 12H9"/></svg>Kilépés</button>
       <div class="links">
         <h4>Kapcsolat</h4>
@@ -735,6 +798,12 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
     <main id="content">
 
       <section class="page" data-page="kezdolap">
+        <div class="srvcard" id="srvCard">
+          <div class="scmain"><span class="sdot big" aria-hidden="true"></span><div><small id="scState">Szerver állapota</small><b id="scOnline">–</b></div></div>
+          <div class="scip"><small>Szerver cím</small><button class="fcopy" type="button" data-copy="play.icemine.hu"><code>play.icemine.hu</code><span>Másolás</span></button></div>
+          <div class="scver"><small>Verzió</small><b>Java 1.20 – 1.21.x</b></div>
+          <div class="scmodes" id="scModes" hidden></div>
+        </div>
         <div class="newshead"><h2>Hírek</h2><p>Az IceMine legfrissebb újdonságai.</p></div>
         <div id="news"></div>
       </section>
@@ -796,6 +865,12 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
           <button class="btn wide" type="button" id="dcBtn"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Kód kérése</button>
           <button class="btn alt wide" type="button" id="dcUnlink" hidden>Leválasztás</button>
         </form></div>
+        <div class="card tcard" id="histCard">
+          <div class="thead"><div class="px" style="font-size:19px">Vásárlási előzmények</div></div>
+          <p class="hint" style="margin:-6px 0 0">Itt látod, mikor mit vettél és mennyiért. Ha valami nem jött meg, ezt a rendelésszámot küldd el nekünk.</p>
+          <div class="hist" id="hist"><p class="hempty">Betöltés…</p></div>
+          <button class="btn alt wide" type="button" id="histMore" hidden>Régebbiek mutatása</button>
+        </div>
       </section>
 
       <section class="page" data-page="webshop">
@@ -894,6 +969,27 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         </ol>
         <div class="vlist" id="vList"></div>
         <p class="legal">A szavazatért járó IceCoin csak akkor jár, ha a szerverlistán ugyanazt a nevet adtad meg, amivel itt be vagy jelentkezve.</p>
+      </section>
+
+      <section class="page" data-page="meghivo">
+        <div class="shophero">
+          <div><h2>Hívd meg a barátaidat</h2><p>Ha a barátod a te linkeddel regisztrál, és fellép a szerverre, mindketten <b id="rfReward">100</b> IceCoint kaptok.</p></div>
+          <div class="balpill"><span class="pcoin"></span>Meghívottjaid: <b id="rfOssz">0</b></div>
+        </div>
+        <div class="card rflink">
+          <small>A meghívó linked</small>
+          <div class="rfrow"><code id="rfLink">Betöltés…</code><button class="btn" type="button" id="rfCopy" disabled>Link másolása</button><button class="btn alt" type="button" id="rfShare" hidden>Megosztás</button></div>
+          <p class="hint" id="rfHavi"></p>
+        </div>
+        <ol class="steps vsteps">
+          <li><b>Küldd el a linket a barátodnak</b><span>Discordon, Messengeren, vagy ahol beszélni szoktatok.</span></li>
+          <li><b>Regisztrál a linkkel, és megerősíti az e-mail címét</b><span>A link megjegyzi, hogy te hívtad meg.</span></li>
+          <li><b>Fellép a szerverre</b><span>Az első belépésekor mindketten megkapjátok az IceCoint.</span></li>
+        </ol>
+        <div class="card tcard rfcard">
+          <div class="thead"><div class="px" style="font-size:19px">Akiket meghívtál</div></div>
+          <div class="hist" id="rfList"><p class="hempty">Betöltés…</p></div>
+        </div>
       </section>
 
       <section class="page" data-page="gyik">
@@ -1318,6 +1414,7 @@ function setMode(r){
   $("#mailRow").hidden=!r;$("#pass2Row").hidden=!r;$("#forgotBtn").hidden=r;
   $("#mailRow input").required=r;$("#pass2Row input").required=r;$("#accRow").hidden=!r;
   $("#aBtn").textContent=r?"Fiók létrehozása":"Belépés";
+  $("#refNote").hidden=!(r&&refKodom());
   $("#aform").pass.autocomplete=r?"new-password":"current-password";
   msg("#aMsg","");
 }
@@ -1339,7 +1436,7 @@ $("#aform").onsubmit=async e=>{
   if(reg&&pw!==f.pass2.value) return msg("#aMsg","A két jelszó nem egyezik.","e");
   if(reg&&!f.accept.checked) return msg("#aMsg","A regisztrációhoz fogadd el az ÁSZF-et és a Szabályzatot.","e");
   const btn=$("#aBtn");btn.disabled=true;msg("#aMsg","Egy pillanat...");
-  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw,accept:true}:{name,password:pw});
+  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw,accept:true,ref:refKodom()||undefined}:{name,password:pw});
   btn.disabled=false;
   if(d.error) return msg("#aMsg",d.error,"e");
   f.reset();
@@ -1389,7 +1486,7 @@ $("#logout").onclick=async()=>{
   try{history.replaceState(null,"",location.pathname)}catch(e){}
   document.body.classList.remove("menu");backToLogin();render();
 };
-const PAGES=["kezdolap","jatekmodok","karakter","rangok","vasarlas","kitiltas","szerencsekerek","szavazas","gyik","dokumentumok","beallitasok"];
+const PAGES=["kezdolap","jatekmodok","karakter","beallitasok","vasarlas","rangok","kitiltas","szerencsekerek","szavazas","meghivo","gyik","dokumentumok"];
 function route(){
   let p=location.hash.replace("#","");
   if(DOCS.includes(p)){
@@ -1405,6 +1502,9 @@ function route(){
   if(!$("#cartPanel").hidden)closeCart();
   if(p==="szerencsekerek"&&user)loadWheel();
   if(p==="szavazas"&&user)loadVote();
+  if(p==="meghivo"&&user)loadRef();
+  if(p==="karakter"&&user)loadHist();
+  if(p==="kezdolap")loadStatus();
   if(p==="karakter")setTimeout(()=>heroView.start(),0);
 }
 addEventListener("hashchange",route);
@@ -1723,34 +1823,42 @@ $("#spinBtn").onclick=async()=>{
   });
 };
 
-const MODES=["Kingdoms","KitPvP","OneBlock","SkyPvP","Gens"];
+const MODES=["OneBlock","Gens","Kingdoms","BedWars","Duels","ComboFly","Creative"];
 const RANKS=[
  {id:"bronz",name:"Bronz",ic:950,ft:1000,gen:["20 IC / hét"],modes:{
   Kingdoms:[["Kulcscsomag","5× Snow kulcs"],["Napi jutalom","100 Nexus pont"],["Kit","Bronz Kit"],["Heti jutalom","2× Snow kulcs"]],
-  KitPvP:[["Kulcscsomag","5× Rare kulcs"],["Napi jutalom","1× II. Pénzeszsák"],["Heti jutalom","10× Bánya kulcs"],["Extra","Inventory törlés"]],
-  OneBlock:[["Kulcscsomag","5× Copper kulcs"],["Napi jutalom","16× Vasblokk"],["Heti jutalom","2× Star kulcs"]],
-  SkyPvP:[["Kulcscsomag","5× Abyss kulcs"],["Heti jutalom","2× Abyss kulcs"],["Kit","Íjász Kit"]],
-  Gens:[["Kulcscsomag","3× FORTUNE kulcs"],["Napi jutalom","1× Mini Elixir Bónusz + 1× Mini XP Bónusz"],["Heti jutalom","2× Elixir Booster + 1× Pénz Booster"]]}},
+  OneBlock:[["Kulcscsomag","5× Copper kulcs"],["Napi jutalom","16× Vasblokk"],["Heti jutalom","2× Star kulcs"],["Eladási bónusz","+10%"]],
+  Gens:[["Kulcscsomag","3× FORTUNE kulcs"],["Napi jutalom","1× Mini Elixir Bónusz + 1× Mini XP Bónusz"],["Heti jutalom","2× Elixir Booster + 1× Pénz Booster"],["Eladási bónusz","+10%"]],
+  BedWars:[["Jutalom bónusz","+10%"]],
+  Duels:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  ComboFly:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  Creative:[["Telkek száma","2 (alapból 1)"]]}},
  {id:"abyss",name:"Wizard",ic:2700,ft:2000,gen:["Jog csomag","5 nap Fly","InvSee","Food","Repair"],modes:{
-  Kingdoms:[["Kulcscsomag","10× Snow kulcs"],["Napi jutalom","200 Nexus pont"],["Kit","Wizard Kit"],["Heti jutalom","4× Snow kulcs"]],
-  KitPvP:[["Kulcscsomag","10× Rare kulcs"],["Napi jutalom","2× II. Pénzeszsák"],["Heti jutalom","20× Bánya kulcs"],["Extra","Inventory törlés"]],
-  OneBlock:[["Kulcscsomag","10× Copper kulcs"],["Napi jutalom","32× Vasblokk"],["Heti jutalom","4× Star kulcs"]],
-  SkyPvP:[["Kulcscsomag","10× Abyss kulcs"],["Heti jutalom","4× Abyss kulcs"],["Kit","Wizard Kit"]],
-  Gens:[["Kulcscsomag","6× FORTUNE kulcs"],["Napi jutalom","2× Mini Elixir Bónusz + 2× Mini XP Bónusz"],["Heti jutalom","4× Elixir Booster + 2× Pénz Booster"]]}},
+  Kingdoms:[["Kulcscsomag","10× Snow kulcs"],["Napi jutalom","200 Nexus pont"],["Kit","Wizard Kit"],["Heti jutalom","4× Snow kulcs"],["Kitermelők","Mind egyszerre (/k extractor)"]],
+  OneBlock:[["Kulcscsomag","10× Copper kulcs"],["Napi jutalom","32× Vasblokk"],["Heti jutalom","4× Star kulcs"],["Eladási bónusz","+25%"]],
+  Gens:[["Kulcscsomag","6× FORTUNE kulcs"],["Napi jutalom","2× Mini Elixir Bónusz + 2× Mini XP Bónusz"],["Heti jutalom","4× Elixir Booster + 2× Pénz Booster"],["Automatikus eladás","Van"],["Eladási bónusz","+25%"]],
+  BedWars:[["Jutalom bónusz","+25%"]],
+  Duels:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  ComboFly:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  Creative:[["Telkek száma","2 (alapból 1)"]]}},
  {id:"iceking",name:"IceKing",ic:4850,ft:4150,gen:["Jog csomag","2 hét Fly","InvSee","Food","Repair","60 IC / hét"],modes:{
-  Kingdoms:[["Kulcscsomag","15× Snow kulcs"],["Napi jutalom","300 Nexus pont"],["Kit","IceKing Kit"],["Heti jutalom","6× Snow kulcs"]],
-  KitPvP:[["Kulcscsomag","15× Rare kulcs"],["Napi jutalom","3× II. Pénzeszsák"],["Heti jutalom","30× Bánya kulcs"],["Extra","Inventory törlés"]],
-  OneBlock:[["Kulcscsomag","15× Copper kulcs"],["Napi jutalom","48× Vasblokk"],["Heti jutalom","6× Star kulcs"]],
-  SkyPvP:[["Kulcscsomag","15× Abyss kulcs"],["Heti jutalom","6× Abyss kulcs"],["Kit","IceKing Kit"]],
-  Gens:[["Kulcscsomag","9× FORTUNE kulcs"],["Napi jutalom","3× Mini Elixir Bónusz + 3× Mini XP Bónusz"],["Heti jutalom","6× Elixir Booster + 3× Pénz Booster"]]}},
+  Kingdoms:[["Kulcscsomag","15× Snow kulcs"],["Napi jutalom","300 Nexus pont"],["Kit","IceKing Kit"],["Heti jutalom","6× Snow kulcs"],["Kitermelők","Mind egyszerre (/k extractor)"],["Repülés","Saját földeken (/k fly)"]],
+  OneBlock:[["Kulcscsomag","15× Copper kulcs"],["Napi jutalom","48× Vasblokk"],["Heti jutalom","6× Star kulcs"],["Eladási bónusz","+50%"]],
+  Gens:[["Kulcscsomag","9× FORTUNE kulcs"],["Napi jutalom","3× Mini Elixir Bónusz + 3× Mini XP Bónusz"],["Heti jutalom","6× Elixir Booster + 3× Pénz Booster"],["Automatikus eladás","Van"],["Hátizsák","Nagy"],["Extra termés","+20%"],["Eladási bónusz","+50%"]],
+  BedWars:[["Jutalom bónusz","+50%"]],
+  Duels:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  ComboFly:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  Creative:[["Telkek száma","2 (alapból 1)"]]}},
  {id:"yeti",name:"Yeti",ic:8000,ft:9990,gen:["Jog csomag","30 nap Fly","InvSee","Food","Repair","25 IC / nap"],modes:{
-  Kingdoms:[["Kulcscsomag","75× Snow kulcs"],["Napi jutalom","1 500 Nexus pont"],["Kit","Yeti Kit"],["Heti jutalom","30× Snow kulcs"]],
-  KitPvP:[["Kulcscsomag","75× Rare kulcs"],["Napi jutalom","15× II. Pénzeszsák"],["Heti jutalom","150× Bánya kulcs"],["Extra","Inventory törlés"]],
-  OneBlock:[["Kulcscsomag","75× Copper kulcs"],["Napi jutalom","240× Vasblokk"],["Heti jutalom","30× Star kulcs"]],
-  SkyPvP:[["Kulcscsomag","75× Abyss kulcs"],["Heti jutalom","30× Abyss kulcs"],["Kit","Yeti Kit"]],
-  Gens:[["Kulcscsomag","45× FORTUNE kulcs"],["Napi jutalom","15× Mini Elixir Bónusz + 15× Mini XP Bónusz"],["Heti jutalom","30× Elixir Booster + 15× Pénz Booster"]]}}
+  Kingdoms:[["Kulcscsomag","75× Snow kulcs"],["Napi jutalom","1 500 Nexus pont"],["Kit","Yeti Kit"],["Heti jutalom","30× Snow kulcs"],["Kitermelők","Mind egyszerre (/k extractor)"],["Repülés","Saját földeken (/k fly)"]],
+  OneBlock:[["Kulcscsomag","75× Copper kulcs"],["Napi jutalom","240× Vasblokk"],["Heti jutalom","30× Star kulcs"],["Eladási bónusz","Dupla"]],
+  Gens:[["Kulcscsomag","45× FORTUNE kulcs"],["Napi jutalom","15× Mini Elixir Bónusz + 15× Mini XP Bónusz"],["Heti jutalom","30× Elixir Booster + 15× Pénz Booster"],["Automatikus eladás","Van"],["Hátizsák","Nagy"],["Extra termés","+40%"],["Eladási bónusz","Dupla"]],
+  BedWars:[["Jutalom bónusz","Dupla"]],
+  Duels:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  ComboFly:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
+  Creative:[["Telkek száma","2 (alapból 1)"]]}}
 ];
-let rMode="Kingdoms",rNap=30;
+let rMode="OneBlock",rNap=30;
 const rAr=(r,mi,nap)=>r[mi]*(nap||rNap)/30;
 const RCHECK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
 const RANK_ART={"bronz": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACP0lEQVR42s1XTUgbQRT+NggBuwdlEaQ0B5cQhVDw4s3CnEoJBoWCsOBFPHgWQUV6llaQnnsovRQEoQeJ7HlBUIIXSQn+waokBDHmIG4PntJD3LA/M7tv4pb6TrM7++b73vdm3ttREGEFXW3z3pu2oyTl0xe1kJHWAAATI28w+mUcP2f3OpM62rwFvT5zO1M4Wz3G0WU90ieF/2xCAqbtKNuPLQDA0WUdZ6vHmNuZAgAYaS0kdVT0248tYQpergIyKvQa/ctXIE6FoMlGH3kMKWakNUBHV/5/okDQRCqEzj3RSAqYtqMEI60fOmBLDEzgQ5FfOgVsiQnn6ocOXs1kwZCF9dVKNgUFXW1/W/tIWvC6eoqR98NkAoos+EAm65tvVMq+52aj2R1vlKqxaUjJgqvvFoTgADD0eqg7Xi/mhd0xloAI3Nn/7gPPrZSeRYK0B4TgxjKJhLQCvE0XBI+zk5MrAMDBxQ3YmCZUIUWJnpfznLEMZBhQs4Ca5VPBBb+7/4PE6oCan0Tuw6fIb1wSOQC782+Tq4SNShmolAFsdUBqnELjvsswMjgpBcGcn28WO9LzTBK89/+BmhUm0QM4iUD/YEyrzYj7w/ntQ28ETNtRFj//6tZ230Zzd7836qfn6R+/uSDWaUv+XuAFbzaaocLildsdewlQoo9tRgVdba8X86Hq5p5zivRR0ZO7oZdEXHGRAScR4JE4uLiJ9aGAk4+haTvKRqmaODhZAd7Nl41pIVDK7flZBKKu4TKgXvsLCKxKZLYjjucAAAAASUVORK5CYII=", "abyss": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB2ElEQVR42s1XsWoCQRCdW2w8sAxXXpHPkDPYCZIUMV8RGwmBNJZpAiHY3BfYBoVIIJ1ESZHOwlbQJiBXBky5KZIJe+vs7tx5iXnl3e2b997sriPAjgj8SMK+EPiRPG8u5a+IcJFi8belZInIJDLwI/k6llbSwI9+irsEcPgyKdbdc0VQz4Xpo/Vm6pmIWvU+dOMQrtur1LtWvW8shHz6e6ESPzxOnM6xuAk2EVQNoSo8adaMznXo7jmgaggqJqol6J4DTitIAVTcgR9JtTjVe64ISpSwFUciAIBqI4Rqg1d8Nh/CbD40GlKfl7iRIrpxCOMRwMvTiizsMuRMgNtrTMTk2MSnpyDyFOe45kJQzooEZUhNIXUR3d1MoH6cjjcL7p87zuKsU6CnwY357KjHSlPlE6r7onuMadr4thIYj74WFglbkgKvx4urGossr0BTksIW3y4bkIuSzWkW6BvQhcODU4AEpHB92L7s5O49tsuWZmoe4O6DPEJMRkSRG62Qq/iv8b8EqPtAPwXxbS/TCVkkA+u7RTKA9WbqsROwEbo2oM6z3kw9nA09aoColEN4/1htDZPqIFEpb//Q6GtMPNaL6PsDSY3n2jOJFwqmQ6yR3DF/b3/PPwH+vjbV+1IbTQAAAABJRU5ErkJggg==", "iceking": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABlklEQVR42u1WoW6DUBQ9kAbJ1H6gEGwNqYWqupplakFNN1MTVZurmFqaqQU1udTUTUHdsswsm2lT+g1bp1rzJhYIhccFHmOYHkN4cO85975zHwAcKIbF0BQUw2LeJ2N1iCicsy5ysjBR0jJxJLlI26tsVypGNAlj/ys8lejqvVoH5KambbecS5UEKIbFRlMfAKCajrCJ5SYOoDiPHF98evELiVAMi63e/L21ol1I8sjxPel3bWwXtIjwmbsSq3y78NHv2pEHWsmXrj/yK88iV00HG4CFyXk4PnOzPRBiNM3ugt6xhfddNR3ahJSIsPrQ+VngeSGLPHcM4yJ2y7kkUj1FDgASNd8hxid2JIiHu7GbWtu8PkQdSa7HPUJ24FwHSZwHqvJCAuJuLyuiCHmj34KDAHIKkuf8X0Hv2Eieki3ei9Z9sHe/HmpoTwJu0t5AgzfjP6PiCm/BeqjB//q98sgfL27QG2il4koJaE8C2EfgVuLNApzeXnI7QMWVNiGVJKv9eXGkB76f/eamoM5fM+o/4YDG8ANzgtzHirWZpAAAAABJRU5ErkJggg==", "yeti": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACvklEQVR42sVXTWgTQRT+dsnFQxEsIihrwFDQaCLkFsrmkB4klXgU1ItFMWrFUy9tIIdAf5CepAftxYsguSkBo4fmkFCX9NBCEqMYiklWpEUMlZZ6EdZDspudzczs5gfyIJB982be976d780sQDHJK2uwMckra1ppVnMS63RNSF5Zk7yy9mPvgFjYOllPrh18YIKwzk+9y2n6+uY40RykZNNQsumuhRopP7cC6zhrzuryIlaXFwm/aE7Os8anuMFQI+UHpCigpqksNlJ+7lpmECItIBiOQq3kBVqldizQYtRKXpibj1PnidbqWckJEIzqeQCtIHQWRIzYxL6ko6YdJ7CTn0DbhMFwtEXp51zLUX7CpJ1ntdMrAIBQeNqgXbe5+TjUSl6gMqBk053klqrv/Vnr+J4JrV/biDGT5bLvieRcBjYLRdy8IRNB+cSJvt6vNPuLeN4q7HQxIFgb0bkzJwfeWLX9I+bYVmHHSG4wQDQRK/UDAihXVWLscSxGyHzkMnQ5DdzI1Hta2BMYdxQnmLXKov9b5bAlhHrTdsGvX34a/6/f8XW9gisTkiFLtZIXXHbvfSNTh+Q+heTCGwDATOwaF4CSK7V6SciH3e3fwBhdlu3+oLnUSl44fzlku/kSS7eg1pt49fIjFYjuD4Z8jqgPhac7jagNgn2Q1JtQ601MRdwoFRWUikpXzOu3D1AqKlhfW3ecnFCBHQgAuHphpq8xVvK+ZChP3u9rjKsCXiPqVX5mFVy8dBZ/x465jcjVK+LE04fYrGYwOREh/Lrv9qPE8O4DI7+QsMxaPcs31FZstqWAh+pf2N4dPoCpiJvYiMnnL/CPEZu8S25CT2Ac5eqxcxXwjuRhHEbWHkAFYAXBu1z0YrTk3E1Y2z8aWnL9AKLdkEXWR4R+ZJorGPSZ98HDvNN/3zs0vmgHfabZf8S/kjQ5Qj11AAAAAElFTkSuQmCC"};
@@ -1846,6 +1954,52 @@ $("#coBtn").onclick=async()=>{
   location.href=d.url;
 };
 addEventListener("pageshow",e=>{if(e.persisted){$("#coBtn").disabled=!$("#packs input:checked");msg("#buyMsg","");renderRanks();renderUnban()}});
+
+function refKodom(){let k="";try{k=localStorage.getItem("icRef")||""}catch(e){}return /^[A-Z0-9]{8}$/.test(k)?k:""}
+(()=>{const q=new URLSearchParams(location.search),k=(q.get("m")||"").toUpperCase();if(/^[A-Z0-9]{8}$/.test(k)){try{localStorage.setItem("icRef",k)}catch(e){}q.delete("m");history.replaceState(null,"",location.pathname+(q.toString()?"?"+q:"")+location.hash);if(!token)setMode(true)}})();
+
+const MODE_NEV={oneblock:"OneBlock",fyland:"OneBlock",gens:"Gens",kingdoms:"Kingdoms",bedwars:"BedWars",duels:"Duels",combofly:"ComboFly",creative:"Creative",lobby:"Lobby"};
+let srvIdo=0;
+async function loadStatus(){
+  if(Date.now()-srvIdo<20000)return;srvIdo=Date.now();
+  const d=await api("/api/status"),up=d&&d.up===true,le=d&&d.up===false;
+  document.body.dataset.srv=up?"up":le?"down":"";
+  $("#srvTxt").textContent=up?fmtN(d.online)+" játékos online":le?"A szerver most nem érhető el":"Szerver állapota…";
+  $("#scState").textContent=up?"A szerver fut":le?"A szerver most nem érhető el":"Szerver állapota";
+  $("#scOnline").textContent=up?fmtN(d.online)+" játékos online":le?"Próbáld újra pár perc múlva":"–";
+  const m=up&&d.modes&&Object.keys(d.modes).length?d.modes:null;
+  $("#scModes").hidden=!m;
+  if(m)$("#scModes").innerHTML=Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span><b>${fmtN(v)}</b>${escH(MODE_NEV[k]||k)}</span>`).join("");
+}
+loadStatus();setInterval(()=>{if(!document.hidden){srvIdo=0;loadStatus()}},60000);
+$("#srvBox").onclick=async()=>{const l=$("#srvCopy");try{await navigator.clipboard.writeText("play.icemine.hu");l.textContent="Kimásolva"}catch(e){l.textContent="play.icemine.hu"}setTimeout(()=>l.textContent="Másolás",1800)};
+
+const idoRovid=t=>new Date(t).toLocaleString("hu-HU",{year:"numeric",month:"short",day:"numeric",hour:"2-digit",minute:"2-digit"});
+let histAll=[],histN=10;
+async function loadHist(){
+  const d=await api("/api/history");
+  if(d.error){$("#hist").innerHTML=`<p class="hempty">${escH(d.error)}</p>`;$("#histMore").hidden=true;return}
+  histAll=d.items||[];histN=10;renderHist();
+}
+function renderHist(){
+  if(!histAll.length){$("#hist").innerHTML='<p class="hempty">Még nem vásároltál. Amit veszel, itt jelenik meg. <a href="#vasarlas">IceCoin vásárlás</a></p>';$("#histMore").hidden=true;return}
+  $("#hist").innerHTML=histAll.slice(0,histN).map(x=>`<div class="hrow"><div class="hmit"><b>${escH((x.mit||[]).join(", ")||"Vásárlás")}</b><small>${idoRovid(x.t)}${x.id?` · <span class="hid">${escH(x.id)}</span>`:""}</small></div><div class="har ${x.ft!=null?"ft":"ic"}">${x.ft!=null?fmtN(x.ft)+" Ft":fmtN(x.ic||0)+" IC"}</div></div>`).join("");
+  $("#histMore").hidden=histAll.length<=histN;
+}
+$("#histMore").onclick=()=>{histN+=20;renderHist()};
+
+let refLink="";
+async function loadRef(){
+  const d=await api("/api/referral");
+  if(d.error){$("#rfLink").textContent=d.error;return}
+  refLink=location.origin+"/?m="+d.code;
+  $("#rfLink").textContent=refLink;$("#rfCopy").disabled=false;$("#rfShare").hidden=!navigator.share;
+  $("#rfReward").textContent=fmtN(d.reward);$("#rfOssz").textContent=fmtN(d.lista.length);
+  $("#rfHavi").textContent="Havonta legfeljebb "+d.havi+" meghívásért jár jutalom. Ebben a hónapban: "+d.eHonap+" / "+d.havi+".";
+  $("#rfList").innerHTML=d.lista.length?d.lista.map(x=>`<div class="hrow"><div class="hmit"><b>${escH(x.name)}</b><small>Regisztrált: ${dayHu(x.t)}</small></div><div class="har ${x.kesz?"ok":"wait"}">${x.kesz?"+"+fmtN(d.reward)+" IC":"Még nem lépett fel"}</div></div>`).join(""):'<p class="hempty">Még senki nem regisztrált a linkeddel. Küldd el egy barátodnak!</p>';
+}
+$("#rfCopy").onclick=async()=>{const b=$("#rfCopy");try{await navigator.clipboard.writeText(refLink);b.textContent="Kimásolva"}catch(e){b.textContent="Jelöld ki és másold"}setTimeout(()=>b.textContent="Link másolása",1800)};
+$("#rfShare").onclick=()=>{navigator.share({title:"IceMine",text:"Gyere fel az IceMine-ra! Ha ezzel a linkkel regisztrálsz, mindketten IceCoint kapunk.",url:refLink}).catch(()=>{})};
 function pixArt(rows,pal){
   const w=rows[0].length,h=rows.length;let o=`<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">`;
   rows.forEach((r,y)=>{for(let x=0;x<w;x++){const c=pal[r[x]];if(c)o+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${c}"/>`}});

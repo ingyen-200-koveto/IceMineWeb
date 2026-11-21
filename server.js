@@ -1,4 +1,4 @@
-const express = require("express"), crypto = require("crypto"), fs = require("fs"), path = require("path");
+const express = require("express"), crypto = require("crypto"), fs = require("fs"), path = require("path"), net = require("net"), dns = require("dns").promises;
 
 let envFound = false;
 try {
@@ -80,11 +80,41 @@ const makeCode = () => Array.from({ length: 12 }, () => ALPH[crypto.randomInt(AL
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
 const pub = u => (rangLejart(u), { name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", rankUntil: u.rank && u.rank !== "default" ? u.rankUntil || null : null, skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null });
 const fail = (res, code, error) => res.status(code).json({ error });
-function esemeny(tipus, adat) {
+function esemeny(tipus, adat, u) {
   db.esemenyek = db.esemenyek || [];
   db.esemenySeq = (db.esemenySeq || 0) + 1;
-  db.esemenyek.push(Object.assign({ seq: db.esemenySeq, t: Date.now(), tipus }, adat));
+  const e = Object.assign({ seq: db.esemenySeq, t: Date.now(), tipus }, adat);
+  db.esemenyek.push(e);
   if (db.esemenyek.length > 2000) db.esemenyek.splice(0, db.esemenyek.length - 2000);
+  if (tipus === "vasarlas" && u) naplo(u, e);
+}
+const naploSor = e => ({ t: e.t, mit: (e.tetelek || []).slice(0, 10), ft: e.fizetes === "ft" ? Number(e.huf) || 0 : null, ic: e.fizetes === "ic" ? Number(e.ic) || 0 : null, id: e.rendeles || null });
+function naplo(u, e) {
+  u.vasarlasok = u.vasarlasok || [];
+  u.vasarlasok.unshift(naploSor(e));
+  if (u.vasarlasok.length > 200) u.vasarlasok.length = 200;
+}
+function vasarlasElozmeny(u) {
+  if (!u.vasarlasokKesz) {
+    const sajat = u.vasarlasok || [], hatar = sajat.length ? sajat[sajat.length - 1].t : Infinity;
+    const nevek = new Set([u.name.toLowerCase()]), regi = [], ids = new Set(sajat.map(x => x.id).filter(Boolean));
+    for (const e of db.esemenyek || []) if (e.tipus === "vasarlas" && e.t < hatar && nevek.has(String(e.user || "").toLowerCase())) { const x = naploSor(e); if (!x.id || !ids.has(x.id)) { regi.push(x); if (x.id) ids.add(x.id); } }
+    for (const [sid, r] of Object.entries(db.payments || {})) {
+      if (!u.id || r.uid !== u.id || r.t >= hatar) continue;
+      const id = r.pi || sid;
+      if (ids.has(id)) continue;
+      const mit = [];
+      for (const [ic, q, bon] of r.packs || (r.ic ? [[r.ic, 1]] : [])) mit.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin" + (bon ? " + " + Number(bon).toLocaleString("hu-HU") + " bónusz" : ""));
+      if (r.rank) mit.push(r.rank + " rang, " + (r.rankNap || 30) + " nap");
+      if (r.unban) mit.push(r.unban);
+      regi.push({ t: r.t, mit, ft: r.huf || 0, ic: null, id });
+      ids.add(id);
+    }
+    u.vasarlasok = sajat.concat(regi).sort((a, b) => b.t - a.t).slice(0, 200);
+    u.vasarlasokKesz = true;
+    save();
+  }
+  return u.vasarlasok || [];
 }
 const rendelesId = () => "IC-" + Array.from({ length: 10 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
 const dcId = u => (u && u.discord && u.discord.id) || null;
@@ -215,7 +245,7 @@ function fulfill(s) {
   for (const [ic, q, bon] of rec.packs || (rec.ic ? [[rec.ic, 1]] : [])) tetelek.push((q > 1 ? q + " × " : "") + Number(ic).toLocaleString("hu-HU") + " IceCoin" + (bon ? " + " + Number(bon).toLocaleString("hu-HU") + " bónusz" : ""));
   if (rec.rank) tetelek.push(rec.rank + " rang, " + (rec.rankNap || 30) + " nap" + (rec.rankComp ? " (helyette " + rec.rankComp + " IceCoin)" : ""));
   if (rec.unban) tetelek.push(rec.unban);
-  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ft", huf: rec.huf, tetelek, rendeles: rec.pi || s.id, rang: rec.rank && !rec.rankComp ? rec.rank : null });
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ft", huf: rec.huf, tetelek, rendeles: rec.pi || s.id, rang: rec.rank && !rec.rankComp ? rec.rank : null }, u);
   save();
   sendReceipt(u, rec, s.id).catch(e => console.error("Visszaigazoló e-mail hiba: " + e.message));
   return true;
@@ -302,7 +332,7 @@ function authUser(req) {
 const taken = (u) => u && (u.verified || (u.v && u.v.exp > Date.now()));
 
 app.post("/api/register", limit(10, 36e5), async (req, res) => {
-  const { name = "", email = "", password = "", accept } = req.body || {};
+  const { name = "", email = "", password = "", accept, ref = "" } = req.body || {};
   if (accept !== true) return fail(res, 400, "A regisztrációhoz el kell fogadnod az ÁSZF-et és a Szabályzatot.");
   if (!/^[A-Za-z0-9_]{3,16}$/.test(name)) return fail(res, 400, "A felhasználónév 3–16 karakter lehet: betű, szám, aláhúzás.");
   if (typeof email !== "string" || email.length > 100 || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(email)) return fail(res, 400, "Adj meg érvényes e-mail címet.");
@@ -312,6 +342,8 @@ app.post("/api/register", limit(10, 36e5), async (req, res) => {
   if (Object.values(db.users).some(x => x.email === mail && taken(x))) return fail(res, 409, "Ezzel az e-mail címmel már van fiók.");
   const salt = crypto.randomBytes(16).toString("hex");
   const u = db.users[key] = { name, email: mail, salt, hash: hashPw(password, salt), verified: false, coins: Number(process.env.START_COINS) || 0, created: Date.now(), accepted: { t: Date.now(), v: TERMS_VERSION } };
+  const meghivo = typeof ref === "string" && /^[A-Z0-9]{8}$/.test(ref) ? Object.values(db.users).find(x => x.refKod === ref && x.verified) : null;
+  if (meghivo) { if (!meghivo.id) meghivo.id = crypto.randomBytes(9).toString("hex"); u.meghivtaId = meghivo.id; u.id = u.id || crypto.randomBytes(9).toString("hex"); }
   try { await issue(req, u); }
   catch (e) { delete db.users[key]; save(); console.error("E-mail hiba: " + e.message); return fail(res, 502, "Nem sikerült elküldeni az e-mailt. Ellenőrizd a címet, vagy próbáld később."); }
   res.json({ ok: true, mail: mask(u.email) });
@@ -402,7 +434,7 @@ app.post("/api/change-username", limit(10, 6e5), (req, res) => {
   if (newKey !== oldKey && taken(db.users[newKey])) return fail(res, 409, "Ez a felhasználónév már foglalt.");
   if ((u.coins || 0) < NAME_COST) return fail(res, 402, "Nincs elég IceCoinod. A felhasználónév-váltás " + NAME_COST + " IceCoinba kerül.");
   u.coins -= NAME_COST;
-  esemeny("vasarlas", { user: newName, discord: dcId(u), fizetes: "ic", ic: NAME_COST, tetelek: ["Felhasználónév-váltás: " + u.name + " → " + newName], rendeles: rendelesId() });
+  esemeny("vasarlas", { user: newName, discord: dcId(u), fizetes: "ic", ic: NAME_COST, tetelek: ["Felhasználónév-váltás: " + u.name + " → " + newName], rendeles: rendelesId() }, u);
   u.name = newName;
   if (newKey !== oldKey) {
     delete db.users[oldKey]; db.users[newKey] = u;
@@ -472,7 +504,7 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
     console.log("Szerencsekerék: " + u.name + " " + rank + " rangot nyert" + (granted ? "." : ", de már megvolt, helyette +" + prize + " IceCoin."));
   }
   if (prize > 0) u.coins = (u.coins || 0) + prize;
-  if (!free) esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: SPIN_COST, tetelek: ["Szerencsekerék pörgetés"], eredmeny: granted ? rank + " rang" : prize > 0 ? prize + " IceCoin" : "nem nyert", rendeles: rendelesId() });
+  if (!free) esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: SPIN_COST, tetelek: ["Szerencsekerék pörgetés"], eredmeny: granted ? rank + " rang" : prize > 0 ? prize + " IceCoin" : "nem nyert", rendeles: rendelesId() }, u);
   if (granted) esemeny("rang", { user: u.name, discord: dcId(u), rang: rank, forras: "Szerencsekerék" });
   save();
   res.json({ ok: true, slot, win: prize > 0 || granted, prize, rank, granted, free, spun: true, user: pub(u) });
@@ -745,7 +777,7 @@ app.post("/api/unban-ic", limit(20, 6e5), (req, res) => {
   if (!u.id) u.id = crypto.randomBytes(9).toString("hex");
   u.coins = bal - x.ic;
   recordUnban(u, x, "ic", {});
-  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: x.ic, tetelek: [x.name], rendeles: rendelesId() });
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: x.ic, tetelek: [x.name], rendeles: rendelesId() }, u);
   save();
   res.json({ ok: true, user: pub(u) });
 });
@@ -764,7 +796,7 @@ app.post("/api/buy-rank", limit(20, 6e5), (req, res) => {
   db.purchases = db.purchases || [];
   const rid = rendelesId();
   db.purchases.push({ t: Date.now(), user: u.name, rank: r.name, nap, ic: ar, id: rid });
-  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: ar, tetelek: [r.name + " rang, " + nap + " nap"], rendeles: rid, rang: r.name });
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: ar, tetelek: [r.name + " rang, " + nap + " nap"], rendeles: rid, rang: r.name }, u);
   if (db.purchases.length > 2000) db.purchases.splice(0, db.purchases.length - 2000);
   save();
   res.json({ ok: true, user: pub(u) });
@@ -831,7 +863,109 @@ function belso(req, res) {
 
 app.get("/api/me", (req, res) => { const u = authUser(req); u ? res.json({ user: pub(u) }) : fail(res, 401, "Nem vagy bejelentkezve."); });
 app.post("/api/logout", (req, res) => { const t = (req.headers.authorization || "").slice(7); if (t) { delete db.sessions[sha(t)]; save(); } res.json({ ok: true }); });
-app.get("/api/status", (req, res) => res.json({ online: null }));
+
+const REF_REWARD = Math.max(0, Math.floor(Number(process.env.REF_REWARD)) || 100);
+const REF_HAVI = Math.max(1, Math.floor(Number(process.env.REF_HAVI)) || 10);
+function refKod(u) {
+  if (!u.refKod) {
+    const foglalt = new Set(Object.values(db.users).map(x => x.refKod).filter(Boolean));
+    let k;
+    do { k = Array.from({ length: 8 }, () => ALPH[crypto.randomInt(ALPH.length)]).join(""); } while (foglalt.has(k));
+    u.refKod = k;
+    save();
+  }
+  return u.refKod;
+}
+function meghivoJutalom(u) {
+  if (!u.meghivtaId || u.refJutalom) return;
+  const m = Object.values(db.users).find(x => x.id === u.meghivtaId);
+  u.refJutalom = Date.now();
+  u.coins = (u.coins || 0) + REF_REWARD;
+  let meghivoKap = false;
+  if (m && m !== u) {
+    const ho = new Date().toISOString().slice(0, 7);
+    if (!m.refHo || m.refHo.ho !== ho) m.refHo = { ho, n: 0 };
+    if (m.refHo.n < REF_HAVI) { m.refHo.n++; m.coins = (m.coins || 0) + REF_REWARD; m.refDb = (m.refDb || 0) + 1; meghivoKap = true; }
+  }
+  esemeny("meghivo", { user: u.name, meghivo: m ? m.name : null, ic: REF_REWARD, meghivoKap });
+  console.log("Meghívó: " + u.name + " +" + REF_REWARD + " IceCoin" + (meghivoKap ? ", " + m.name + " +" + REF_REWARD + " IceCoin." : "."));
+  save();
+}
+app.get("/api/referral", (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const kod = refKod(u), lista = [];
+  if (u.id) for (const x of Object.values(db.users)) if (x.meghivtaId === u.id && x.verified) lista.push({ name: x.name, t: x.created || 0, kesz: !!x.refJutalom });
+  lista.sort((a, b) => b.t - a.t);
+  const ho = new Date().toISOString().slice(0, 7);
+  res.json({ code: kod, reward: REF_REWARD, havi: REF_HAVI, eHonap: u.refHo && u.refHo.ho === ho ? u.refHo.n : 0, osszes: u.refDb || 0, lista: lista.slice(0, 100) });
+});
+app.get("/api/history", (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  res.set("Cache-Control", "no-store").json({ items: vasarlasElozmeny(u).slice(0, 100) });
+});
+
+const MC_HOST = String(process.env.MC_HOST || "play.icemine.hu").trim();
+let mcAll = { t: 0, d: null }, mcFut = null, modAll = { t: 0, modes: null };
+const varint = n => { const b = []; do { let x = n & 0x7f; n >>>= 7; if (n) x |= 0x80; b.push(x); } while (n); return Buffer.from(b); };
+async function mcCel() {
+  let h = MC_HOST, port = Number(process.env.MC_PORT) || 0;
+  if (!port) { try { const r = await dns.resolveSrv("_minecraft._tcp." + MC_HOST); if (r && r[0]) { h = r[0].name; port = r[0].port; } } catch (e) {} }
+  return { h, port: port || 25565 };
+}
+function mcPing(h, port) {
+  return new Promise((ok, no) => {
+    const s = net.connect({ host: h, port }); let buf = Buffer.alloc(0), kesz = false;
+    const vege = (e, v) => { if (kesz) return; kesz = true; clearTimeout(ido); s.destroy(); e ? no(e) : ok(v); };
+    const ido = setTimeout(() => vege(new Error("időtúllépés")), 6000);
+    s.on("error", e => vege(e));
+    s.on("close", () => vege(new Error("a kapcsolat lezárult")));
+    s.on("connect", () => {
+      const hb = Buffer.from(MC_HOST, "utf8");
+      const adat = Buffer.concat([varint(0), varint(767), varint(hb.length), hb, Buffer.from([(port >> 8) & 255, port & 255]), varint(1)]);
+      s.write(Buffer.concat([varint(adat.length), adat, varint(1), varint(0)]));
+    });
+    s.on("data", d => {
+      buf = Buffer.concat([buf, d]);
+      if (buf.length > 262144) return vege(new Error("túl nagy válasz"));
+      let i = 0;
+      const olvas = () => { let v = 0, k = 0, b; do { if (i >= buf.length) throw 0; b = buf[i++]; v |= (b & 0x7f) << (7 * k++); } while (b & 0x80 && k < 5); return v; };
+      try {
+        const hossz = olvas(), eleje = i;
+        if (buf.length < eleje + hossz) return;
+        olvas();
+        const sh = olvas();
+        vege(null, JSON.parse(buf.slice(i, i + sh).toString("utf8")));
+      } catch (e) { if (e !== 0) vege(e); }
+    });
+  });
+}
+async function mcAllapot() {
+  if (Date.now() - mcAll.t < 30000 && mcAll.d) return mcAll.d;
+  if (!mcFut) mcFut = (async () => {
+    try {
+      const c = await mcCel(), r = await mcPing(c.h, c.port), p = r.players || {};
+      mcAll = { t: Date.now(), d: { up: true, online: Number(p.online) || 0, max: Number(p.max) || 0, version: String((r.version && r.version.name) || "").slice(0, 60) } };
+    } catch (e) {
+      mcAll = { t: Date.now(), d: { up: false, online: null, max: null, version: "" } };
+    } finally { mcFut = null; }
+  })();
+  await mcFut;
+  return mcAll.d;
+}
+app.get("/api/status", async (req, res) => {
+  const d = await mcAllapot();
+  res.set("Cache-Control", "no-store").json(Object.assign({ host: MC_HOST }, d, { modes: Date.now() - modAll.t < 120000 ? modAll.modes : null }));
+});
+app.post("/api/mc/status", limit(200, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key || !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const m = (req.body || {}).modes, modes = {};
+  if (m && typeof m === "object") for (const [k, v] of Object.entries(m).slice(0, 30)) if (/^[a-z0-9_-]{1,24}$/i.test(k) && Number.isInteger(v) && v >= 0 && v < 1e5) modes[k.toLowerCase()] = v;
+  modAll = { t: Date.now(), modes };
+  res.json({ ok: true });
+});
 app.get("/api/mc/coins", limit(400, 6e5), (req, res) => {
   const key = String(process.env.MC_API_KEY || "");
   if (key && !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
@@ -863,6 +997,7 @@ app.post("/api/mc/login", limit(300, 6e5), (req, res) => {
   }
   mcHibak.delete(k);
   if (!u.verified) return res.json({ result: "megerosites" });
+  meghivoJutalom(u);
   res.json({ result: "ok", name: u.name, created: u.created || 0 });
 });
 
