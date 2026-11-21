@@ -783,8 +783,8 @@ a.si.on{background:#47b6f614;color:var(--ink);box-shadow:inset 3px 0 0 var(--ice
 .bgart::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,var(--bg) 0%,#0a0d12cc 40%,#0a0d12ee 100%)}
 .shell{max-width:1240px}
 .top{max-width:1240px}
-.bname{display:inline-flex!important;align-items:center;gap:9px;font-size:16px!important;font-weight:800!important;letter-spacing:.16em!important;text-transform:uppercase;color:var(--ice)!important}
-.bname svg{width:20px;height:20px}
+.bname{font-size:24px!important;font-weight:800!important;letter-spacing:-.02em!important;color:var(--ink)}
+.bname b{color:var(--ice)}
 #side{padding-top:14px}
 .snav{display:grid;gap:3px;padding:10px 8px;border-radius:var(--r);background:#0e131add;box-shadow:inset 2px 0 0 var(--ice),inset 0 0 0 1px var(--line)}
 a.si,.sb,.sgt{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-radius:10px;background:none;color:#c9d4de;text-decoration:none;text-align:left;font:800 12.5px Golos,system-ui,sans-serif!important;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;position:relative}
@@ -885,6 +885,98 @@ a.si.on svg{color:var(--ice)}
 #aform .chk input{flex:none;width:18px;height:18px;margin:2px 0 0;accent-color:var(--acc)}
 #aBtn{margin-top:4px;padding:15px 20px}
 .aif>svg{z-index:2}
+/* menu almenu ikonok */
+.ssub{padding-left:22px!important}
+.ssub a.si{gap:10px}
+.ssub a.si svg{width:15px!important;height:15px!important}
+/* rangok: gep = tablazat, mobil = kartya */
+.rmob{display:none}
+@media (max-width:760px){
+ .rtwrap{display:none}
+ .rmob{display:grid;gap:14px}
+}
+.rmtabs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.rmtabs button{display:grid;justify-items:center;gap:4px;padding:10px 4px 8px;border:0;border-radius:12px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line);color:var(--mute);font:700 12.5px Golos,system-ui,sans-serif;cursor:pointer}
+.rmtabs button[aria-pressed="true"]{color:#fff;box-shadow:inset 0 0 0 2px var(--r2);background:color-mix(in srgb,var(--r2) 16%,var(--solid))}
+.rmimg{width:40px;height:40px;image-rendering:pixelated}
+.rmcard{overflow:hidden;border-radius:var(--r);background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.rmhead{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:16px 18px;background:var(--r2);color:var(--rt)}
+.rmhead small{font-size:11.5px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;opacity:.85}
+.page .rmhead h3{margin:2px 0 0;font-size:28px;color:inherit}
+.rmart{width:84px;height:84px;image-rendering:pixelated;filter:drop-shadow(0 8px 10px #0006)}
+.rmbody{display:grid;gap:10px;padding:16px 18px 18px}
+.rmprice{display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
+.rmprice b{font-size:30px;font-weight:800}
+.rmprice em{font-weight:800;font-size:18px}
+.rmprice span{margin-left:6px;color:var(--mute);font-weight:600}
+.rmbody .btn{width:100%}
+.rmbody .rftrow{display:flex;gap:8px}
+.rmbody .rftrow .btn:first-child{flex:1}
+.rmbody .cadd{width:52px!important;flex:none;padding:0}
+.rmdim{margin:0;color:var(--mute)}
+.rmbody h4,.rmbody summary{margin:10px 0 2px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--ice)}
+.rmbody details{border-top:1px solid var(--line);padding-top:4px}
+.rmbody summary{cursor:pointer;list-style:none;display:flex;justify-content:space-between;padding:8px 0}
+.rmbody summary::after{content:"+";color:var(--mute);font-size:16px;letter-spacing:0}
+.rmbody details[open] summary::after{content:"−"}
+.rmbody summary::-webkit-details-marker{display:none}
+.rmrow{display:flex;justify-content:space-between;gap:14px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.rmrow:last-child{border-bottom:0}
+.rmrow span{color:var(--mute)}
+.rmrow b{text-align:right;font-weight:700}
+.rmrow b svg{width:17px;height:17px;stroke-width:3}
+.rmrow b.yes svg{color:var(--ok)}
+.rmrow b.nov svg{color:#ff7b72}
+/* kitiltas */
+[data-page="kitiltas"] .shophero{flex-direction:column;align-items:center!important;text-align:center}
+[data-page="kitiltas"] .shophero h2{font-size:30px!important}
+[data-page="kitiltas"] .shophero p{max-width:52ch}
+.ubstat{display:grid!important;grid-template-columns:repeat(3,1fr);gap:12px!important;padding:0!important;background:none!important;box-shadow:none!important}
+.ubstat>div{display:grid!important;justify-items:center;text-align:center;gap:8px;padding:18px 12px!important;border:0!important;border-radius:var(--r);background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.ubstat .ubi{width:44px!important;height:44px!important;border-radius:50%!important;background:#47b6f61a!important;color:var(--ice)!important}
+.ubstat small{display:block;font-size:11.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--mute)}
+.ubstat b{display:block;font-size:15px}
+.ubnote{text-align:center;color:var(--mute);font-size:14px}
+.ubgrid{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:14px!important}
+.ubcard{display:flex!important;flex-direction:column;align-items:center;text-align:center;gap:8px;padding:26px 22px 22px!important}
+.ubbig{display:grid;place-items:center;width:64px;height:64px;margin-bottom:6px;border-radius:50%;background:#47b6f61a;color:var(--ice);box-shadow:inset 0 0 0 1px #47b6f640}
+.ubbig svg{width:30px;height:30px}
+.ubcard h3{margin:0;font-size:19px}
+.ubcard p{margin:0;color:var(--mute);font-size:14.5px;line-height:1.55;flex:1}
+.ubprice{margin:6px 0 4px;font-size:26px;font-weight:800}
+.ubprice span{display:block;font-size:13px;font-weight:600;color:var(--mute)}
+.ubact{display:grid;gap:8px;width:100%}
+.ubact .btn{width:100%}
+.ubact .rftrow{display:flex;gap:8px}
+.ubact .rftrow .btn:first-child{flex:1}
+.ubact .cadd{width:52px!important;flex:none;padding:0}
+.ubcard.big{grid-column:1/-1;box-shadow:inset 0 0 0 1px #d48a0c66,inset 0 2px 0 #d48a0c!important}
+.ubcard.big .ubbig{background:#d48a0c1f;color:#f2b13b;box-shadow:inset 0 0 0 1px #d48a0c66}
+.ubcard.big .ubact{max-width:420px}
+.ubclient{display:flex;gap:16px;align-items:flex-start;margin-top:14px;padding:20px 22px;border-radius:var(--r);background:var(--solid);box-shadow:inset 0 0 0 1px #a36bff40}
+.ubci{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:#a36bff1f;color:#b98bff}
+.ubci svg{width:26px;height:26px}
+.ubclient h3{margin:2px 0 6px;font-size:18px}
+.ubclient p{margin:0;color:var(--mute);font-size:14.5px;line-height:1.6}
+@media (max-width:700px){.ubstat{grid-template-columns:1fr 1fr 1fr;gap:8px!important}.ubstat>div{padding:14px 6px!important}.ubstat b{font-size:13px}.ubgrid{grid-template-columns:1fr!important}}
+/* beallitasok */
+.setgrid{display:grid;grid-template-columns:280px minmax(0,1fr);gap:18px;align-items:start}
+.acct{position:sticky;top:20px;display:grid!important;justify-items:center;text-align:center;gap:6px;padding:26px 20px 20px!important}
+.acct .head8{display:block;width:84px;height:84px;margin-bottom:8px;border-radius:14px;overflow:hidden;image-rendering:pixelated;box-shadow:0 0 0 3px var(--bg),0 0 0 5px #47b6f655}
+.acct .head8 svg{width:100%;height:100%;display:block}
+.acct>b{font-size:21px;font-weight:800}
+.acct>span{color:var(--mute);font-size:14px}
+.acct .sbal{display:grid;justify-items:center;width:100%;margin:12px 0 6px;padding:12px;border-radius:12px;background:#ffffff06;box-shadow:inset 0 0 0 1px var(--line)}
+.acct .sbal small{font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--mute)}
+.acct .sbal b{display:flex;align-items:center;gap:8px;font-size:22px}
+.acct .btn{width:100%;text-decoration:none;text-align:center}
+.setmain{display:grid;gap:12px}
+.setsh{margin:6px 0 -2px;font-size:12px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--ice)}
+.setmain .sect{padding:22px 22px 20px!important}
+@media (max-width:900px){.setgrid{grid-template-columns:1fr}.acct{position:static}}
+.page[data-page="beallitasok"]{max-width:900px}
+.ubstat>div:last-child{border-bottom:0!important}
+.acct>.sbal,.acct>.btn{justify-self:stretch}
 </style>
 </head>
 <body>
@@ -1001,7 +1093,7 @@ a.si.on svg{color:var(--ice)}
 
 <div id="app" class="screen" hidden>
   <header class="top">
-    <a class="brand" href="#kezdolap" aria-label="IceMine, kezdőlap"><span class="bname" aria-hidden="true"><svg class="i" viewBox="0 0 24 24"><path d="M12 2v20M3.3 7l17.4 10M3.3 17L20.7 7M9 4l3 2 3-2M9 20l3-2 3 2M3.5 10.5L6 12l-2.5 1.5M20.5 10.5L18 12l2.5 1.5"/></svg>IceMine</span></a>
+    <a class="brand" href="#kezdolap" aria-label="IceMine, kezdőlap"><span class="bname" aria-hidden="true"><b>Ice</b>Mine</span></a>
     <button id="menuBtn" type="button" aria-label="Menü" aria-expanded="false" aria-controls="side"><svg class="i bars" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg><svg class="i x" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <button id="cartBtn" type="button" aria-label="Kosár" aria-controls="cartPanel"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg><span class="cbadge" id="cartCount" hidden>0</span></button>
   </header>
@@ -1013,19 +1105,19 @@ a.si.on svg{color:var(--ice)}
       <a class="si" href="#karakter"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Karakter</a>
       <a class="si" href="#jatekmodok"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Játékmódok</a>
       <div class="sgrp2"><button class="sgt" type="button" aria-expanded="false"><svg class="i" viewBox="0 0 24 24"><ellipse cx="12" cy="7" rx="7" ry="3"/><path d="M5 7v5c0 1.7 3.1 3 7 3s7-1.3 7-3V7M5 12v5c0 1.7 3.1 3 7 3s7-1.3 7-3v-5"/></svg>IceCoin<svg class="i chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="ssub">
-      <a class="si" href="#vasarlas">Vásárlás</a>
-      <a class="si" href="#szerencsekerek">Szerencsekerék</a>
-      <a class="si" href="#szavazas">Szavazás</a>
-      <a class="si" href="#meghivo">Meghívó</a>
-      <a class="si" href="#webshop" hidden>WebShop</a>
+      <a class="si" href="#vasarlas"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg>Vásárlás</a>
+      <a class="si" href="#szerencsekerek"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>Szerencsekerék</a>
+      <a class="si" href="#szavazas"><svg class="i" viewBox="0 0 24 24"><path d="M4 13h3l2 6h6l2-6h3M7 13l2-9h6l2 9M10 9l1.5 1.5L14 8"/></svg>Szavazás</a>
+      <a class="si" href="#meghivo"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 3-5.5 6.5-5.5s6.5 1.9 6.5 5.5M18 8v6M15 11h6"/></svg>Meghívó</a>
+      <a class="si" href="#webshop" hidden><svg class="i" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/></svg>WebShop</a>
       </div></div>
       <a class="si" href="#rangok"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Rangok</a>
       <a class="si" href="#kitiltas"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>Kitiltáscsökkentés</a>
       <a class="si" href="#beallitasok"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Beállítások</a>
       <div class="sgrp2"><button class="sgt" type="button" aria-expanded="false"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4M12 17h.01"/></svg>Segítség<svg class="i chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></button><div class="ssub">
-      <a class="si" href="#gyik">GYIK</a>
-      <a class="si" href="#dokumentumok">Dokumentumok</a>
-      <a class="si" href="#kliens" hidden>Kliens letöltése</a>
+      <a class="si" href="#gyik"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4M12 17h.01"/></svg>GYIK</a>
+      <a class="si" href="#dokumentumok"><svg class="i" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg>Dokumentumok</a>
+      <a class="si" href="#kliens" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Kliens letöltése</a>
       </div></div>
       </nav>
       <div class="sp"></div>
@@ -1161,19 +1253,19 @@ a.si.on svg{color:var(--ice)}
 
       <section class="page" data-page="kitiltas">
         <div class="shophero">
-          <div><h2>Kitiltás csökkentése</h2><p>Csökkentsd a kitiltásod, vagy oldd fel a némításod.</p></div>
+          <div><h2>Mit szeretnél <em>feloldani</em>?</h2><p>Csökkentsd a kitiltásod, vagy oldd fel a némításod. A feloldás a saját játékosnevedre szól.</p></div>
           <div class="balpill"><span class="pcoin"></span>Egyenleged: <b id="ubBal">0</b></div>
         </div>
         <div id="unbanNote" role="status" aria-live="polite"></div>
         <div class="card ubstat">
-          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M14 4l6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6M8 13l-5 5 2 2 5-5"/></svg></span><div><small>Kitiltás</small><b id="ubBan">–</b></div></div>
-          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 9l4 6M21 9l-4 6"/></svg></span><div><small>Némítás</small><b id="ubMute">–</b></div></div>
-          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><small>Vásárlás</small><b id="ubNext">–</b></div></div>
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M14 4l6 6M11 7l6 6M12.5 5.5l-6 6 3 3 6-6M8 13l-5 5 2 2 5-5"/></svg></span><div><small>Kitiltásod</small><b id="ubBan">–</b></div></div>
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><path d="M4 9v6h4l5 4V5L8 9zM17 9l4 6M21 9l-4 6"/></svg></span><div><small>Némításod</small><b id="ubMute">–</b></div></div>
+          <div><span class="ubi"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg></span><div><small>Következő vásárlás</small><b id="ubNext">–</b></div></div>
         </div>
         <p class="ubnote" id="ubInfo"></p>
-        <div class="ubwarn"><svg class="i" viewBox="0 0 24 24"><path d="M12 3l10 18H2zM12 10v5M12 18v.5"/></svg><div><b>Kliens ban esetén nincs feloldás</b><span>Ha csaló kliens (pl. hack, X-Ray, KillAura) használata miatt tiltottak ki, a kitiltás nem csökkenthető és nem oldható fel. Ha mégis megvásárolod, a vételárat visszatérítjük.</span></div></div>
         <label class="chk consent" id="ubConsentRow" style="margin:0 0 16px"><input type="checkbox" id="ubConsent"><span>Forintos vásárlásnál: kérem a feloldás azonnali teljesítését, és tudomásul veszem, hogy a teljesítés után elveszítem a felmondási jogomat, valamint hogy kliens ban esetén nincs feloldás. Elfogadom az <a href="#aszf">ÁSZF</a>-et és a <a href="#visszaterites">Visszatérítési feltételeket</a>.</span></label>
         <div class="ubgrid" id="ubGrid"></div>
+        <div class="ubclient"><span class="ubci"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4M9 8l6 4M15 8l-6 4"/></svg></span><div><h3>Kliens ban</h3><p>Ha csaló kliens (pl. hack, X-Ray, KillAura) használata miatt tiltottak ki, a kitiltás nem csökkenthető és nem oldható fel. Ha mégis megvásárolod, a vételárat visszatérítjük. Kérdés esetén nyiss ticketet a <a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discordon</a>.</p></div></div>
         <p class="legal">Az itt felsoroltak közül 6 hónaponta egyet vásárolhatsz. A fizetés után a kérésed azonnal a staffhoz kerül, és legkésőbb 24 órán belül elvégzik.</p>
       </section>
 
@@ -1537,10 +1629,16 @@ a.si.on svg{color:var(--ice)}
 
       <section class="page" data-page="beallitasok">
         <div class="phead"><h2>Beállítások</h2><p>A fiókod adatai és biztonsága.</p></div>
-        <div class="card acct">
-          <div class="who"><span class="head8" id="sHead"></span><div><b id="sName">–</b><span id="sMail">–</span></div></div>
+        <div class="setgrid">
+        <aside class="card acct">
+          <span class="head8" id="sHead"></span>
+          <b id="sName">–</b><span id="sMail">–</span>
           <div class="sbal"><small>Egyenleg</small><b><span class="pcoin"></span><span id="setCoin">0</span></b></div>
-        </div>
+          <a class="btn mc alt" href="#karakter">Karakter oldal</a>
+          <button class="btn mc alt" type="button" id="setLogout">Kilépés</button>
+        </aside>
+        <div class="setmain">
+        <p class="setsh">Fiók</p>
         <div class="card sect">
           <div class="shd"><span class="sic"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2"/><circle cx="9" cy="11" r="2.5"/><path d="M5.5 16.5c.8-1.6 2-2.4 3.5-2.4s2.7.8 3.5 2.4M15 10h3M15 13.5h3"/></svg></span><div><h3>Felhasználónév módosítása</h3><p>Jelenlegi: <b id="sCur">–</b></p><div class="cost"><i></i>2550 IceCoin</div></div></div>
           <form id="nform" autocomplete="off">
@@ -1552,6 +1650,7 @@ a.si.on svg{color:var(--ice)}
             <div class="sfoot"><p class="hint" id="nNote">A levonás a sikeres módosításkor történik.</p><button class="btn mc" type="submit" id="nBtn">Felhasználónév módosítása</button></div>
           </form>
         </div>
+        <p class="setsh">Biztonság</p>
         <div class="card sect">
           <div class="shd"><span class="sic"><svg class="i" viewBox="0 0 24 24"><rect x="4" y="11" width="16" height="10" rx="2"/><path d="M8 11V7a4 4 0 018 0v4"/></svg></span><div><h3>Jelszó módosítása</h3><p>Legalább 6 karakter. Erősebb, ha számot és nagybetűt is tartalmaz.</p></div></div>
           <form id="pwform" autocomplete="off">
@@ -1566,6 +1665,7 @@ a.si.on svg{color:var(--ice)}
           </form>
         </div>
       
+</div></div>
 </section>
 
       <footer class="appfoot"><span>© 2026 IceMine</span><a href="#aszf">ÁSZF</a><a href="#adatvedelem">Adatvédelem</a><a href="#szabalyzat">Szabályzat</a><a href="#visszaterites">Visszatérítés</a></footer>
@@ -2119,7 +2219,7 @@ const RANKS=[
   ComboFly:[["Rang előny","Nincs, itt mindenki egyenlő eséllyel indul"]],
   Creative:[["Telkek száma","2 (alapból 1)"]]}}
 ];
-let rMode="OneBlock",rNap=30;
+let rMode="OneBlock",rNap=30,rSel=null;
 const rAr=(r,mi,nap)=>r[mi]*(nap||rNap)/30;
 const RCHECK='<svg class="i" viewBox="0 0 24 24"><path d="M5 12l5 5 9-10"/></svg>';
 const RANK_ART={"bronz": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACP0lEQVR42s1XTUgbQRT+NggBuwdlEaQ0B5cQhVDw4s3CnEoJBoWCsOBFPHgWQUV6llaQnnsovRQEoQeJ7HlBUIIXSQn+waokBDHmIG4PntJD3LA/M7tv4pb6TrM7++b73vdm3ttREGEFXW3z3pu2oyTl0xe1kJHWAAATI28w+mUcP2f3OpM62rwFvT5zO1M4Wz3G0WU90ieF/2xCAqbtKNuPLQDA0WUdZ6vHmNuZAgAYaS0kdVT0248tYQpergIyKvQa/ctXIE6FoMlGH3kMKWakNUBHV/5/okDQRCqEzj3RSAqYtqMEI60fOmBLDEzgQ5FfOgVsiQnn6ocOXs1kwZCF9dVKNgUFXW1/W/tIWvC6eoqR98NkAoos+EAm65tvVMq+52aj2R1vlKqxaUjJgqvvFoTgADD0eqg7Xi/mhd0xloAI3Nn/7gPPrZSeRYK0B4TgxjKJhLQCvE0XBI+zk5MrAMDBxQ3YmCZUIUWJnpfznLEMZBhQs4Ca5VPBBb+7/4PE6oCan0Tuw6fIb1wSOQC782+Tq4SNShmolAFsdUBqnELjvsswMjgpBcGcn28WO9LzTBK89/+BmhUm0QM4iUD/YEyrzYj7w/ntQ28ETNtRFj//6tZ230Zzd7836qfn6R+/uSDWaUv+XuAFbzaaocLildsdewlQoo9tRgVdba8X86Hq5p5zivRR0ZO7oZdEXHGRAScR4JE4uLiJ9aGAk4+haTvKRqmaODhZAd7Nl41pIVDK7flZBKKu4TKgXvsLCKxKZLYjjucAAAAASUVORK5CYII=", "abyss": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAAB2ElEQVR42s1XsWoCQRCdW2w8sAxXXpHPkDPYCZIUMV8RGwmBNJZpAiHY3BfYBoVIIJ1ESZHOwlbQJiBXBky5KZIJe+vs7tx5iXnl3e2b997sriPAjgj8SMK+EPiRPG8u5a+IcJFi8belZInIJDLwI/k6llbSwI9+irsEcPgyKdbdc0VQz4Xpo/Vm6pmIWvU+dOMQrtur1LtWvW8shHz6e6ESPzxOnM6xuAk2EVQNoSo8adaMznXo7jmgaggqJqol6J4DTitIAVTcgR9JtTjVe64ISpSwFUciAIBqI4Rqg1d8Nh/CbD40GlKfl7iRIrpxCOMRwMvTiizsMuRMgNtrTMTk2MSnpyDyFOe45kJQzooEZUhNIXUR3d1MoH6cjjcL7p87zuKsU6CnwY357KjHSlPlE6r7onuMadr4thIYj74WFglbkgKvx4urGossr0BTksIW3y4bkIuSzWkW6BvQhcODU4AEpHB92L7s5O49tsuWZmoe4O6DPEJMRkSRG62Qq/iv8b8EqPtAPwXxbS/TCVkkA+u7RTKA9WbqsROwEbo2oM6z3kw9nA09aoColEN4/1htDZPqIFEpb//Q6GtMPNaL6PsDSY3n2jOJFwqmQ6yR3DF/b3/PPwH+vjbV+1IbTQAAAABJRU5ErkJggg==", "iceking": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAABlklEQVR42u1WoW6DUBQ9kAbJ1H6gEGwNqYWqupplakFNN1MTVZurmFqaqQU1udTUTUHdsswsm2lT+g1bp1rzJhYIhccFHmOYHkN4cO85975zHwAcKIbF0BQUw2LeJ2N1iCicsy5ysjBR0jJxJLlI26tsVypGNAlj/ys8lejqvVoH5KambbecS5UEKIbFRlMfAKCajrCJ5SYOoDiPHF98evELiVAMi63e/L21ol1I8sjxPel3bWwXtIjwmbsSq3y78NHv2pEHWsmXrj/yK88iV00HG4CFyXk4PnOzPRBiNM3ugt6xhfddNR3ahJSIsPrQ+VngeSGLPHcM4yJ2y7kkUj1FDgASNd8hxid2JIiHu7GbWtu8PkQdSa7HPUJ24FwHSZwHqvJCAuJuLyuiCHmj34KDAHIKkuf8X0Hv2Eieki3ei9Z9sHe/HmpoTwJu0t5AgzfjP6PiCm/BeqjB//q98sgfL27QG2il4koJaE8C2EfgVuLNApzeXnI7QMWVNiGVJKv9eXGkB76f/eamoM5fM+o/4YDG8ANzgtzHirWZpAAAAABJRU5ErkJggg==", "yeti": "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAACAAAAAgCAYAAABzenr0AAACvklEQVR42sVXTWgTQRT+dsnFQxEsIihrwFDQaCLkFsrmkB4klXgU1ItFMWrFUy9tIIdAf5CepAftxYsguSkBo4fmkFCX9NBCEqMYiklWpEUMlZZ6EdZDspudzczs5gfyIJB982be976d780sQDHJK2uwMckra1ppVnMS63RNSF5Zk7yy9mPvgFjYOllPrh18YIKwzk+9y2n6+uY40RykZNNQsumuhRopP7cC6zhrzuryIlaXFwm/aE7Os8anuMFQI+UHpCigpqksNlJ+7lpmECItIBiOQq3kBVqldizQYtRKXpibj1PnidbqWckJEIzqeQCtIHQWRIzYxL6ko6YdJ7CTn0DbhMFwtEXp51zLUX7CpJ1ntdMrAIBQeNqgXbe5+TjUSl6gMqBk053klqrv/Vnr+J4JrV/biDGT5bLvieRcBjYLRdy8IRNB+cSJvt6vNPuLeN4q7HQxIFgb0bkzJwfeWLX9I+bYVmHHSG4wQDQRK/UDAihXVWLscSxGyHzkMnQ5DdzI1Hta2BMYdxQnmLXKov9b5bAlhHrTdsGvX34a/6/f8XW9gisTkiFLtZIXXHbvfSNTh+Q+heTCGwDATOwaF4CSK7V6SciH3e3fwBhdlu3+oLnUSl44fzlku/kSS7eg1pt49fIjFYjuD4Z8jqgPhac7jagNgn2Q1JtQ601MRdwoFRWUikpXzOu3D1AqKlhfW3ecnFCBHQgAuHphpq8xVvK+ZChP3u9rjKsCXiPqVX5mFVy8dBZ/x465jcjVK+LE04fYrGYwOREh/Lrv9qPE8O4DI7+QsMxaPcs31FZstqWAh+pf2N4dPoCpiJvYiMnnL/CPEZu8S25CT2Ac5eqxcxXwjuRhHEbWHkAFYAXBu1z0YrTk3E1Y2z8aWnL9AKLdkEXWR4R+ZJorGPSZ98HDvNN/3zs0vmgHfabZf8S/kjQ5Qj11AAAAAElFTkSuQmCC"};
@@ -2150,15 +2250,26 @@ function renderRanks(){
       if(vals.every(v=>v===vals[0])&&vals[0])return `<tr><th>${k}</th><td colspan="${RANKS.length}" class="wide">${escH(vals[0])}</td></tr>`;
       return `<tr><th>${k}</th>${vals.map(v=>cell(v)).join("")}</tr>`}).join("");
   });
-  $("#rankGrid").innerHTML=`<div class="rtwrap"><table class="rtab"><thead><tr><th class="rcorner"></th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
+  if(rSel==null)rSel=cur>=0?cur:0;
+  const R=RANKS[rSel],ri=rSel,ric=rAr(R,"ic"),rmiss=ric-bal;
+  const mrow=(k,v)=>`<div class="rmrow"><span>${k}</span>${v===true?`<b class="yes">${RCHECK}</b>`:v===false||v==null?`<b class="nov">${X}</b>`:`<b>${escH(v)}</b>`}</div>`;
+  const mact=ri<cur?`<p class="rmdim">Már magasabb rangod van.</p>`:`<button class="btn mc" type="button" data-buy="${R.id}"${rmiss>0?" disabled":""}>${ri===cur?"Hosszabbítás":"Megveszem"} ${fmtN(ric)} IC-ért</button>${rmiss>0?`<a class="rmiss" href="#vasarlas">Még ${fmtN(rmiss)} IceCoin kell. Feltöltés →</a>`:""}<div class="rftrow"><button class="btn mc alt" type="button" data-ft="${R.id}">Fizetés forintban: ${fmtN(rAr(R,"ft"))} Ft</button><button class="btn mc alt cadd" type="button" data-cart="rank" data-id="${R.id}" aria-label="${R.name} rang kosárba, ${rNap} nap" title="Kosárba"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg></button></div>`;
+  const mob=`<div class="rmob"><div class="rmtabs" role="group" aria-label="Rang kiválasztása">${RANKS.map((r,i)=>`<button type="button" class="r-${r.id}" data-rsel="${i}" aria-pressed="${i===ri}">${rankImg(r.id,"rmimg")}<span>${r.name}</span></button>`).join("")}</div>
+    <article class="rmcard r-${R.id}"><header class="rmhead"><div><small>Rang · ${rNap} nap</small><h3>${R.name}</h3>${ri===cur?'<span class="rtag">A te rangod</span>':""}</div>${rankImg(R.id,"rmart")}</header>
+    <div class="rmbody"><div class="rmprice"><b>${fmtN(ric)}</b> <em>IC</em><span>vagy ${fmtN(rAr(R,"ft"))} Ft</span></div>${mact}<div class="msg" data-msg="${R.id}" aria-live="polite"></div>
+    <h4>Általános</h4>${GENR.map(([k,f])=>mrow(k,f(R))).join("")}
+    ${MODES.map(m=>`<details${m===MODES[0]?" open":""}><summary>${m}</summary>${(R.modes[m]||[]).map(([k,v])=>mrow(k,v)).join("")}</details>`).join("")}</div></article></div>`;
+  $("#rankGrid").innerHTML=mob+`<div class="rtwrap"><table class="rtab"><thead><tr><th class="rcorner"></th>${head}</tr></thead><tbody>${body}</tbody></table></div>`;
 }
+$("#setLogout").onclick=()=>$("#logout").click();
 $("#rModes").onclick=e=>{const b=e.target.closest("button[data-m]");if(!b)return;rMode=b.dataset.m;renderRanks()};
 $("#rNap").onclick=e=>{const b=e.target.closest("button[data-nap]");if(!b)return;rNap=+b.dataset.nap;renderRanks()};
 $("#rankGrid").onclick=async e=>{
   const b=e.target.closest("button");if(!b)return;
+  if(b.dataset.rsel){rSel=+b.dataset.rsel;renderRanks();return}
   if(b.dataset.cart)return cartAdd({t:"rank",id:b.dataset.id,nap:rNap});
   const id=b.dataset.buy||b.dataset.ft,r=RANKS.find(x=>x.id===id);if(!r)return;
-  const m=$(`[data-msg="${id}"]`);
+  const ms=$$(`[data-msg="${id}"]`),m={set textContent(v){ms.forEach(x=>x.textContent=v)},set className(v){ms.forEach(x=>x.className=v)}};
   if(b.dataset.ft){
     if(!$("#rkConsent").checked){$("#rkConsentRow").classList.add("need");$("#rkConsentRow").scrollIntoView({block:"center",behavior:reduceMotion()?"auto":"smooth"});m.textContent="A forintos vásárláshoz jelöld be a nyilatkozatot az oldal tetején.";m.className="msg e";return}
     b.disabled=true;m.textContent="Átirányítás a biztonságos fizetési oldalra…";m.className="msg";$("#rankNote").innerHTML="";
@@ -2395,7 +2506,7 @@ function renderUnban(){
     let act;
     if(locked)act=`<div class="rown dim">Legközelebb ${dayHu(next)} után</div>`;
     else act=(x.ic?`<button class="btn mc" type="button" data-ubic="${x.id}"${bal<x.ic?" disabled":""}>Megveszem ${fmtN(x.ic)} IC-ért</button>`:"")+`<div class="rftrow"><button class="btn mc${x.ic?" alt":""}" type="button" data-ubft="${x.id}">${x.ic?"Fizetés forintban: ":"Megveszem: "}${fmtN(x.ft)} Ft</button><button class="btn mc alt cadd" type="button" data-cart="unban" data-id="${x.id}" aria-label="${x.name} kosárba" title="Kosárba">${CARTADD}</button></div>`;
-    return `<article class="ubcard${x.big?" big":""}"><div class="ubtop"><span class="ubi">${x.ico}</span><h3>${x.name}</h3></div><p>${x.desc}</p><div class="ubprice">${fmtN(x.ft)} Ft${x.ic?` <span>vagy ${fmtN(x.ic)} IceCoin</span>`:""}</div>${act}<div class="msg" data-ubmsg="${x.id}" aria-live="polite"></div></article>`;
+    return `<article class="ubcard${x.big?" big":""}"><span class="ubbig">${x.ico}</span><h3>${x.name}</h3><p>${x.desc}</p><div class="ubprice">${fmtN(x.ft)} Ft${x.ic?` <span>vagy ${fmtN(x.ic)} IceCoin</span>`:""}</div><div class="ubact">${act}</div><div class="msg" data-ubmsg="${x.id}" aria-live="polite"></div></article>`;
   }).join("");
 }
 $("#ubGrid").onclick=async e=>{
