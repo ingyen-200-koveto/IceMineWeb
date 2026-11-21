@@ -33,7 +33,7 @@ const K = {
   MC_PORT: parseInt(process.env.MC_PORT || "0", 10),
   BEDROCK_PORT: (process.env.BEDROCK_PORT || "").trim(),
   WEB: (process.env.WEBOLDAL || "https://icemine.hu").replace(/\/+$/, ""),
-  DISCORD_LINK: "https://discord.gg/YJV2HNqTMc",
+  DISCORD_LINK: "https://discord.gg/U8Z7EUgaKz",
   YOUTUBE: "https://youtube.com/@icemine_1",
   INSTAGRAM: "https://www.instagram.com/icemine_1",
   EMAIL: "support@icemine.hu",

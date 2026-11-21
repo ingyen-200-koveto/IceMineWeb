@@ -308,7 +308,7 @@ ${megjegyzes ? `<tr><td style="background:#ffffff;padding:6px 28px 26px;${F}"><d
 const levelP = t => `<p style="margin:0 0 16px;font-size:16px;line-height:1.6;color:#33434f">${t}</p>`;
 const levelGomb = (href, t) => `<table role="presentation" cellpadding="0" cellspacing="0" style="margin:6px 0 22px"><tr><td style="background:#1c7fd0;border-radius:8px"><a href="${href}" style="display:inline-block;padding:13px 24px;font-family:Arial,Helvetica,sans-serif;font-size:15px;font-weight:bold;color:#ffffff;text-decoration:none">${t}</a></td></tr></table>`;
 const levelKod = (cimke, kod) => `<div style="margin:0 0 18px;padding:14px 18px;border:1px dashed #b9cad8;border-radius:10px;background:#f7fafc"><div style="font-size:11px;letter-spacing:1.5px;color:#6b7c89;font-weight:bold">${cimke}</div><div style="margin-top:4px;font-family:Consolas,Menlo,monospace;font-size:24px;letter-spacing:3px;color:#0a1e2b;font-weight:bold">${kod}</div></div>`;
-const DISCORD_URL = process.env.DISCORD_URL || "https://discord.gg/YJV2HNqTMc";
+const DISCORD_URL = process.env.DISCORD_URL || "https://discord.gg/U8Z7EUgaKz";
 async function sendCode(req, u, code) {
   const link = base(req) + "/?megerosites=" + u.name + ":" + code;
   const text = `Kedves ${u.name}!\nKöszönjük, hogy regisztráltál weboldalunkon!\nKattints a linkre, hogy megerősítsd a fiókod.\n${link}\nvagy a megerősítő oldalon az alábbi kódot másold/írd be.\n${code}\nÜdvözlettel, IceMine csapata!`;
