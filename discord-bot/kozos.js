@@ -37,7 +37,7 @@ const K = {
   YOUTUBE: "https://youtube.com/@icemine_1",
   INSTAGRAM: "https://www.instagram.com/icemine_1",
   EMAIL: "support@icemine.hu",
-  VERZIOK: "1.20 – 1.21.x",
+  VERZIOK: "1.18 – 1.20.x",
   DATA_DIR: process.env.DATA_DIR || path.join(__dirname, "adatok"),
   KEPEK: (process.env.KEPEK_URL || RAW + "/kepek").replace(/\/+$/, ""),
   LOGO: process.env.LOGO_URL || RAW + "/logo.png",
