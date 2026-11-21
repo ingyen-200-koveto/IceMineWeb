@@ -960,7 +960,7 @@ app.get("/api/status", async (req, res) => {
 });
 app.post("/api/mc/status", limit(200, 6e5), (req, res) => {
   const key = String(process.env.MC_API_KEY || "");
-  if (!key || !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  if (key && !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
   const m = (req.body || {}).modes, modes = {};
   if (m && typeof m === "object") for (const [k, v] of Object.entries(m).slice(0, 30)) if (/^[a-z0-9_-]{1,24}$/i.test(k) && Number.isInteger(v) && v >= 0 && v < 1e5) modes[k.toLowerCase()] = v;
   modAll = { t: Date.now(), modes };

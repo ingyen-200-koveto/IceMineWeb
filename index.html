@@ -1967,7 +1967,7 @@ async function loadStatus(){
   $("#srvTxt").textContent=up?fmtN(d.online)+" játékos online":le?"A szerver most nem érhető el":"Szerver állapota…";
   $("#scState").textContent=up?"A szerver fut":le?"A szerver most nem érhető el":"Szerver állapota";
   $("#scOnline").textContent=up?fmtN(d.online)+" játékos online":le?"Próbáld újra pár perc múlva":"–";
-  const m=up&&d.modes&&Object.keys(d.modes).length?d.modes:null;
+  const mm=up&&d.modes?Object.fromEntries(Object.entries(d.modes).filter(([k,v])=>v>0)):{},m=Object.keys(mm).length?mm:null;
   $("#scModes").hidden=!m;
   if(m)$("#scModes").innerHTML=Object.entries(m).sort((a,b)=>b[1]-a[1]).map(([k,v])=>`<span><b>${fmtN(v)}</b>${escH(MODE_NEV[k]||k)}</span>`).join("");
 }
