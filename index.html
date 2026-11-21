@@ -1552,7 +1552,7 @@ a.si.on svg{color:var(--ice)}
 
           <h4>2. Milyen adatokat, miért és meddig kezelünk?</h4>
           <p><b>a) Felhasználói fiók.</b> Felhasználónév, e-mail cím, születési dátum (az életkor ellenőrzéséhez), a meghívó játékos (ha megadtad), jelszó (csak visszafejthetetlen, titkosított formában, így a jelszavadat senki sem ismeri), a regisztráció időpontja, a fiók belső azonosítója, valamint az ÁSZF elfogadásának időpontja. <i>Cél:</i> a fiók létrehozása és a szolgáltatás nyújtása. <i>Jogalap:</i> szerződés teljesítése (GDPR 6. cikk (1) b) pont). <i>Időtartam:</i> a fiók törléséig.</p>
-          <p><b>b) Fiók megerősítése és jelszó-visszaállítás.</b> E-mail cím, egyszer használatos kódok (titkosított formában) és kiküldésük ideje. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a megerősítő kód 24 óra, a jelszó-visszaállító kód 1 óra után érvénytelen.</p>
+          <p><b>b) Fiók megerősítése és jelszó-visszaállítás.</b> E-mail cím, egyszer használatos kódok (titkosított formában) és kiküldésük ideje, valamint az üdvözlő levélben küldött fióktörlő link azonosítója (titkosított formában, 1 hónapig érvényes). <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a megerősítő kód 24 óra, a jelszó-visszaállító kód 1 óra után érvénytelen.</p>
           <p><b>c) Bejelentkezés.</b> A belépéskor egy véletlen azonosítót (tokent) kapsz, amelyet a böngésződ helyi tárhelye (localStorage) tárol, a szerveren pedig csak titkosított formában szerepel. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> kilépésig, legfeljebb 30 napig.</p>
           <p><b>d) Játékbeli adatok.</b> IceCoin egyenleg, rang és megszerzésének ideje, a szerencsekerék-pörgetések ideje, az IceCoin utalások (küldő, címzett, összeg, üzenet, időpont), az IceCoinos rangvásárlások, a Kitiltás csökkentése vásárlások (termék, időpont, fizetési mód), valamint a feltöltött skin (amely nyilvános címen érhető el). Ha összekötöd a fiókodat a Discorddal, a Discord felhasználói azonosítódat és nevedet is tároljuk, hogy a rangodat a Discordon is beállíthassuk; ezt a Karakter oldalon bármikor megszüntetheted. A feloldási kéréseket a felhasználóneveddel együtt e-mailben továbbítjuk a staffnak. A vásárlások, regisztrációk és IceCoin utalások adatai (felhasználónév, termék, összeg, időpont, azonosító) az IceMine Discord szerver csak a staff számára látható naplócsatornájába is bekerülnek. <i>Jogalap:</i> szerződés teljesítése. <i>Időtartam:</i> a fiók törléséig. Az utalásokból a legutóbbi 1000, az IceCoinos rangvásárlásokból a legutóbbi 2000 kerül megőrzésre.</p>
           <p><b>e) Vásárlás.</b> Fiókazonosító, felhasználónév, e-mail cím, a megvásárolt termék, az összeg, az időpont, a Stripe fizetési azonosító, valamint az azonnali teljesítésről tett nyilatkozatod. <i>Cél:</i> a vásárlás teljesítése, visszaigazolás, könyvelés, panaszkezelés. <i>Jogalap:</i> szerződés teljesítése és jogi kötelezettség (GDPR 6. cikk (1) c) pont; a számvitelről szóló 2000. évi C. törvény 169. §). <i>Időtartam:</i> 8 év. Bankkártyaadatokat nem kezelünk, azokat kizárólag a Stripe kezeli.</p>
@@ -2738,6 +2738,16 @@ renderCart();
     const d=await api("/api/verify",{name:m[1],code:m[2]});
     if(d.error){render();return msg("#aMsg",d.error,"e")}
     return enter(d);
+  }
+  const tl=location.search.match(/torles=([A-Za-z0-9_]{3,16}):([a-f0-9]{48})/);
+  if(tl){
+    try{history.replaceState(null,"",location.pathname)}catch(e){}
+    render();$("#lacc").scrollIntoView({block:"start"});
+    if(!confirm("Biztosan törlöd a(z) "+tl[1]+" fiókot? Ez nem vonható vissza."))return msg("#aMsg","A fiókot nem töröltük.");
+    const d=await api("/api/torles-linkkel",{name:tl[1],token:tl[2]});
+    if(d.error)return msg("#aMsg",d.error,"e");
+    saveTok(null);user=null;render();
+    return msg("#aMsg","A(z) "+d.name+" fiókot töröltük. Ha szeretnél, regisztrálhatsz újra.","o");
   }
   const rl=location.search.match(/jelszo=([A-Za-z0-9_]{3,16}):([A-Za-z0-9]{12})/);
   if(rl){

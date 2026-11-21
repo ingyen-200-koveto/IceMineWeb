@@ -293,17 +293,46 @@ async function checkStripe() {
 }
 const base = req => process.env.BASE_URL || process.env.RENDER_EXTERNAL_URL || req.protocol + "://" + req.get("host");
 
+const levelEsc = v => String(v).replace(/[&<>"]/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" })[c]);
+function levelSablon(site, { felso, cim, cimSzin, torzs, reszek = [] }) {
+  const F = "font-family:Arial,Helvetica,sans-serif;", vonal = `<tr><td style="padding:0 32px"><div style="height:8px;background:#1f8fe0;border-radius:2px;font-size:0;line-height:0">&nbsp;</div></td></tr>`;
+  const resz = reszek.map(r => `<tr><td style="padding:30px 32px 0;${F}"><div style="font-size:24px;color:#eef3f7;margin:0 0 10px">${r.cim}</div><div style="font-size:16px;line-height:1.6;color:#b9c6d2;${r.kozep ? "text-align:center;" : ""}">${r.szoveg}</div>${r.link ? `<div style="margin-top:18px;${r.kozep ? "text-align:center;" : ""}"><a href="${r.link}" style="color:#47b6f6;font-size:16px">${r.linkSzoveg}</a></div>` : ""}</td></tr>`).join("");
+  return `<!doctype html><html lang="hu"><body style="margin:0;padding:0;background:#0a0d12"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#0a0d12"><tr><td align="center" style="padding:24px 12px">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:560px;background:#10151c;border:1px solid #1e2631">
+<tr><td style="padding:26px 32px 4px;${F}text-align:center"><a href="${site}" style="text-decoration:none;font-size:26px;font-weight:bold;color:#eef3f7"><span style="color:#47b6f6">Ice</span>Mine</a></td></tr>
+<tr><td style="padding:12px 32px 22px;${F}text-align:center"><a href="${site}" style="color:#47b6f6;font-size:16px;text-decoration:none;margin:0 18px">Kezdőlap</a><a href="${site}/#karakter" style="color:#47b6f6;font-size:16px;text-decoration:none;margin:0 18px">Bejelentkezés</a></td></tr>
+${vonal}
+<tr><td style="padding:30px 32px 28px;${F}text-align:center;color:#d9e2ea">${felso ? `<div style="font-size:18px;color:#d9e2ea">${felso}</div>` : ""}<div style="font-size:30px;line-height:1.25;color:#ffffff;margin:6px 0 0">${cim}</div><div style="width:72%;height:3px;background:${cimSzin || "#4ade80"};margin:16px auto 22px;font-size:0;line-height:0">&nbsp;</div><div style="font-size:17px;line-height:1.6;color:#c4d0db">${torzs}</div></td></tr>
+${vonal}
+${resz}
+<tr><td style="padding:34px 0 0"></td></tr>
+<tr><td style="background:#1a212b;padding:22px 32px;${F}font-size:15px;color:#8e9dac">© ${new Date().getFullYear()} <a href="${site}" style="color:#c4d0db">IceMine</a> · <a href="${site}/#aszf" style="color:#8e9dac">ÁSZF</a> · <a href="${site}/#adatvedelem" style="color:#8e9dac">Adatvédelem</a><div style="margin-top:8px;font-size:11px;color:#6b7a88">NOT AN OFFICIAL MINECRAFT SERVICE. NOT APPROVED BY OR ASSOCIATED WITH MOJANG OR MICROSOFT.</div></td></tr>
+</table></td></tr></table></body></html>`;
+}
+const DISCORD_URL = process.env.DISCORD_URL || "https://discord.gg/YJV2HNqTMc";
 async function sendCode(req, u, code) {
   const link = base(req) + "/?megerosites=" + u.name + ":" + code;
   const text = `Kedves ${u.name}!\nKöszönjük, hogy regisztráltál weboldalunkon!\nKattints a linkre, hogy megerősítsd a fiókod.\n${link}\nvagy a megerősítő oldalon az alábbi kódot másold/írd be.\n${code}\nÜdvözlettel, IceMine csapata!`;
-  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;background:#f2f8fc;color:#0a1e2b"><h2 style="margin:0 0 16px;color:#0b3a5b">IceMine</h2><p>Kedves <b>${u.name}</b>!</p><p>Köszönjük, hogy regisztráltál weboldalunkon!</p><p>Kattints a linkre, hogy megerősítsd a fiókod.</p><p><a href="${link}" style="display:inline-block;padding:12px 22px;background:#1c8ad6;color:#fff;border-radius:999px;text-decoration:none;font-weight:bold">Fiók megerősítése</a></p><p>vagy a megerősítő oldalon az alábbi kódot másold/írd be.</p><p style="font-size:24px;letter-spacing:3px;font-weight:bold;background:#fff;padding:14px;border-radius:10px;text-align:center">${code}</p><p>Üdvözlettel,<br>IceMine csapata!</p></div>`;
+  const site = base(req);
+  const html = levelSablon(site, { felso: `Kedves ${levelEsc(u.name)}!`, cim: "Erősítsd meg a fiókod!", cimSzin: "#1f8fe0", torzs: `Köszönjük, hogy regisztráltál! Már csak egy lépés van hátra.<div style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#1f8fe0;color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;letter-spacing:1px;padding:14px 28px;border-radius:8px">FIÓK MEGERŐSÍTÉSE</a></div>Vagy írd be ezt a kódot a weboldalon:<div style="margin:12px auto 0;display:inline-block;padding:12px 20px;border:1px solid #2a3542;border-radius:8px;background:#0b0f15;font-family:Consolas,Menlo,monospace;font-size:24px;letter-spacing:4px;color:#ffffff">${code}</div><div style="margin-top:22px;font-size:15px;color:#8e9dac">A kód 24 óráig érvényes.<br><b style="color:#c4d0db">Nem te regisztráltál?</b> Nyugodtan hagyd figyelmen kívül ezt a levelet, megerősítés nélkül a fiók nem jön létre.</div>`, reszek: [{ cim: "Elakadtál? Nem sikerül?", kozep: true, szoveg: "Keress minket bátran a Discord szerverünkön!<br>Belépés után csak nyiss egy ticketet.", link: DISCORD_URL, linkSzoveg: "Belépek a Discordra!" }] });
   await sendMail({ to: u.email, subject: "IceMine – fiók megerősítése", text, html });
 }
 async function sendReset(req, u, code) {
   const link = base(req) + "/?jelszo=" + u.name + ":" + code;
   const text = `Kedves ${u.name}!\nJelszó-visszaállítást kértél az IceMine fiókodhoz.\nKattints a linkre az új jelszó megadásához.\n${link}\nvagy a visszaállítás oldalon az alábbi kódot írd be.\n${code}\nA kód 1 óráig érvényes. Ha nem te kérted, hagyd figyelmen kívül ezt a levelet.\nÜdvözlettel, IceMine csapata!`;
-  const html = `<div style="font-family:Arial,sans-serif;max-width:520px;margin:auto;padding:28px;background:#f2f8fc;color:#0a1e2b"><h2 style="margin:0 0 16px;color:#0b3a5b">IceMine</h2><p>Kedves <b>${u.name}</b>!</p><p>Jelszó-visszaállítást kértél az IceMine fiókodhoz.</p><p>Kattints a linkre az új jelszó megadásához.</p><p><a href="${link}" style="display:inline-block;padding:12px 22px;background:#1c8ad6;color:#fff;border-radius:999px;text-decoration:none;font-weight:bold">Új jelszó megadása</a></p><p>vagy a visszaállítás oldalon az alábbi kódot írd be.</p><p style="font-size:24px;letter-spacing:3px;font-weight:bold;background:#fff;padding:14px;border-radius:10px;text-align:center">${code}</p><p>A kód 1 óráig érvényes. Ha nem te kérted, hagyd figyelmen kívül ezt a levelet.</p><p>Üdvözlettel,<br>IceMine csapata!</p></div>`;
+  const html = levelSablon(base(req), { felso: `Kedves ${levelEsc(u.name)}!`, cim: "Jelszó-visszaállítás", cimSzin: "#1f8fe0", torzs: `Jelszó-visszaállítást kértél az IceMine fiókodhoz.<div style="margin:22px 0"><a href="${link}" style="display:inline-block;background:#1f8fe0;color:#ffffff;text-decoration:none;font-weight:bold;font-size:16px;letter-spacing:1px;padding:14px 28px;border-radius:8px">ÚJ JELSZÓ MEGADÁSA</a></div>Vagy írd be ezt a kódot a weboldalon:<div style="margin:12px auto 0;display:inline-block;padding:12px 20px;border:1px solid #2a3542;border-radius:8px;background:#0b0f15;font-family:Consolas,Menlo,monospace;font-size:24px;letter-spacing:4px;color:#ffffff">${code}</div><div style="margin-top:22px;font-size:15px;color:#8e9dac">A kód 1 óráig érvényes. Ha nem te kérted, hagyd figyelmen kívül ezt a levelet, a jelszavad nem változik.</div>` });
   await sendMail({ to: u.email, subject: "IceMine – jelszó-visszaállítás", text, html });
+}
+async function sendWelcome(req, u) {
+  const site = base(req), token = crypto.randomBytes(24).toString("hex");
+  u.torles = { h: sha(token), exp: Date.now() + 30 * 864e5 }; save();
+  const torlo = site + "/?torles=" + u.name + ":" + token;
+  const text = `Kedves ${u.name}!\nSikeres regisztráció!\n\nNem te regisztráltál ezzel az e-mail címmel? Ezen a linken törölheted a fiókot (1 hónapig érvényes):\n${torlo}\n\nIceMine fiók: ${site}\nSzerver: play.icemine.hu (Java 1.18 – 1.20.x)\nSegítség: ${DISCORD_URL}\n\nÜdvözlettel, IceMine csapata!`;
+  const html = levelSablon(site, { felso: `Kedves ${levelEsc(u.name)}!`, cim: "Sikeres regisztráció!", torzs: `Nem te regisztráltál ezzel az e-mail címmel?<br><b style="color:#ffffff">Kattints <a href="${torlo}" style="color:#47b6f6">IDE</a>, hogy töröld ezt a fiókot!</b><br>(Érvényesség: 1 hónap)`, reszek: [
+    { cim: "IceMine fiók", szoveg: "Jelentkezz be, tölts fel saját skint, gyűjts IceCoint, vagy válassz egy menő rangot!", link: site + "/#karakter", linkSzoveg: "Kipróbálom!" },
+    { cim: "Csatlakozz a szerverre", szoveg: `Indítsd el a Minecraftot (Java 1.18 – 1.20.x), és add hozzá a <b style="color:#ffffff">play.icemine.hu</b> címet. A szerveren a weboldalas jelszavaddal lépj be.`, link: site + "/#jatekmodok", linkSzoveg: "Játékmódok megtekintése!" },
+    { cim: "Elakadtál? Nem sikerül?", kozep: true, szoveg: "Folyamatosan azon dolgozunk, hogy segítsünk neked!<br>Keress minket bátran a Discord szerverünkön!<br>Belépés után csak nyiss egy ticketet!", link: DISCORD_URL, linkSzoveg: "Belépek a Discordra!" }] });
+  await sendMail({ to: u.email, subject: "IceMine regisztráció", text, html });
 }
 async function issue(req, u) {
   const code = makeCode();
@@ -360,7 +389,21 @@ app.post("/api/verify", limit(30, 6e5), (req, res) => {
   if (err) return fail(res, 400, err);
   const u = db.users[key];
   esemeny("regisztracio", { user: u.name });
+  sendWelcome(req, u).catch(e => console.error("Üdvözlő e-mail hiba: " + e.message));
   res.json({ ok: true, token: session(u), user: pub(u) });
+});
+
+app.post("/api/torles-linkkel", limit(10, 6e5), (req, res) => {
+  const { name = "", token = "" } = req.body || {};
+  const key = String(name).toLowerCase(), u = db.users[key];
+  if (!u || !u.torles || typeof token !== "string" || !same(u.torles.h, sha(token))) return fail(res, 400, "Ez a törlő link érvénytelen, vagy a fiókot már törölték.");
+  if (Date.now() > u.torles.exp) return fail(res, 400, "Ez a törlő link lejárt (1 hónapig volt érvényes). Írj nekünk: support@icemine.hu");
+  const vett = (u.vasarlasok || []).length || Object.values(db.payments || {}).some(p => p && String(p.user || "").toLowerCase() === key);
+  if (vett) return fail(res, 409, "Ehhez a fiókhoz már tartozik vásárlás, ezért csak az ügyfélszolgálat tudja törölni. Írj nekünk: support@icemine.hu");
+  for (const [h, sx] of Object.entries(db.sessions)) if (sx && sx.k === key) delete db.sessions[h];
+  delete db.users[key]; save();
+  console.log("Fiók törölve az e-mailes linkkel: " + u.name);
+  res.json({ ok: true, name: u.name });
 });
 
 app.post("/api/resend", limit(10, 6e5), async (req, res) => {
