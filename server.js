@@ -1291,7 +1291,7 @@ app.post("/api/mc/jelzes", limit(120, 6e5), (req, res) => {
   jelzesUtolso.set(k, most);
   const fiok = db.users[nev.replace(/^\./, "").toLowerCase()];
   esemeny("jelzes", { fajta: tipus, jatekos: nev, discord: dcId(fiok), celpont, szoveg, mod: String(b.mod || "Lobby").slice(0, 40), vilag: String(b.vilag || "").slice(0, 40), online: celpont ? !!b.celpontOnline : null });
-  console.log((tipus === "admin" ? "Admin hívás: " : "Report: ") + nev + (celpont ? " → " + celpont : "") + " (" + String(b.mod || "Lobby").slice(0, 40) + ")" + (szoveg ? ": " + szoveg : ""));
+  console.log((tipus === "admin" ? "Segítségkérés (/segitseg): " : "Jelentés (/jelent): ") + nev + (celpont ? " → " + celpont : "") + " (" + String(b.mod || "Lobby").slice(0, 40) + ")" + (szoveg ? ": " + szoveg : ""));
   save();
   res.json({ ok: true });
 });

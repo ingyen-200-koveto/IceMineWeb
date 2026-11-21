@@ -95,8 +95,8 @@ const FELEPITES = [
     csatornak: [
       { kulcs: "staffchat", nev: "🛡️・staff-chat", tipus: T, tema: "Csak a csapatnak" },
       { kulcs: "vasarlasok", nev: "🛒・vásárlások", tipus: T, tema: "Weboldalas vásárlások" },
-      { kulcs: "reportok", nev: "🚨・reportok", tipus: T, tema: "Játékbeli /report jelentések" },
-      { kulcs: "adminhivasok", nev: "🆘・admin-hívások", tipus: T, tema: "Játékbeli /admin hívások" },
+      { kulcs: "reportok", nev: "🚨・jelentések", tipus: T, tema: "Játékbeli /jelent jelentések" },
+      { kulcs: "adminhivasok", nev: "🆘・segítségkérések", tipus: T, tema: "Játékbeli /segitseg kérések" },
       { kulcs: "jelentkezesek", nev: "📝・jelentkezések", tipus: T, tema: "Staff jelentkezések a weboldalról" },
       { kulcs: "naplo", nev: "📒・napló", tipus: T, tema: "Moderálás, ticketek, minden más" },
       { kulcs: "naplo_uzenet", nev: "💬・üzenet-napló", tipus: T, tema: "Törölt és szerkesztett üzenetek, automod" },
@@ -326,8 +326,8 @@ async function epit(i, panelekKellenek) {
   await allit("otletek", ch.otletek, "💡 Ötletek");
   await allit("vasarlasok", ch.vasarlasok, "🛒 Vásárlások");
   await allit("merfoldkovek", ch.altalanos, "🏆 Mérföldkövek");
-  await allit("reportok", ch.reportok, "🚨 Reportok");
-  await allit("adminhivasok", ch.adminhivasok, "🆘 Admin hívások");
+  await allit("reportok", ch.reportok, "🚨 Jelentések");
+  await allit("adminhivasok", ch.adminhivasok, "🆘 Segítségkérések");
   await allit("jelentkezesek", ch.jelentkezesek, "📝 Jelentkezések");
   await allit("hirek", ch.hirek, "📢 Hírek a weboldalra");
   await allit("naplo", ch.naplo, "📒 Fő napló");

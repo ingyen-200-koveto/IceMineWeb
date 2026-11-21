@@ -2,7 +2,7 @@ const { P, ment, beall, kartya, rejtett, hiba, siker, tudIrni } = require("../ko
 const statusz = require("./statusz");
 const weboldal = require("./weboldal");
 
-const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások", merfoldkovek: "Mérföldkövek (online rekord, regisztrációk)", reportok: "Reportok (a játékbeli /report)", adminhivasok: "Admin hívások (a játékbeli /admin)", jelentkezesek: "Staff jelentkezések", hirek: "Hírek (ezek kerülnek a weboldalra)" };
+const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások", merfoldkovek: "Mérföldkövek (online rekord, regisztrációk)", reportok: "Jelentések (a játékbeli /jelent)", adminhivasok: "Segítségkérések (a játékbeli /segitseg)", jelentkezesek: "Staff jelentkezések", hirek: "Hírek (ezek kerülnek a weboldalra)" };
 const NAPLO_TIPUSOK = {
   fo: "📒 Fő napló (moderálás, ticketek és minden, aminek nincs külön csatornája)",
   uzenet: "💬 Üzenetek (törlés, szerkesztés, automod)",
@@ -41,8 +41,8 @@ async function beallitas(i) {
         `💡 Ötletek: ${cs(b.otletek)}`,
         `🛒 Vásárlások: ${cs(b.vasarlasok)}`,
         `🏆 Mérföldkövek: ${b.merfoldkovek ? cs(b.merfoldkovek) : "`a szerver rendszercsatornája`"}`,
-        `🚨 Reportok: ${cs(b.reportok)}`,
-        `🆘 Admin hívások: ${b.adminhivasok ? cs(b.adminhivasok) : "→ reportok"}`,
+        `🚨 Jelentések (/jelent): ${cs(b.reportok)}`,
+        `🆘 Segítségkérések (/segitseg): ${b.adminhivasok ? cs(b.adminhivasok) : "→ jelentések csatorna"}`,
         `📝 Staff jelentkezések: ${cs(b.jelentkezesek)}`,
         `📢 Hírek a weboldalra: ${cs(b.hirek)}`,
         `📊 Státusz panel: ${b.statuszPanel ? cs(b.statuszPanel.csatorna) : "`nincs`"}`,

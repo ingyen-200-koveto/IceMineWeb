@@ -26,7 +26,7 @@ async function jelzes(client, e) {
       const k = kartya(K.ARANY)
         .kepes(
           [
-            "### 🆘 Admin kell!",
+            "### 🆘 Segítség kell!",
             `👤 **Játékos:** ${e.jatekos}${e.discord ? ` (<@${e.discord}>)` : ""}`,
             `🎮 **Szerver:** ${e.mod}${e.vilag ? ` · ${e.vilag}` : ""}`,
             e.szoveg ? `💬 **Üzenet:** ${e.szoveg}` : "💬 Nem írt üzenetet.",
@@ -35,7 +35,7 @@ async function jelzes(client, e) {
           mcFej(e.jatekos),
         )
         .sor(gomb("jelzes_at", "Megyek", ButtonStyle.Success, "🙋"))
-        .lab("Az /admin parancsból • 🧊 IceMine");
+        .lab("A /segitseg parancsból • 🧊 IceMine");
       const ping = b.staffRang ? `<@&${b.staffRang}>` : null;
       const u = k.uzenet({ allowedMentions: { roles: b.staffRang ? [b.staffRang] : [] } });
       if (ping) u.components.unshift({ type: 10, content: ping });
@@ -44,7 +44,7 @@ async function jelzes(client, e) {
       const k = kartya(K.PIROS)
         .kepes(
           [
-            "### 🚨 Új report",
+            "### 🚨 Új jelentés",
             `🎯 **Jelentett:** ${e.celpont}${e.online === true ? " (online)" : e.online === false ? " (nincs fent)" : ""}`,
             `👤 **Bejelentő:** ${e.jatekos}${e.discord ? ` (<@${e.discord}>)` : ""}`,
             `🎮 **Szerver:** ${e.mod}${e.vilag ? ` · ${e.vilag}` : ""}`,
@@ -54,7 +54,7 @@ async function jelzes(client, e) {
           mcFej(e.celpont),
         )
         .sor(gomb("jelzes_at", "Átvettem", ButtonStyle.Primary, "🛡️"))
-        .lab("A /report parancsból • 🧊 IceMine");
+        .lab("A /jelent parancsból • 🧊 IceMine");
       await kuldes(g, b.reportok, null, k.uzenet());
     }
   }
