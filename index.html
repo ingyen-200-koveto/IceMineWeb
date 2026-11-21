@@ -572,6 +572,56 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
   .tile a{display:inline-block;padding:8px 0;margin-top:0}
 }
 @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}#side{transition:none}#wheelRot{transition:none}.flakes{display:none}.btn.mc,.aswitch button{transition:none}.btn.mc:hover::after{animation:none}.win,.lose,.pointer.kick{animation:none}.pack,.check,.spin{transition:none}.chip.on i{animation:none}.pnote .ring{animation:none}}
+
+.gmgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(270px,1fr));gap:16px}
+.gm{display:flex;flex-direction:column;overflow:hidden;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.gart{position:relative;height:132px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.gart::after{content:"";position:absolute;right:-34px;top:-44px;width:140px;height:140px;border-radius:30px;transform:rotate(22deg);background:#ffffff26}
+.gart svg{position:relative;z-index:1;width:84px;height:84px;filter:drop-shadow(0 7px 0 #0003)}
+.gbody{display:flex;flex-direction:column;gap:8px;padding:18px 20px 20px}
+.gbody h3{margin:0;font-size:21px}
+.gbody p{margin:0;color:var(--mute);font-size:14.5px;line-height:1.55}
+.gbody ul{margin:4px 0 0;padding:0;list-style:none;display:grid;gap:6px}
+.gbody li{position:relative;padding-left:20px;font-size:14px;font-weight:600;line-height:1.45}
+.gbody li::before{content:"";position:absolute;left:3px;top:.5em;width:7px;height:7px;background:var(--ice)}
+.vsteps{margin:0 0 22px}
+.vsteps li b{display:block;line-height:1.35}
+.vsteps li span{display:block;color:var(--mute);font-size:14px}
+.vsteps code{font:700 15px Sora,sans-serif;padding:2px 8px;border-radius:8px;background:color-mix(in srgb,var(--ice) 16%,transparent);color:var(--ink)}
+.vlist{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.vsite{display:flex;flex-direction:column;gap:10px;padding:20px;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.vsite.off{opacity:.75}
+.vtop{display:flex;align-items:center;justify-content:space-between;gap:10px}
+.vtop h3{margin:0;font-size:19px}
+.vtag{flex:none;padding:4px 10px;border-radius:999px;font-weight:800;font-size:13px;background:color-mix(in srgb,var(--mute) 16%,transparent);color:var(--mute)}
+.vtag.go{background:#16a34a1f;color:#15803d}
+.vtag.done{background:color-mix(in srgb,var(--ice) 16%,transparent);color:var(--ice)}
+.vsite p{margin:0;color:var(--mute);font-size:14px;line-height:1.5}
+.vbtns{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.vbtns .btn{width:100%;display:flex;align-items:center;justify-content:center;white-space:nowrap;padding-left:12px;padding-right:12px;text-align:center;text-decoration:none}
+.vsite .msg:empty{display:none}
+.faq{display:grid;gap:10px}
+.faq details{border-radius:18px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.faq summary{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:17px 20px;cursor:pointer;list-style:none;font-weight:800;font-size:16px}
+.faq summary::-webkit-details-marker{display:none}
+.faq summary::after{content:"";flex:none;width:10px;height:10px;border-right:2.5px solid var(--mute);border-bottom:2.5px solid var(--mute);transform:rotate(45deg) translate(-2px,-2px);transition:transform .2s}
+.faq details[open] summary::after{transform:rotate(225deg) translate(-2px,-2px)}
+.faq details>div{padding:0 20px 18px;color:var(--mute);font-size:15px;line-height:1.6}
+.faq details>div p{margin:0 0 10px}
+.faq details>div p:last-child{margin:0}
+.faq details>div b{color:var(--ink)}
+.faq ul{margin:0;padding-left:20px;display:grid;gap:4px}
+.faq code{font:700 15px Sora,sans-serif;color:var(--ink)}
+.fcopy{display:inline-flex;align-items:center;gap:12px;padding:8px 8px 8px 14px;border:0;border-radius:12px;cursor:pointer;background:color-mix(in srgb,var(--ice) 12%,transparent);box-shadow:inset 0 0 0 1px var(--line);color:var(--ink)}
+.fcopy span{padding:5px 10px;border-radius:8px;background:var(--solid);font-weight:800;font-size:13px;color:var(--ice)}
+.fcopy:hover{box-shadow:inset 0 0 0 1px var(--ice)}
+.faqmore{display:flex;flex-wrap:wrap;align-items:center;gap:6px 14px;margin-top:22px;padding:20px;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh)}
+.faqmore b{font-size:17px}
+.faqmore span{color:var(--mute);flex:1}
+.faqmore div{display:flex;flex-wrap:wrap;gap:10px}
+.faqmore .btn{text-decoration:none}
+@media (max-width:520px){.vbtns{grid-template-columns:1fr}.faq summary{padding:15px 16px;font-size:15.5px}.faq details>div{padding:0 16px 16px}.faqmore div{width:100%}.faqmore .btn{flex:1;text-align:center}}
+@media (prefers-reduced-motion:reduce){.faq summary::after{transition:none}}
 </style>
 </head>
 <body>
@@ -659,13 +709,16 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
   <div class="shell">
     <aside id="side">
       <a class="si" href="#kezdolap"><svg class="i" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8v10h-6v-6H9v6H3z"/></svg>Kezdőlap</a>
+      <a class="si" href="#jatekmodok"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M15.5 8.5l-2 5-5 2 2-5z"/></svg>Játékmódok</a>
       <a class="si" href="#karakter"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>Karakter</a>
       <a class="si" href="#webshop" hidden><svg class="i" viewBox="0 0 24 24"><path d="M5 8h14l-1 12H6zM9 8V6a3 3 0 016 0v2"/></svg>WebShop</a>
       <a class="si" href="#rangok"><svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>Rangok</a>
       <a class="si" href="#vasarlas"><svg class="i" viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"/><circle cx="18" cy="20" r="1.5"/><path d="M3 4h3l2.4 11h10.2L21 8H7"/></svg>Vásárlás</a>
       <a class="si" href="#kitiltas"><svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>Kitiltás csökkentése</a>
       <a class="si" href="#szerencsekerek"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>Szerencsekerék</a>
+      <a class="si" href="#szavazas"><svg class="i" viewBox="0 0 24 24"><path d="M4 13h3l2 6h6l2-6h3M7 13l2-9h6l2 9M10 9l1.5 1.5L14 8"/></svg>Szavazás</a>
       <a class="si" href="#kliens" hidden><svg class="i" viewBox="0 0 24 24"><path d="M12 3v12m0 0l-4-4m4 4l4-4M4 21h16"/></svg>Kliens letöltése</a>
+      <a class="si" href="#gyik"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 015 0c0 1.7-2.5 2-2.5 4M12 17h.01"/></svg>GYIK</a>
       <a class="si" href="#dokumentumok"><svg class="i" viewBox="0 0 24 24"><path d="M7 3h7l5 5v13H7zM14 3v5h5M10 13h6M10 17h6"/></svg>Dokumentumok</a>
       <div class="sp"></div>
       <a class="si" href="#beallitasok"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h10M18 7h2M4 17h2M10 17h10"/><circle cx="16" cy="7" r="2"/><circle cx="8" cy="17" r="2"/></svg>Beállítások</a>
@@ -822,6 +875,70 @@ mark.todo{background:#ffd36b66;color:inherit;padding:1px 5px;border-radius:5px;f
         <div class="msg" id="spinMsg" aria-live="polite"></div>
         <h3>Nyeremények</h3>
         <div class="prizes" id="prizes"></div>
+      </section>
+
+      <section class="page" data-page="jatekmodok">
+        <div class="phead"><h2>Játékmódok</h2><p>A szerveren a hotbaron lévő iránytűvel választhatsz játékmódot.</p></div>
+        <div class="gmgrid" id="gmGrid"></div>
+      </section>
+
+      <section class="page" data-page="szavazas">
+        <div class="shophero">
+          <div><h2>Szavazás</h2><p>Szavazz az IceMine-ra a szerverlistákon, és minden szavazatért <b id="vReward">25</b> IceCoint kapsz. Oldalanként naponta egyszer szavazhatsz.</p></div>
+          <div class="balpill"><span class="pcoin"></span>Szavazataid: <b id="vTotal">0</b></div>
+        </div>
+        <ol class="steps vsteps">
+          <li><b>Kattints a Szavazás gombra</b><span>Új lapon megnyílik a szerverlista.</span></li>
+          <li><b>Szavazáskor ezt a nevet add meg: <code id="vName"></code></b><span>Pontosan így írd be, különben nem találjuk meg a szavazatod.</span></li>
+          <li><b>Gyere vissza, és vedd át a jutalmat</b><span>A szavazat 1-2 perc alatt jelenik meg a listán.</span></li>
+        </ol>
+        <div class="vlist" id="vList"></div>
+        <p class="legal">A szavazatért járó IceCoin csak akkor jár, ha a szerverlistán ugyanazt a nevet adtad meg, amivel itt be vagy jelentkezve.</p>
+      </section>
+
+      <section class="page" data-page="gyik">
+        <div class="phead"><h2>Gyakori kérdések</h2><p>Ha itt nem találod a választ, írj nekünk Discordon vagy e-mailben.</p></div>
+        <div class="faq">
+          <details open>
+            <summary>Hogyan csatlakozom a szerverhez?</summary>
+            <div>
+              <p><b>Java Edition (gép):</b> Többjátékos → Szerver hozzáadása, a címhez ezt írd be:</p>
+              <p><button class="fcopy" type="button" data-copy="play.icemine.hu"><code>play.icemine.hu</code><span>Másolás</span></button></p>
+              <p>Támogatott verziók: 1.20 – 1.21.x.</p>
+              <p><b>Bedrock Edition (telefon, konzol, Windows):</b> a Szerverek fülön a Szerver hozzáadása gombbal, ezzel a címmel:</p>
+              <p><button class="fcopy" type="button" data-copy="bedrock.icemine.hu"><code>bedrock.icemine.hu</code><span>Másolás</span></button></p>
+            </div>
+          </details>
+          <details>
+            <summary>Kell eredeti (prémium) Minecraft?</summary>
+            <div><p>Nem kell. Regisztrálj itt a weboldalon, és a játékban ugyanazzal a névvel lépj fel. A szerveren ezzel jelentkezel be:</p><p><code>/login &lt;jelszó&gt;</code></p><p>A jelszó ugyanaz, mint a weboldalon. Ha itt megváltoztatod, a szerveren a következő belépéstől az új lesz jó.</p></div>
+          </details>
+          <details>
+            <summary>Elfelejtettem a jelszavam. Mit csináljak?</summary>
+            <div><p>Lépj ki, és a belépő oldal alján kattints az <b>Elfelejtettem a jelszavam</b> linkre. E-mailben küldünk segítséget az új jelszóhoz. Az új jelszó a szerveren is jó lesz.</p></div>
+          </details>
+          <details>
+            <summary>Mi az IceCoin, és hogyan szerezhetek?</summary>
+            <div><p>Az IceCoin az IceMine pénzneme. Ebből vehetsz rangot, Szerencsekerék pörgetést, vagy válthatsz felhasználónevet.</p><p>Így szerezhetsz:</p><ul><li><a href="#vasarlas">Vásárlás</a> forintért, a nagyobb csomagokhoz bónusz is jár</li><li><a href="#szavazas">Szavazás</a> a szerverlistákon, naponta</li><li>A <a href="#szerencsekerek">Szerencsekerék</a>, hetente egy ingyenes pörgetéssel</li><li>Egy barátod is utalhat neked a Karakter oldalon</li></ul></div>
+          </details>
+          <details>
+            <summary>Hogyan veszek rangot?</summary>
+            <div><p>A <a href="#rangok">Rangok</a> oldalon válaszd ki a rangot, és hogy 30 vagy 60 napra kéred. Fizethetsz IceCoinnal vagy forintban, bankkártyával.</p><p>A rang magától rákerül a karakteredre a szerveren is, fél percen belül. Lejáratkor magától lekerül, a lejárat napját a Karakter oldalon látod.</p></div>
+          </details>
+          <details>
+            <summary>Fizettem, de nem kaptam meg az IceCoint vagy a rangot.</summary>
+            <div><p>A jóváírás általában azonnal megtörténik. Előbb frissítsd az oldalt, vagy lépj ki és vissza.</p><p>Ha 10 perc múlva sincs meg, írj a <a href="mailto:support@icemine.hu">support@icemine.hu</a> címre vagy <a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discordon</a>. Küldd el a felhasználóneved és a Stripe e-mailes nyugtáját. Minden fizetés látszik nálunk, így vissza tudjuk keresni.</p></div>
+          </details>
+          <details>
+            <summary>Megváltoztathatom a felhasználónevem?</summary>
+            <div><p>Igen, a <a href="#beallitasok">Beállítások</a> oldalon, 2550 IceCoinért. Az új név a játékban is érvényes lesz.</p></div>
+          </details>
+          <details>
+            <summary>Kitiltottak. Mit tehetek?</summary>
+            <div><p>Ha szerinted tévedés történt, írj nekünk <a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discordon</a>. A kitiltás ideje a <a href="#kitiltas">Kitiltás csökkentése</a> oldalon rövidíthető.</p></div>
+          </details>
+        </div>
+        <div class="faqmore"><b>Nem találtad a választ?</b><span>Írj nekünk, segítünk.</span><div><a class="btn alt" href="mailto:support@icemine.hu">support@icemine.hu</a><a class="btn" href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener">Discord</a></div></div>
       </section>
 
       <section class="page" data-page="kliens">
@@ -1272,7 +1389,7 @@ $("#logout").onclick=async()=>{
   try{history.replaceState(null,"",location.pathname)}catch(e){}
   document.body.classList.remove("menu");backToLogin();render();
 };
-const PAGES=["kezdolap","karakter","rangok","vasarlas","kitiltas","szerencsekerek","dokumentumok","beallitasok"];
+const PAGES=["kezdolap","jatekmodok","karakter","rangok","vasarlas","kitiltas","szerencsekerek","szavazas","gyik","dokumentumok","beallitasok"];
 function route(){
   let p=location.hash.replace("#","");
   if(DOCS.includes(p)){
@@ -1287,6 +1404,7 @@ function route(){
   window.scrollTo(0,0);
   if(!$("#cartPanel").hidden)closeCart();
   if(p==="szerencsekerek"&&user)loadWheel();
+  if(p==="szavazas"&&user)loadVote();
   if(p==="karakter")setTimeout(()=>heroView.start(),0);
 }
 addEventListener("hashchange",route);
@@ -1605,30 +1723,30 @@ $("#spinBtn").onclick=async()=>{
   });
 };
 
-const MODES=["Kingdoms","KitPvP","Fyland","SkyPvP","Gens"];
+const MODES=["Kingdoms","KitPvP","OneBlock","SkyPvP","Gens"];
 const RANKS=[
  {id:"bronz",name:"Bronz",ic:950,ft:1000,gen:["20 IC / hét"],modes:{
   Kingdoms:[["Kulcscsomag","5× Snow kulcs"],["Napi jutalom","100 Nexus pont"],["Kit","Bronz Kit"],["Heti jutalom","2× Snow kulcs"]],
   KitPvP:[["Kulcscsomag","5× Rare kulcs"],["Napi jutalom","1× II. Pénzeszsák"],["Heti jutalom","10× Bánya kulcs"],["Extra","Inventory törlés"]],
-  Fyland:[["Kulcscsomag","5× Copper kulcs"],["Napi jutalom","16× Vasblokk"],["Heti jutalom","2× Star kulcs"]],
+  OneBlock:[["Kulcscsomag","5× Copper kulcs"],["Napi jutalom","16× Vasblokk"],["Heti jutalom","2× Star kulcs"]],
   SkyPvP:[["Kulcscsomag","5× Abyss kulcs"],["Heti jutalom","2× Abyss kulcs"],["Kit","Íjász Kit"]],
   Gens:[["Kulcscsomag","3× FORTUNE kulcs"],["Napi jutalom","1× Mini Elixir Bónusz + 1× Mini XP Bónusz"],["Heti jutalom","2× Elixir Booster + 1× Pénz Booster"]]}},
  {id:"abyss",name:"Wizard",ic:2700,ft:2000,gen:["Jog csomag","5 nap Fly","InvSee","Food","Repair"],modes:{
   Kingdoms:[["Kulcscsomag","10× Snow kulcs"],["Napi jutalom","200 Nexus pont"],["Kit","Wizard Kit"],["Heti jutalom","4× Snow kulcs"]],
   KitPvP:[["Kulcscsomag","10× Rare kulcs"],["Napi jutalom","2× II. Pénzeszsák"],["Heti jutalom","20× Bánya kulcs"],["Extra","Inventory törlés"]],
-  Fyland:[["Kulcscsomag","10× Copper kulcs"],["Napi jutalom","32× Vasblokk"],["Heti jutalom","4× Star kulcs"]],
+  OneBlock:[["Kulcscsomag","10× Copper kulcs"],["Napi jutalom","32× Vasblokk"],["Heti jutalom","4× Star kulcs"]],
   SkyPvP:[["Kulcscsomag","10× Abyss kulcs"],["Heti jutalom","4× Abyss kulcs"],["Kit","Wizard Kit"]],
   Gens:[["Kulcscsomag","6× FORTUNE kulcs"],["Napi jutalom","2× Mini Elixir Bónusz + 2× Mini XP Bónusz"],["Heti jutalom","4× Elixir Booster + 2× Pénz Booster"]]}},
  {id:"iceking",name:"IceKing",ic:4850,ft:4150,gen:["Jog csomag","2 hét Fly","InvSee","Food","Repair","60 IC / hét"],modes:{
   Kingdoms:[["Kulcscsomag","15× Snow kulcs"],["Napi jutalom","300 Nexus pont"],["Kit","IceKing Kit"],["Heti jutalom","6× Snow kulcs"]],
   KitPvP:[["Kulcscsomag","15× Rare kulcs"],["Napi jutalom","3× II. Pénzeszsák"],["Heti jutalom","30× Bánya kulcs"],["Extra","Inventory törlés"]],
-  Fyland:[["Kulcscsomag","15× Copper kulcs"],["Napi jutalom","48× Vasblokk"],["Heti jutalom","6× Star kulcs"]],
+  OneBlock:[["Kulcscsomag","15× Copper kulcs"],["Napi jutalom","48× Vasblokk"],["Heti jutalom","6× Star kulcs"]],
   SkyPvP:[["Kulcscsomag","15× Abyss kulcs"],["Heti jutalom","6× Abyss kulcs"],["Kit","IceKing Kit"]],
   Gens:[["Kulcscsomag","9× FORTUNE kulcs"],["Napi jutalom","3× Mini Elixir Bónusz + 3× Mini XP Bónusz"],["Heti jutalom","6× Elixir Booster + 3× Pénz Booster"]]}},
  {id:"yeti",name:"Yeti",ic:8000,ft:9990,gen:["Jog csomag","30 nap Fly","InvSee","Food","Repair","25 IC / nap"],modes:{
   Kingdoms:[["Kulcscsomag","75× Snow kulcs"],["Napi jutalom","1 500 Nexus pont"],["Kit","Yeti Kit"],["Heti jutalom","30× Snow kulcs"]],
   KitPvP:[["Kulcscsomag","75× Rare kulcs"],["Napi jutalom","15× II. Pénzeszsák"],["Heti jutalom","150× Bánya kulcs"],["Extra","Inventory törlés"]],
-  Fyland:[["Kulcscsomag","75× Copper kulcs"],["Napi jutalom","240× Vasblokk"],["Heti jutalom","30× Star kulcs"]],
+  OneBlock:[["Kulcscsomag","75× Copper kulcs"],["Napi jutalom","240× Vasblokk"],["Heti jutalom","30× Star kulcs"]],
   SkyPvP:[["Kulcscsomag","75× Abyss kulcs"],["Heti jutalom","30× Abyss kulcs"],["Kit","Yeti Kit"]],
   Gens:[["Kulcscsomag","45× FORTUNE kulcs"],["Napi jutalom","15× Mini Elixir Bónusz + 15× Mini XP Bónusz"],["Heti jutalom","30× Elixir Booster + 15× Pénz Booster"]]}}
 ];
@@ -1728,6 +1846,72 @@ $("#coBtn").onclick=async()=>{
   location.href=d.url;
 };
 addEventListener("pageshow",e=>{if(e.persisted){$("#coBtn").disabled=!$("#packs input:checked");msg("#buyMsg","");renderRanks();renderUnban()}});
+function pixArt(rows,pal){
+  const w=rows[0].length,h=rows.length;let o=`<svg viewBox="0 0 ${w} ${h}" shape-rendering="crispEdges" aria-hidden="true">`;
+  rows.forEach((r,y)=>{for(let x=0;x<w;x++){const c=pal[r[x]];if(c)o+=`<rect x="${x}" y="${y}" width="1.02" height="1.02" fill="${c}"/>`}});
+  return o+"</svg>";
+}
+const GAMEMODES=[
+ {n:"OneBlock",a:["#8fe0a0","#2f9e5b"],t:"Egyetlen blokkon kezdesz a semmi közepén. Bányászd ki, és a helyén azonnal új jelenik meg. 11 fázison mész végig a síkságtól a Netherig és az Endig, közben ládák és mobok is jönnek.",
+  l:["Csapat 2–8 fővel","A sziget 51×51-től 201×201-ig nő","Saját piac Szigetérmével","Toplista a sziget szintje alapján"],
+  art:[["............","..gggggggg..","..gGgggGgg..","..ggGgggGg..","..dgdggdgd..","..dddDdddd..","..ddDddddD..","..dddddDdd..","..dDddddDd..","..ddddDddd..","..dddddddd..","............"],{g:"#6fcf4a",G:"#4fa834",d:"#9a6538",D:"#734927"}]},
+ {n:"Gens",a:["#ffe9a3","#d9a21b"],t:"Saját farm szigeted van 8 földdel. Learatod a termést a Gens kapával, eladod, és a kapát fától egészen netheritig fejleszted.",
+  l:["8 föld a búzától a netherbibircsókig","Kapa fejlesztések: Bőség, Kaszálás, Aranykéz, Szerencse","Prestige és Rebirth a nagyobb termésért","Közös sziget a barátaiddal"],
+  art:[["............","...kkkkkk...","..kDDDDDDk..","...kkkkkhh..",".......hh...","......hh....",".....hh.....","....hh......","...hh.......","..hh........","..h.........","............"],{k:"#1f6f78",D:"#5ee6e0",h:"#8a5a33"}]},
+ {n:"Kingdoms",a:["#c9d4e0","#5b6f86"],t:"Alapíts királyságot, foglalj földeket, és védd meg a Nexusodat. Tornyokkal, építményekkel és szövetségekkel építed a birodalmad.",
+  l:["Saját rangok és jogok a királyságban","Nexus fejlesztések és 8 féle torony","Szövetség, fegyverszünet vagy háború","Nexus lopás az ellenségtől"],
+  art:[["............",".s.s....s.s.",".sss....sss.",".sSs.ss.sSs.",".sss.ss.sss.",".ssssssssss.",".sSssssssSs.",".ssssDDssss.",".ssssDDssss.",".ssssDDssss.",".SSSSSSSSSS.","............"],{s:"#b9c3ce",S:"#8692a0",D:"#5a3a22"}]},
+ {n:"BedWars",a:["#ffb3a8","#c9362b"],t:"Védd meg a csapatod ágyát, és rombold le a többiekét. Négy saját pályán, négy módban játszhatsz.",
+  l:["Solo, Duó, 3v3v3v3 és 4v4v4v4","Pályák: Jégcsúcs, Tölgyes, Sziklavár, Homokkő","Csapatfejlesztések és csapdák","Statisztika és toplista"],
+  art:[["............","............","............","............",".WW.........",".WWRRRRRRRR.",".WWRRrRRRrR.",".rrrrrrrrrr.",".wwwwwwwwww.",".w........w.",".w........w.","............"],{W:"#f4f4f4",R:"#d8423a",r:"#a52a24",w:"#8a5a33"}]},
+ {n:"Duels",a:["#b9c6d6","#3a4a5e"],t:"Egy az egy elleni párbajok 13 módban. Rangsorolt meccseken Elo pontért is játszhatsz.",
+  l:["Classic, NoDebuff, Sumo, Bridge, BuildUHC és még sok más","Ranked és unranked sor","Kihívás, visszavágó, best of 3","Nézőként is beülhetsz"],
+  art:[["..........kk",".........kSk","........kSk.",".......kSk..","......kSk...",".....kSk....","..k.kSk.....","..kkSk......","...hk.......","..hhkk......",".hh..k......",".h.........."],{k:"#24202a",S:"#6b6270",h:"#8a5a33"}]},
+ {n:"ComboFly",a:["#dcc6ff","#7a4cc2"],t:"Gyors PvP 1.8-as harccal: nincs ütés cooldown, és a lökés közel tartja az ellenfelet, így hosszú kombókat húzhatsz.",
+  l:["1.8-as PvP","Kitek a /kit paranccsal","Kombó számláló"],
+  art:[["............",".....aa.....","....aAPa....","....aAPa....","...aAAPPa...","...aAAPPa...","...aAAPPa...","....aAPa....","....aAPa....",".....aa.....","............","............"],{a:"#5b2f8f",A:"#9b6bd6",P:"#d6bcff"}]},
+ {n:"Creative",a:["#a8eaff","#2a8fd6"],t:"Kérj egy saját 48×48-as telket, és építs rá, amit szeretnél. A telkeden csak te és a barátaid építhetnek.",
+  l:["Alapból 1 telek, Bronz ranggal 2","Barátokat vehetsz fel a telekre","WorldEdit 2 óra játék után"],
+  art:[["............","............","....bbbb....","....bBBb....","....bBBb....","....bbbb....","..rrrrgggg..","..rRRrgGGg..","..rRRrgGGg..","..rrrrgggg..","............","............"],{b:"#2f6fd6",B:"#5fa0ff",r:"#c9362b",R:"#ff6b5e",g:"#2f9e5b",G:"#6fcf4a"}]}
+];
+$("#gmGrid").innerHTML=GAMEMODES.map(m=>`<article class="gm"><div class="gart" style="--a1:${m.a[0]};--a2:${m.a[1]}">${pixArt(m.art[0],m.art[1])}</div><div class="gbody"><h3>${m.n}</h3><p>${m.t}</p><ul>${m.l.map(x=>`<li>${x}</li>`).join("")}</ul></div></article>`).join("");
+
+$$(".fcopy").forEach(b=>b.onclick=async()=>{
+  const t=b.dataset.copy,lbl=$("span",b);
+  try{await navigator.clipboard.writeText(t);lbl.textContent="Kimásolva"}catch(e){lbl.textContent="Jelöld ki és másold"}
+  setTimeout(()=>lbl.textContent="Másolás",1800);
+});
+
+let voteData=null;
+const idoHu=t=>new Date(t).toLocaleString("hu-HU",{month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
+async function loadVote(){
+  $("#vName").textContent=user?user.name:"";
+  const d=await api("/api/vote");
+  if(d.error){$("#vList").innerHTML=`<div class="card soon"><b>Most nem sikerült betölteni</b>${escH(d.error)}</div>`;return}
+  voteData=d;renderVote();
+}
+function renderVote(){
+  const d=voteData;if(!d)return;
+  $("#vReward").textContent=fmtN(d.reward);$("#vTotal").textContent=fmtN(d.total);
+  $("#vList").innerHTML=d.sites.map(x=>{
+    if(!x.ready)return `<article class="vsite off"><div class="vtop"><h3>${escH(x.name)}</h3><span class="vtag">Hamarosan</span></div><p>Ezen a listán hamarosan szavazhatsz az IceMine-ra.</p></article>`;
+    const wait=x.next&&x.next>Date.now();
+    return `<article class="vsite"><div class="vtop"><h3>${escH(x.name)}</h3><span class="vtag ${wait?"done":"go"}">${wait?"Ma már szavaztál":"+"+fmtN(d.reward)+" IceCoin"}</span></div>
+      <p>${wait?"Legközelebb "+idoHu(x.next)+" után szavazhatsz újra.":"Szavazz, aztán gyere vissza, és vedd át a jutalmat."}</p>
+      <div class="vbtns"><a class="btn alt" href="${escH(x.url)}" target="_blank" rel="noopener">Szavazás</a><button class="btn" type="button" data-vclaim="${escH(x.id)}"${wait?" disabled":""}>Jutalom átvétele</button></div>
+      <div class="msg" data-vmsg="${escH(x.id)}" aria-live="polite"></div></article>`;
+  }).join("");
+}
+$("#vList").addEventListener("click",async e=>{
+  const b=e.target.closest("[data-vclaim]");if(!b||!voteData)return;
+  const id=b.dataset.vclaim,m=`[data-vmsg="${id}"]`;
+  b.disabled=true;msg(m,"A szavazatod ellenőrzése…");
+  const d=await api("/api/vote/claim",{site:id});
+  if(d.user){user=d.user;render()}
+  if(d.error){b.disabled=d.s===429&&/ma már/i.test(d.error);return msg(m,d.error,"e")}
+  const x=voteData.sites.find(z=>z.id===id);if(x)x.next=d.next;voteData.total=d.total;
+  renderVote();msg(m,"+"+fmtN(d.reward)+" IceCoin jóváírva. Köszönjük a szavazatod!","o");
+});
 const NEWS=[
  {d:"2026-10-12",tag:"Bejelentés",t:"Elindult az IceMine új weboldala!",x:"Mostantól egy helyen intézhetsz mindent: a fiókodat, az IceCoin egyenlegedet, a rangjaidat és a vásárlásaidat. Nézz körül, és írd meg a Discordon, mit gondolsz!",href:"https://discord.gg/YJV2HNqTMc",more:"Írj nekünk a Discordon"},
  {d:"2026-10-12",tag:"Újdonság",t:"Pörgess a Szerencsekeréken",x:"Hetente egy pörgetés ingyen jár, utána 50 IceCoinért pörgethetsz újra. A fődíj a Bronz rang!",href:"#szerencsekerek",more:"Irány a kerék",a:["#3fb4ff","#1c6fd6"],ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>'},

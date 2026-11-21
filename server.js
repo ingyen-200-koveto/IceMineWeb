@@ -478,6 +478,55 @@ app.post("/api/spin", limit(120, 6e5), (req, res) => {
   res.json({ ok: true, slot, win: prize > 0 || granted, prize, rank, granted, free, spun: true, user: pub(u) });
 });
 
+const VOTE_REWARD = Math.max(0, Math.floor(Number(process.env.VOTE_REWARD)) || 25);
+const VOTE_SITES = [
+  { id: "mcmp", name: "Minecraft-MP", api: process.env.VOTE_MCMP_API || "https://minecraft-mp.com/api/", url: String(process.env.VOTE_MCMP_URL || "").trim(), key: String(process.env.VOTE_MCMP_KEY || "").trim() }
+];
+const voteZar = new Set();
+const idoHu = t => new Date(t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+const voteNext = (u, s) => { const t = u.votes && u.votes[s.id]; return t && t + NAP_MS > Date.now() ? t + NAP_MS : null; };
+async function voteApi(s, claim, name) {
+  const q = new URLSearchParams({ object: "votes", element: "claim", key: s.key, username: name });
+  if (claim) q.set("action", "post");
+  const r = await fetch(s.api + "?" + q, { headers: { "User-Agent": "IceMine-web" }, signal: AbortSignal.timeout(10000) });
+  if (!r.ok) throw new Error("HTTP " + r.status);
+  return (await r.text()).trim();
+}
+app.get("/api/vote", (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  res.json({ reward: VOTE_REWARD, total: u.voteCount || 0, sites: VOTE_SITES.map(s => ({ id: s.id, name: s.name, url: s.url || null, ready: !!(s.url && s.key), next: voteNext(u, s) })) });
+});
+app.post("/api/vote/claim", limit(40, 6e5), async (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const s = VOTE_SITES.find(x => x.id === String((req.body || {}).site || ""));
+  if (!s) return fail(res, 400, "Ismeretlen szavazóoldal.");
+  if (!s.url || !s.key) return fail(res, 503, "Ezen az oldalon még nem lehet jutalmat átvenni.");
+  const nx = voteNext(u, s);
+  if (nx) return fail(res, 429, "Erről az oldalról ma már átvetted a jutalmat. Legközelebb " + idoHu(nx) + " után.");
+  const k = u.name.toLowerCase();
+  if (voteZar.has(k)) return fail(res, 429, "Már ellenőrizzük a szavazatodat, várj egy pillanatot.");
+  voteZar.add(k);
+  try {
+    let a;
+    try { a = await voteApi(s, false, u.name); } catch (e) { console.error("Szavazás: a(z) " + s.name + " nem válaszolt (" + e.message + ")."); return fail(res, 502, "A szavazóoldal most nem válaszol. Próbáld újra pár perc múlva."); }
+    if (a === "0") return fail(res, 404, "Nem találunk szavazatot " + u.name + " néven az elmúlt 24 órából. A szavazóoldalon pontosan ezt a nevet add meg: " + u.name + ". Ha most szavaztál, várj 1-2 percet, és próbáld újra.");
+    if (a === "2") return fail(res, 409, "Ezt a szavazatot már átvetted. Holnap újra szavazhatsz.");
+    if (a !== "1") { console.error("Szavazás: váratlan válasz a(z) " + s.name + " oldaltól: " + String(a).slice(0, 80)); return fail(res, 502, "A szavazóoldal hibás választ adott. Ellenőrizd a VOTE_MCMP_KEY kulcsot, vagy próbáld újra később."); }
+    let c;
+    try { c = await voteApi(s, true, u.name); } catch (e) { return fail(res, 502, "A szavazóoldal most nem válaszol. Próbáld újra pár perc múlva."); }
+    if (c !== "1") return fail(res, 409, "Ezt a szavazatot már átvetted. Holnap újra szavazhatsz.");
+    const most = Date.now();
+    u.votes = u.votes || {}; u.votes[s.id] = most;
+    u.voteCount = (u.voteCount || 0) + 1;
+    u.coins = (u.coins || 0) + VOTE_REWARD;
+    save();
+    console.log("Szavazás: " + u.name + " +" + VOTE_REWARD + " IceCoin (" + s.name + ").");
+    res.json({ ok: true, reward: VOTE_REWARD, next: most + NAP_MS, total: u.voteCount, user: pub(u) });
+  } finally { voteZar.delete(k); }
+});
+
 const NAP_MS = 864e5;
 const RANG_NAPOK = [30, 60];
 const rangNap = n => (RANG_NAPOK.includes(Number(n)) ? Number(n) : 30);
