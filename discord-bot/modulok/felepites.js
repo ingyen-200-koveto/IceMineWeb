@@ -98,6 +98,7 @@ const FELEPITES = [
       { kulcs: "reportok", nev: "🚨・jelentések", tipus: T, tema: "Játékbeli /jelent jelentések" },
       { kulcs: "adminhivasok", nev: "🆘・segítségkérések", tipus: T, tema: "Játékbeli /segitseg kérések" },
       { kulcs: "jelentkezesek", nev: "📝・jelentkezések", tipus: T, tema: "Staff jelentkezések a weboldalról" },
+      { kulcs: "szerverhibak", nev: "⚠️・szerver-hibák", tipus: T, tema: "A lobby és a proxy hibái és figyelmeztetései" },
       { kulcs: "naplo", nev: "📒・napló", tipus: T, tema: "Moderálás, ticketek, minden más" },
       { kulcs: "naplo_uzenet", nev: "💬・üzenet-napló", tipus: T, tema: "Törölt és szerkesztett üzenetek, automod" },
       { kulcs: "naplo_tag", nev: "👥・tag-napló", tipus: T, tema: "Belépés, kilépés, rangok, kitiltások" },
@@ -330,6 +331,7 @@ async function epit(i, panelekKellenek) {
   await allit("adminhivasok", ch.adminhivasok, "🆘 Segítségkérések");
   await allit("jelentkezesek", ch.jelentkezesek, "📝 Jelentkezések");
   await allit("hirek", ch.hirek, "📢 Hírek a weboldalra");
+  await allit("szerverhibak", ch.szerverhibak, "⚠️ Szerverhibák");
   await allit("naplo", ch.naplo, "📒 Fő napló");
   b.naplok ||= {};
   for (const [tipus, kulcs, cimke] of [

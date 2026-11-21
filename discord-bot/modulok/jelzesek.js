@@ -1,5 +1,5 @@
 const { ButtonStyle, MessageFlags, ModalBuilder, TextInputBuilder, TextInputStyle, PermissionFlagsBits: P } = require("discord.js");
-const { K, beall, kartya, gomb, sor, csatorna, tudIrni, naploCsatorna, unix, hiba, siker, staffE } = require("../kozos");
+const { K, beall, kartya, gomb, sor, csatorna, tudIrni, naploCsatorna, unix, hiba, siker, staffE, mentKesobb } = require("../kozos");
 
 const BELSO = (process.env.BELSO_URL || "http://127.0.0.1:3001").replace(/\/+$/, "");
 const mcFej = (nev) => `https://mc-heads.net/avatar/${encodeURIComponent(String(nev || "MHF_Steve").replace(/^\./, ""))}/128`;
@@ -57,6 +57,46 @@ async function jelzes(client, e) {
         .lab("A /jelent parancsból • 🧊 IceMine");
       await kuldes(g, b.reportok, null, k.uzenet());
     }
+  }
+}
+
+const kod = (x) => String(x || "").replace(/```/g, "ʼʼʼ");
+
+async function hibaCsatorna(g, b) {
+  const meglevo = await csatorna(g, b.szerverhibak);
+  if (meglevo) return meglevo;
+  const me = g.members.me;
+  const minta = (await csatorna(g, b.reportok)) || (await csatorna(g, b.naplo));
+  if (me && me.permissions.has(P.ManageChannels) && minta && minta.parent) {
+    const uj = await g.channels
+      .create({ name: "⚠️・szerver-hibák", type: 0, parent: minta.parent.id, topic: "A lobby és a proxy hibái és figyelmeztetései", reason: "Szerverhiba-figyelő" })
+      .catch(() => null);
+    if (uj) {
+      await uj.lockPermissions().catch(() => {});
+      b.szerverhibak = uj.id;
+      mentKesobb();
+      return uj;
+    }
+  }
+  return naploCsatorna(g, "fo");
+}
+
+async function szerverhiba(client, e) {
+  const hibaE = e.szint === "ERROR";
+  const k = kartya(hibaE ? K.PIROS : K.SARGA).szoveg(
+    [
+      `### ${hibaE ? "❌ Hiba" : "⚠️ Figyelmeztetés"} · ${e.forras}`,
+      e.logger ? `🧩 **Honnan:** ${e.logger}` : null,
+      "```\n" + kod(e.uzenet) + "\n```",
+      e.verem ? "-# Részletek:\n```\n" + kod(e.verem) + "\n```" : null,
+      `🕒 <t:${unix(e.elso || e.t)}:R>${e.db > 1 ? ` · 🔁 **${e.db}×** ugyanez` : ""}`,
+    ]
+      .filter(Boolean)
+      .join("\n"),
+  ).lab("Szerverhiba-figyelő • 🧊 IceMine");
+  for (const g of client.guilds.cache.values()) {
+    const ch = await hibaCsatorna(g, beall(g.id));
+    if (ch && tudIrni(ch)) await ch.send(k.uzenet()).catch((x) => console.error("Szerverhiba küldése:", x.message));
   }
 }
 
@@ -242,6 +282,7 @@ function indit(client) {
 
 module.exports = {
   jelzes,
+  szerverhiba,
   jelentkezes,
   hirUj,
   hirSzerk,

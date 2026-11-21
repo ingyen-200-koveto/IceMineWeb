@@ -1295,6 +1295,26 @@ app.post("/api/mc/jelzes", limit(120, 6e5), (req, res) => {
   save();
   res.json({ ok: true });
 });
+const hibaKorlat = { perc: 0, db: 0 };
+app.post("/api/mc/hibak", limit(300, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key) return fail(res, 503, "Az MC_API_KEY nincs beállítva a weboldalon.");
+  if (!same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const b = req.body || {}, lista = Array.isArray(b.hibak) ? b.hibak.slice(0, 20) : null;
+  if (!lista) return fail(res, 400, "Hibás adat.");
+  const forras = String(b.forras || "Szerver").replace(/[^\p{L}\p{N} _.\-]/gu, "").slice(0, 30) || "Szerver";
+  const perc = Math.floor(Date.now() / 6e4);
+  if (hibaKorlat.perc !== perc) { hibaKorlat.perc = perc; hibaKorlat.db = 0; }
+  let kuldve = 0;
+  for (const h of lista) {
+    if (!h || typeof h.uzenet !== "string" || hibaKorlat.db >= 15) continue;
+    hibaKorlat.db++; kuldve++;
+    const tiszta = (x, n) => String(x || "").replace(/[\u0000-\u0008\u000b-\u001f]/g, "").slice(0, n);
+    esemeny("szerverhiba", { forras, szint: h.szint === "ERROR" ? "ERROR" : "WARN", logger: tiszta(h.logger, 80), uzenet: tiszta(h.uzenet, 900), verem: tiszta(h.verem, 900), db: Math.max(1, Math.min(1e6, Number(h.db) || 1)), elso: Number(h.elso) || Date.now() });
+  }
+  if (kuldve) save();
+  res.json({ ok: true, kuldve });
+});
 function buntetesFiok(u) {
   const b = db.buntetesek;
   if (!b || !b.t || Date.now() - b.t > 864e5) return undefined;
