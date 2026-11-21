@@ -971,7 +971,7 @@ app.get("/api/mc/coins", limit(400, 6e5), (req, res) => {
   if (key && !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
   const names = [...new Set(String(req.query.names || "").toLowerCase().split(",").map(s => s.trim()).filter(n => /^[a-z0-9_]{1,16}$/.test(n)))].slice(0, 200);
   const players = {};
-  for (const n of names) { const u = db.users[n]; if (u && u.verified) { rangLejart(u); players[n] = { coins: u.coins || 0, rank: u.rank || "default" }; } }
+  for (const n of names) { const u = db.users[n]; if (u && u.verified) { rangLejart(u); players[n] = { coins: u.coins || 0, rank: u.rank || "default", skin: u.skin && u.id ? u.skin.v : 0, slim: !!(u.skin && u.skin.slim) }; } }
   res.set("Cache-Control", "no-store").json({ players });
 });
 
