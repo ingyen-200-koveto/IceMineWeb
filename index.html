@@ -977,6 +977,8 @@ a.si.on svg{color:var(--ice)}
 .page[data-page="beallitasok"]{max-width:900px}
 .ubstat>div:last-child{border-bottom:0!important}
 .acct>.sbal,.acct>.btn{justify-self:stretch}
+.tsbox{min-height:65px;display:flex;justify-content:center}
+.tsbox[hidden]{display:none}
 </style>
 </head>
 <body>
@@ -1030,6 +1032,7 @@ a.si.on svg{color:var(--ice)}
         <label class="chk" id="accRow" hidden><input type="checkbox" name="accept"><span>Elfogadom az <a href="#aszf">Általános Szerződési Feltételeket</a> és a <a href="#szabalyzat">Szabályzatot</a>, és megismertem az <a href="#adatvedelem">Adatkezelési tájékoztatót</a>.</span></label>
         <label class="chk" id="korRow" hidden><input type="checkbox" name="kor"><span>Megerősítem, hogy betöltöttem a 16. életévemet, vagy ha fiatalabb vagyok, a szülőm hozzájárult a regisztrációhoz.</span></label>
         <p class="refnote" id="refNote" hidden>Egy barátod meghívójával regisztrálsz. Ha fellépsz a szerverre, mindketten IceCoint kaptok.</p>
+        <div class="tsbox" id="tsBox" hidden></div>
         <div class="msg" id="aMsg" aria-live="polite"></div>
         <button class="btn mc" type="submit" id="aBtn">Belépés</button>
         <button class="linkbtn" type="button" id="forgotBtn">Elfelejtettem a jelszavam</button>
@@ -1563,6 +1566,7 @@ a.si.on svg{color:var(--ice)}
           <ul>
             <li><b>Rackhost Zrt.</b> (6722 Szeged, Tisza Lajos krt. 41.): szerver és tárhely. Az adatokat Magyarországon tároljuk.</li>
             <li><b>Sendinblue SAS (Brevo)</b> (9-17 rue Salneuve, 75017 Párizs, Franciaország): e-mailek kiküldése (megerősítő, jelszó-visszaállító és visszaigazoló levelek). Hozzáfér: e-mail cím, felhasználónév, a levél tartalma.</li>
+            <li><b>Cloudflare, Inc.</b> (101 Townsend St., San Francisco, CA 94107, USA): a regisztrációs és belépési űrlap védelme automatizált visszaélések ellen (Turnstile), ha be van kapcsolva. Hozzáfér: IP-cím és a böngésző technikai adatai. Az adattovábbítás az EU általános szerződési feltételei alapján történik.</li>
             <li><b>Stripe Payments Europe, Limited</b> (1 Grand Canal Street Lower, Grand Canal Dock, Dublin, Írország): a fizetés lebonyolítása. A kártyaadatokat a Stripe önálló adatkezelőként, a saját <a href="https://stripe.com/privacy" target="_blank" rel="noopener">adatvédelmi tájékoztatója</a> szerint kezeli.</li>
             <li><b>mc-heads.net</b>: ha nem töltöttél fel saját skint, a szerverünk a felhasználóneved alapján innen kéri le a hozzá tartozó Minecraft skint, hogy a Karakter oldalon megjelenítse. Ehhez csak a felhasználónevet küldjük el, a te IP-címedet nem.</li>
           </ul>
@@ -1786,6 +1790,10 @@ function showVerify(name,mail){
 }
 function backToLogin(){showForm("aform");setMode(false)}
 $("#vBack").onclick=backToLogin;
+let tsSite=null,tsTok="",tsId=null;
+function tsUj(){tsTok="";if(tsId!=null&&window.turnstile)try{turnstile.reset(tsId)}catch(e){}}
+window.tsKesz=()=>{try{tsId=turnstile.render("#tsBox",{sitekey:tsSite,theme:"dark",language:"hu",callback:t=>{tsTok=t},"expired-callback":()=>{tsTok=""},"error-callback":()=>{tsTok=""}});$("#tsBox").hidden=false}catch(e){}};
+(async()=>{const d=await api("/api/beallitasok");if(!d||!d.turnstile)return;tsSite=d.turnstile;const sc=document.createElement("script");sc.src="https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit&onload=tsKesz";sc.async=true;sc.defer=true;document.head.appendChild(sc)})();
 $("#aform").onsubmit=async e=>{
   e.preventDefault();
   const f=e.target,name=f.user.value.trim(),pw=f.pass.value;
@@ -1795,8 +1803,10 @@ $("#aform").onsubmit=async e=>{
   if(reg&&!birth) return msg("#aMsg","Add meg a születési dátumod.","e");
   if(reg&&!f.accept.checked) return msg("#aMsg","A regisztrációhoz fogadd el az ÁSZF-et és a Szabályzatot.","e");
   if(reg&&!f.kor.checked) return msg("#aMsg","Erősítsd meg az életkorodat, vagy hogy a szülőd hozzájárult.","e");
+  if(tsSite&&!tsTok) return msg("#aMsg","Várd meg, amíg a Cloudflare ellenőrzés „Sikeres!” lesz.","e");
   const btn=$("#aBtn");btn.disabled=true;msg("#aMsg","Egy pillanat...");
-  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw,accept:true,kor:true,birth,ref:f.ref.value.trim()||undefined}:{name,password:pw});
+  const d=await api(reg?"/api/register":"/api/login",reg?{name,email:f.email.value.trim(),password:pw,accept:true,kor:true,birth,ref:f.ref.value.trim()||undefined,ts:tsTok||undefined}:{name,password:pw,ts:tsTok||undefined});
+  tsUj();
   btn.disabled=false;
   if(d.error) return msg("#aMsg",d.error,"e");
   f.reset();

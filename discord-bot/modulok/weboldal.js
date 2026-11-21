@@ -72,10 +72,52 @@ function webNaploEmbed(e) {
   if (e.tipus === "osszekotes") return embed(K.ZOLD).setTitle("🔗 Discord összekötés").setDescription(`${ki} ↔ <@${e.discord}> (${e.discordNev || "?"})`);
   if (e.tipus === "levalasztas") return embed(K.SZURKE).setTitle("✂️ Discord leválasztás").setDescription(`${ki} ✕ <@${e.discord}> (${e.discordNev || "?"})`);
   if (e.tipus === "rang") return embed(K.LILA).setTitle("🎡 Rangot nyert").setDescription(`${ki}: **${e.rang}** (${e.forras || "weboldal"})`);
+  if (e.tipus === "ranglejar") return embed(K.ARANY).setTitle("⏳ Hamarosan lejáró rang").setDescription(`${ki}: **${e.rang}**, lejár <t:${unix(e.lejar)}:R>${e.discord ? `\n💬 DM: ${e.dm ? "elküldve" : "nem sikerült (zárt DM)"}` : "\n💬 DM: nincs összekötött Discord"}`);
   return null;
 }
 
+function lejarKartya(e) {
+  const st = stilus((RANG_ALAP.find((x) => x.nev === e.rang) || {}).id);
+  return kartya(st.szin)
+    .kepes(
+      [
+        "### ⏳ Hamarosan lejár a rangod",
+        `${st.emoji} **${e.rang}** rangod <t:${unix(e.lejar)}:R> lejár (<t:${unix(e.lejar)}:f>).`,
+        "Ha meghosszabbítod ugyanazt a rangot, az új napok a mostani lejárathoz adódnak, így egy napot sem veszítesz.",
+      ].join("\n"),
+      mcFej(e.user),
+    )
+    .sor(linkGomb("Meghosszabbítom", K.WEB + "/#rangok", "🔁"))
+    .lab(`🌐 Weboldal fiók: ${e.user} • 🧊 IceMine`);
+}
+
+function merfoldKartya(szoveg, gomb) {
+  return kartya(K.ARANY).kepes(szoveg, K.LOGO).sor(gomb).lab();
+}
+
+async function merfoldKuld(client, k) {
+  for (const g of client.guilds.cache.values()) {
+    const b = beall(g.id);
+    const ch = (await csatorna(g, b.merfoldkovek)) || g.systemChannel;
+    if (ch && tudIrni(ch)) await ch.send(k.uzenet()).catch((x) => console.error("Mérföldkő küldése:", x.message));
+  }
+}
+
 async function feldolgoz(client, e) {
+  if (e.tipus === "ranglejar" && e.discord) {
+    const u = await client.users.fetch(e.discord).catch(() => null);
+    e.dm = !!(u && (await u.send(lejarKartya(e).uzenet()).then(() => true).catch(() => false)));
+  }
+  if (e.tipus === "merfoldko" && e.fajta === "regisztracio") {
+    await merfoldKuld(
+      client,
+      merfoldKartya(
+        [`### 🎉 Elértük a ${szam(e.szam)}. regisztrált játékost!`, "Köszönjük mindenkinek, hogy velünk vagytok! 🧊", "Hívd meg a barátaidat is, és mindketten IceCoint kaptok."].join("\n"),
+        linkGomb("Meghívó linkem", K.WEB + "/#meghivo", "🤝"),
+      ),
+    );
+    return;
+  }
   for (const g of client.guilds.cache.values()) {
     if (e.tipus === "vasarlas") {
       const b = beall(g.id);
@@ -266,4 +308,4 @@ const parancsok = {
   },
 };
 
-module.exports = { parancsok, indit, szinkron, RANG_ALAP, RANG_STILUS };
+module.exports = { merfoldKuld, merfoldKartya, parancsok, indit, szinkron, RANG_ALAP, RANG_STILUS };

@@ -58,6 +58,7 @@ async function boot() {
     if (n) console.log("Rang lejárat: " + n + " meglévő rang 30 napot kapott mostantól.");
   }
   setInterval(() => { let v = false; for (const u of Object.values(db.users)) if (u && rangLejart(u)) v = true; if (v) save(); }, 6e5);
+  setTimeout(lejaratFigyelo, 6e4); setInterval(lejaratFigyelo, 18e5);
   let atnevezve = 0;
   for (const u of Object.values(db.users)) if (u && u.rank === "Abyss") { u.rank = "Wizard"; atnevezve++; }
   if (atnevezve) { save(); console.log("Rang átnevezés: " + atnevezve + " Abyss rangú fiók mostantól Wizard."); }
@@ -65,7 +66,7 @@ async function boot() {
   const certFile = path.join(__dirname, "cert.pem"), keyFile = path.join(__dirname, "key.pem");
   const tls = fs.existsSync(certFile) && fs.existsSync(keyFile);
   const server = tls ? require("https").createServer({ cert: fs.readFileSync(certFile), key: fs.readFileSync(keyFile) }, app) : require("http").createServer(app);
-  const ready = () => { console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); (async () => { await checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); await checkStripe().catch(e => console.log("Fizetés: ellenőrzési hiba – " + e.message)); })(); };
+  const ready = () => { console.log("Cloudflare ellenőrzés: " + (TS_SITE && TS_SECRET ? "bekapcsolva (regisztráció és belépés)." : "kikapcsolva (TURNSTILE_SITE_KEY és TURNSTILE_SECRET_KEY kell a .env-be).")); console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); (async () => { await checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); await checkStripe().catch(e => console.log("Fizetés: ellenőrzési hiba – " + e.message)); })(); };
   host ? server.listen(port, host, ready) : server.listen(port, ready);
   const bport = Number(process.env.INTERNAL_PORT) || 3001, bs = require("http").createServer((req, res) => belso(req, res));
   bs.on("error", e => console.error("Bot kapcsolat: nem indult el a belső API (" + e.message + ")."));
@@ -322,6 +323,48 @@ async function sendReset(req, u, code) {
   const html = levelSablon(base(req), { cim: "Új jelszó beállítása", torzs: levelP(`Szia ${levelEsc(u.name)}! Jelszó-visszaállítást kértél az IceMine fiókodhoz.`) + levelGomb(link, "Új jelszó megadása →") + levelKod("VAGY ÍRD BE EZT A KÓDOT", code) + levelP('<span style="font-size:14px;color:#6b7c89">A kód 1 óráig érvényes.</span>'), megjegyzes: "Nem te kérted? Hagyd figyelmen kívül ezt a levelet, a jelszavad nem változik." });
   await sendMail({ to: u.email, subject: "IceMine – jelszó-visszaállítás", text, html });
 }
+const oldalCim = () => process.env.BASE_URL || "https://icemine.hu";
+const huIdo = t => new Date(t).toLocaleString("hu-HU", { timeZone: "Europe/Budapest", year: "numeric", month: "long", day: "numeric", hour: "2-digit", minute: "2-digit" });
+async function sendRangLejar(u) {
+  const site = oldalCim(), mikor = huIdo(u.rankUntil), nap = Math.max(1, Math.ceil((u.rankUntil - Date.now()) / 864e5));
+  const text = `Szia ${u.name}!\nA(z) ${u.rank} rangod ${mikor}-kor lejár (még ${nap} nap).\nHa szeretnéd megtartani, itt meghosszabbíthatod: ${site}/#rangok\nHa ugyanazt a rangot hosszabbítod, az új napok a mostani lejárathoz adódnak.\n\nÜdvözlettel, IceMine csapata!`;
+  const html = levelSablon(site, { cim: `Hamarosan lejár a rangod ⏳`, torzs: levelP(`Szia ${levelEsc(u.name)}! A <b>${levelEsc(u.rank)}</b> rangod hamarosan lejár.`)
+    + `<div style="margin:0 0 20px;padding:16px 18px;border-radius:12px;background:#0f2a44"><div style="font-size:11px;letter-spacing:1.5px;color:#9fc3dd;font-weight:bold">LEJÁRAT</div><div style="margin-top:4px;font-size:20px;font-weight:bold;color:#ffffff">${mikor}</div><div style="margin-top:2px;font-size:13px;color:#9fc3dd">még ${nap} nap van hátra</div></div>`
+    + levelP("Ha szeretnéd megtartani a jutalmait, hosszabbítsd meg időben. Ha ugyanazt a rangot hosszabbítod, az új napok a mostani lejárathoz adódnak, így egy napot sem veszítesz.")
+    + levelGomb(site + "/#rangok", "Meghosszabbítom →"), megjegyzes: "Ezt a levelet azért kaptad, mert van IceMine rangod. Lejárat előtt csak egyszer küldjük." });
+  await sendMail({ to: u.email, subject: "IceMine – hamarosan lejár a rangod", text, html });
+}
+function lejaratFigyelo() {
+  const most = Date.now(); let v = false;
+  for (const u of Object.values(db.users)) {
+    if (!u || !u.verified || !u.rank || u.rank === "default" || !u.rankUntil) continue;
+    const hatra = u.rankUntil - most;
+    if (hatra <= 0 || hatra > 3 * 864e5 || u.lejErtesites === u.rankUntil) continue;
+    u.lejErtesites = u.rankUntil; v = true;
+    esemeny("ranglejar", { user: u.name, discord: dcId(u), rang: u.rank, lejar: u.rankUntil });
+    if (u.email) sendRangLejar(u).catch(e => console.error("Rang lejárat e-mail hiba: " + e.message));
+  }
+  if (v) save();
+}
+const MERFOLDKOVEK = [10, 25, 50, 100, 150, 200, 300, 400, 500, 750, 1000, 1500, 2000, 3000, 4000, 5000, 7500, 10000, 15000, 20000];
+function regMerfoldko() {
+  const n = Object.values(db.users).filter(x => x && x.verified).length, m = MERFOLDKOVEK.filter(x => x <= n).pop() || 0;
+  if (db.merfoldReg === undefined) { db.merfoldReg = m; return; }
+  if (m > db.merfoldReg) { db.merfoldReg = m; esemeny("merfoldko", { fajta: "regisztracio", szam: m }); }
+}
+const TS_SITE = String(process.env.TURNSTILE_SITE_KEY || "").trim(), TS_SECRET = String(process.env.TURNSTILE_SECRET_KEY || "").trim();
+async function emberE(req, token) {
+  if (!TS_SITE || !TS_SECRET) return null;
+  if (typeof token !== "string" || !token || token.length > 2048) return "Várd meg, amíg a Cloudflare ellenőrzés „Sikeres!” lesz a gomb fölött.";
+  try {
+    const r = await fetch("https://challenges.cloudflare.com/turnstile/v0/siteverify", { method: "POST", body: new URLSearchParams({ secret: TS_SECRET, response: token, remoteip: req.ip || "" }), signal: AbortSignal.timeout(8000) });
+    const d = await r.json().catch(() => ({}));
+    if (d.success) return null;
+    console.log("Cloudflare ellenőrzés elutasítva: " + ((d["error-codes"] || []).join(", ") || r.status));
+    return "Az ellenőrzés nem sikerült. Próbáld újra.";
+  } catch (e) { console.error("Cloudflare ellenőrzés hiba: " + e.message); return "Az ellenőrzés most nem érhető el. Próbáld újra pár perc múlva."; }
+}
+app.get("/api/beallitasok", (req, res) => res.json({ turnstile: TS_SITE && TS_SECRET ? TS_SITE : null }));
 async function sendWelcome(req, u) {
   const site = base(req), token = crypto.randomBytes(24).toString("hex");
   u.torles = { h: sha(token), exp: Date.now() + 30 * 864e5 }; save();
@@ -367,6 +410,7 @@ const taken = (u) => u && (u.verified || (u.v && u.v.exp > Date.now()));
 app.post("/api/register", limit(10, 36e5), async (req, res) => {
   const { name = "", email = "", password = "", accept, ref = "", birth = "", kor } = req.body || {};
   if (accept !== true) return fail(res, 400, "A regisztrációhoz el kell fogadnod az ÁSZF-et és a Szabályzatot.");
+  { const eh = await emberE(req, (req.body || {}).ts); if (eh) return fail(res, 400, eh); }
   const bm = typeof birth === "string" && /^(\d{4})-(\d{2})-(\d{2})$/.exec(birth), bd = bm && new Date(Date.UTC(+bm[1], +bm[2] - 1, +bm[3]));
   if (!bd || bd.getUTCMonth() !== +bm[2] - 1 || bd.getUTCDate() !== +bm[3] || +bm[1] < 1920 || bd > Date.now() - 3 * 365 * 864e5) return fail(res, 400, "Adj meg érvényes születési dátumot.");
   if (kor !== true) return fail(res, 400, "Erősítsd meg az életkorodat, vagy hogy a szülőd hozzájárult a regisztrációhoz.");
@@ -394,6 +438,7 @@ app.post("/api/verify", limit(30, 6e5), (req, res) => {
   const u = db.users[key];
   esemeny("regisztracio", { user: u.name });
   sendWelcome(req, u).catch(e => console.error("Üdvözlő e-mail hiba: " + e.message));
+  regMerfoldko(); save();
   res.json({ ok: true, token: session(u), user: pub(u) });
 });
 
@@ -451,6 +496,7 @@ app.post("/api/reset", limit(20, 6e5), (req, res) => {
 
 app.post("/api/login", limit(30, 6e5), async (req, res) => {
   const { name = "", password = "" } = req.body || {};
+  { const eh = await emberE(req, (req.body || {}).ts); if (eh) return fail(res, 400, eh); }
   const u = db.users[String(name).toLowerCase()];
   if (!u || typeof password !== "string" || !same(u.hash, hashPw(password, u.salt))) return fail(res, 401, "Hibás felhasználónév vagy jelszó.");
   if (!u.verified) {

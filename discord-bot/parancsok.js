@@ -324,6 +324,9 @@ module.exports = [
       s.setName("vasarlasok").setDescription("Ide küldöm a weboldalas vásárlásokat").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")),
     )
     .addSubcommand((s) =>
+      s.setName("merfoldkovek").setDescription("Ide küldöm az online rekordokat és a regisztrációs mérföldköveket").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (lehet nyilvános)")),
+    )
+    .addSubcommand((s) =>
       s
         .setName("webrang")
         .setDescription("Melyik Discord rang tartozzon egy weboldal ranghoz")

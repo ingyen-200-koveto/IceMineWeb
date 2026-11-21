@@ -202,9 +202,32 @@ async function szamlaloFrissit(guild, kenyszer) {
   if (kenyszer || ch.name !== nev) await ch.setName(nev).catch((e) => console.error("Számláló:", e.message));
 }
 
+async function rekordFigyelo(client) {
+  const r = adat.mcRekord;
+  if (!r) return;
+  if (adat.rekordBejelentve === undefined) {
+    adat.rekordBejelentve = r.jatekos;
+    mentKesobb();
+    return;
+  }
+  if (r.jatekos <= adat.rekordBejelentve || r.jatekos < 5 || Date.now() - (adat.rekordBejelentveIdo || 0) < 2 * 3600000) return;
+  adat.rekordBejelentve = r.jatekos;
+  adat.rekordBejelentveIdo = Date.now();
+  mentKesobb();
+  const w = require("./weboldal");
+  await w.merfoldKuld(
+    client,
+    w.merfoldKartya(
+      [`### 🏆 Új online rekord: ${r.jatekos} játékos!`, `Ennyien voltunk egyszerre a szerveren <t:${unix(r.ido)}:R>. Köszönjük, hogy itt vagytok! 🧊`, `Gyere te is: \`${K.MC_HOST}\``].join("\n"),
+      linkGomb("Weboldal", K.WEB, "🌐"),
+    ),
+  );
+}
+
 function indit(client) {
   const kor = async () => {
     const s = await statusz();
+    await rekordFigyelo(client).catch((e) => console.error("Rekord:", e.message));
     await jelenlet(client, s).catch((e) => console.error("Jelenlét:", e.message));
     await panelekFrissit(client, s).catch((e) => console.error("Státusz panel:", e.message));
     await riasztas(client, s).catch((e) => console.error("Riasztás:", e.message));

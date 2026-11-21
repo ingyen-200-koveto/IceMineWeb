@@ -322,6 +322,7 @@ async function epit(i, panelekKellenek) {
   await allit("udvozlo", ch.udvozlo, "👋 Üdvözlés");
   await allit("otletek", ch.otletek, "💡 Ötletek");
   await allit("vasarlasok", ch.vasarlasok, "🛒 Vásárlások");
+  await allit("merfoldkovek", ch.altalanos, "🏆 Mérföldkövek");
   await allit("naplo", ch.naplo, "📒 Fő napló");
   b.naplok ||= {};
   for (const [tipus, kulcs, cimke] of [
