@@ -1004,6 +1004,13 @@ app.post("/api/discord-unlink", limit(10, 6e5), (req, res) => {
   res.json({ ok: true, user: pub(u) });
 });
 
+function fizetesTetelek(p) {
+  const hu = n => Number(n).toLocaleString("hu-HU"), t = [];
+  for (const [ic, q, bon] of p.packs || (p.ic ? [[p.ic, 1]] : [])) t.push((q > 1 ? q + " × " : "") + hu(ic) + " IceCoin" + (bon ? " + " + hu(bon) + " bónusz" : ""));
+  if (p.rank) t.push(p.rank + " rang, " + (p.rankNap || 30) + " nap");
+  if (p.unban) t.push(p.unban);
+  return t;
+}
 function belso(req, res) {
   const kuld = (k, o) => { res.writeHead(k, { "Content-Type": "application/json; charset=utf-8" }); res.end(JSON.stringify(o)); };
   let url;
@@ -1011,6 +1018,27 @@ function belso(req, res) {
   if (req.method === "GET" && url.pathname === "/esemenyek") {
     const utan = Number(url.searchParams.get("utan")) || 0;
     return kuld(200, { utolso: db.esemenySeq || 0, esemenyek: (db.esemenyek || []).filter(e => e.seq > utan).slice(0, 100) });
+  }
+  if (req.method === "GET" && url.pathname === "/rendeles") {
+    const id = String(url.searchParams.get("id") || "").trim(), idK = id.toUpperCase();
+    if (!/^[A-Za-z0-9_-]{6,80}$/.test(id)) return kuld(400, { error: "Hibás azonosító. Így néz ki: IC-H8D3RT6WNB vagy pi_3Qx..." });
+    const e = (db.esemenyek || []).slice().reverse().find(x => x.tipus === "vasarlas" && String(x.rendeles || "").toUpperCase() === idK);
+    const pEntry = Object.entries(db.payments || {}).find(([sid, x]) => x && (sid === id || x.pi === id));
+    let u = null, sor = null;
+    for (const x of Object.values(db.users)) { const f = (x.vasarlasok || []).find(v => String(v.id || "").toUpperCase() === idK); if (f) { u = x; sor = f; break; } }
+    if (!u && pEntry) u = Object.values(db.users).find(x => x.id === pEntry[1].uid) || null;
+    if (!u && e && e.user) u = db.users[String(e.user).toLowerCase()] || null;
+    if (!e && !pEntry && !sor) return kuld(404, { error: "Nincs ilyen rendelés: " + id + ". Nézd meg, jól másolta-e ki a játékos (a vásárlási előzményeiből vagy az e-mailből)." });
+    const p = pEntry ? pEntry[1] : null, ub = p ? (db.unbans || []).find(x => x.pi === p.pi || x.sid === pEntry[0]) : null;
+    return kuld(200, {
+      id, user: (u && u.name) || (e && e.user) || (p && p.user) || "?", discord: (u && dcId(u)) || (e && e.discord) || null,
+      t: (e && e.t) || (p && p.t) || (sor && sor.t) || null,
+      fizetes: e ? e.fizetes : p ? "ft" : sor && sor.ft != null ? "ft" : "ic",
+      huf: p ? p.huf : e && e.fizetes === "ft" ? e.huf : sor ? sor.ft : null, ic: e && e.fizetes === "ic" ? e.ic : sor ? sor.ic : null,
+      tetelek: (e && e.tetelek) || (sor && sor.mit && sor.mit.length ? sor.mit : null) || (p ? fizetesTetelek(p) : []), eredmeny: (e && e.eredmeny) || null,
+      jovairva: true, stripe: p ? { pi: p.pi || null, session: pEntry[0] } : null, rangHelyett: p && p.rankComp ? p.rankComp : null,
+      feloldas: ub ? { tullepes: !!ub.overLimit } : null, ma: { rang: u ? u.rank || "default" : null, coins: u ? u.coins || 0 : null }
+    });
   }
   if (req.method === "GET" && url.pathname === "/votifier") {
     const k = votifierKulcsok();

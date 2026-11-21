@@ -25,6 +25,11 @@ module.exports = [
     .setDescription("A weboldalas fiókod (vagy másé)")
     .addUserOption((o) => tag(o, false)),
   new SlashCommandBuilder()
+    .setName("rendeles")
+    .setDescription("Egy weboldalas vásárlás adatai az azonosító alapján (staff)")
+    .setDefaultMemberPermissions(P.ManageMessages)
+    .addStringOption((o) => o.setName("azonosito").setDescription("Pl. IC-H8D3RT6WNB vagy pi_3Qx...").setRequired(true).setMinLength(6).setMaxLength(80)),
+  new SlashCommandBuilder()
     .setName("rangok-letrehozas")
     .setDescription("Létrehozza a weboldal rangjait a Discordon, és kiosztja őket")
     .setDefaultMemberPermissions(P.ManageRoles),

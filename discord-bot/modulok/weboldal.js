@@ -254,6 +254,29 @@ const parancsok = {
     );
   },
 
+  async rendeles(i) {
+    await i.deferReply({ flags: MessageFlags.Ephemeral });
+    const id = i.options.getString("azonosito").trim();
+    const r = await webBiztos("/rendeles?id=" + encodeURIComponent(id));
+    if (!r) return hiba(i, "A weboldal most nem érhető el. Próbáld újra pár perc múlva.");
+    if (!r.ok) return hiba(i, r.error || "Nem találom ezt a rendelést.");
+    const osszeg = r.fizetes === "ft" ? `${szam(r.huf)} Ft (bankkártya)` : `${szam(r.ic)} IceCoin`;
+    const sorok = [
+      `### 🧾 Rendelés: \`${r.id}\``,
+      `👤 **Vevő:** ${r.user}${r.discord ? ` (<@${r.discord}>)` : ""}`,
+      `📦 **Termék:** ${(r.tetelek || []).join(", ") || "ismeretlen"}`,
+      r.eredmeny ? `🎡 **Eredmény:** ${r.eredmeny}` : null,
+      `💰 **Összeg:** ${osszeg}`,
+      r.t ? `🕒 **Időpont:** <t:${unix(r.t)}:f> (<t:${unix(r.t)}:R>)` : null,
+      `✅ **Állapot:** jóváírva${r.rangHelyett ? ` (a rang helyett ${szam(r.rangHelyett)} IceCoint kapott, mert már megvolt)` : ""}`,
+      r.feloldas ? `🔓 **Feloldás:** továbbítva a staffnak${r.feloldas.tullepes ? " · ⚠️ 6 hónapon belül már vásárolt, vissza kell téríteni!" : ""}` : null,
+      r.ma && r.ma.rang ? `-# Most: ${r.ma.rang === "default" ? "nincs rangja" : r.ma.rang + " rang"} · ${szam(r.ma.coins)} IceCoin` : null,
+    ].filter(Boolean);
+    const k = kartya(r.fizetes === "ft" ? K.ZOLD : K.ARANY).kepes(sorok.join("\n"), mcFej(r.user));
+    if (r.stripe && r.stripe.pi) k.sor(linkGomb("Megnyitás a Stripe-ban", "https://dashboard.stripe.com/payments/" + encodeURIComponent(r.stripe.pi), "💳"));
+    return valasz(i, k.lab("🛒 IceMine WebShop"));
+  },
+
   async fiok(i) {
     const user = i.options.getUser("tag") || i.user;
     const sajat = user.id === i.user.id;
