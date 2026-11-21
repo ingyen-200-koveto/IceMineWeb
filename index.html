@@ -366,16 +366,6 @@ a.lk:hover{background:var(--bg2);color:var(--ink)}
 .nfeat p{margin:0 0 18px;color:var(--mute);line-height:1.6;font-size:15px}
 .nmeta{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px;font-weight:700;color:var(--mute)}
 .ntag{padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--ice) 15%,transparent);color:var(--ice)}
-.ngrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:16px;margin-top:18px}
-.ncard{display:flex;flex-direction:column;overflow:hidden;border-radius:22px;background:var(--solid);box-shadow:inset 0 0 0 1px var(--line),var(--sh);color:inherit;text-decoration:none;transition:transform .15s,box-shadow .15s}
-.ncard:hover{transform:translateY(-3px);box-shadow:inset 0 0 0 1px var(--line),0 22px 40px -22px #0b3a5b99}
-.ncard .nart{position:relative;height:104px;display:grid;place-items:center;overflow:hidden;background:linear-gradient(135deg,var(--a1),var(--a2))}
-.ncard .nart::after{content:"";position:absolute;right:-30px;top:-40px;width:130px;height:130px;border-radius:30px;transform:rotate(22deg);background:#ffffff22}
-.ncard .nart svg{position:relative;width:46px;height:46px;color:#fff;filter:drop-shadow(0 6px 8px #0004)}
-.ncard .nbody{display:flex;flex-direction:column;gap:8px;flex:1;padding:16px 18px 18px}
-.page .ncard h3{margin:0;font-size:18px;line-height:1.25}
-.ncard p{margin:0;flex:1;color:var(--mute);font-size:14.5px;line-height:1.55}
-.ncard .nmore{font-weight:800;font-size:14px;color:var(--ice)}
 .ncomm{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:14px;margin-top:18px;padding:18px 22px;border-radius:22px;color:#fff;background:linear-gradient(135deg,#1c6fd6,#0b3a5b)}
 .ncomm b{display:block;font:800 18px Sora,sans-serif}
 .ncomm span{opacity:.85;font-weight:600;font-size:14px}
@@ -672,6 +662,58 @@ body[data-srv="down"] .sdot{background:#ef4444;box-shadow:0 0 0 4px #ef444433}
 :root[data-theme="dark"] .refnote{background:#22c55e22;color:#4ade80}
 :root[data-theme="dark"] .har.ok{color:#4ade80}
 @media (max-width:760px){.srvcard{grid-template-columns:1fr;gap:14px;padding:18px}.scmain b{font-size:20px}.rfrow .btn{flex:1}}
+@font-face{font-family:Pixel;src:url(/fonts/jersey-10-latin-400-normal.woff2) format("woff2");font-weight:400;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:Pixel;src:url(/fonts/jersey-10-latin-ext-400-normal.woff2) format("woff2");font-weight:400;font-display:swap;unicode-range:U+0100-02BA,U+1E00-1E9F}
+@font-face{font-family:Golos;src:url(/fonts/golos-text-latin-wght-normal.woff2) format("woff2");font-weight:400 900;font-display:swap;unicode-range:U+0000-00FF,U+0131,U+0152-0153,U+2000-206F,U+20AC,U+2122,U+2212}
+@font-face{font-family:Golos;src:url(/fonts/golos-text-latin-ext-wght-normal.woff2) format("woff2");font-weight:400 900;font-display:swap;unicode-range:U+0100-02BA,U+1E00-1E9F}
+:root{--navy:#0f3554;--navy2:#0b2840;--btn:#1a80cc;--btnd:#0d5a94;--r:14px}
+body,input,select,textarea,button{font-family:Golos,system-ui,sans-serif}
+.btn,.aswitch button,.afoot a,.ipchip,.rprice b,.ncomm b,.badge,.steps li::before,.howto b,.spin,.rsec h4,.rtag,.bname{font-family:Golos,system-ui,sans-serif!important}
+h1,h2,.page>header h2,.ahead h1,.phero h1,.shophero h1,.shophero h2{font-family:Pixel,Golos,sans-serif!important;font-weight:400!important;letter-spacing:.01em!important;line-height:1!important}
+h1{font-size:clamp(38px,4.6vw,52px)!important}
+h2{font-size:clamp(34px,3.8vw,44px)!important}
+.ahead h1{font-size:46px!important}
+h3{font-family:Golos,system-ui,sans-serif;font-weight:800;letter-spacing:-.01em}
+.rhead h3,.page .rhead h3{font-family:Pixel,Golos,sans-serif!important;font-weight:400!important;font-size:38px!important;letter-spacing:.01em!important;line-height:1!important}
+.bname{font-weight:800}
+.screen{background:none}
+.btn{border-radius:10px;background:var(--btn);box-shadow:0 3px 0 var(--btnd);transition:transform .12s,box-shadow .12s,filter .12s}
+.btn:hover{transform:translateY(-1px);filter:brightness(1.07);box-shadow:0 4px 0 var(--btnd)}
+.btn:active{transform:translateY(2px);box-shadow:0 1px 0 var(--btnd)}
+.btn.alt,.btn.mc.alt{background:var(--solid);color:var(--ink);box-shadow:inset 0 0 0 1px var(--line),0 3px 0 var(--line)}
+.btn.hot{background:var(--ink);color:var(--bg);box-shadow:0 3px 0 #000}
+.btn.mc::after{display:none}
+.btn.mc:hover{transform:translateY(-1px);box-shadow:0 4px 0 var(--btnd)}
+.phero,.shophero,.ncomm{background:var(--navy)!important;border-radius:var(--r)!important;padding-bottom:34px!important}
+.phero::before,.shophero::before,.ncomm::before{content:"";position:absolute;left:0;right:0;bottom:0;height:16px;background:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='96' height='16' shape-rendering='crispEdges'%3E%3Cpath fill='%23cfe8f7' d='M0 8h16V4h24v4h16V0h24v8h16v8H0z'/%3E%3Cpath fill='%23eaf6fd' d='M0 12h24V8h20v4h28V4h24v12H0z'/%3E%3C/svg%3E") repeat-x;background-size:96px 16px;image-rendering:pixelated;pointer-events:none}
+.ncomm{position:relative;overflow:hidden}
+.phero::after,.shophero::after,.rhead::after,.rhead::before{display:none!important}
+.balpill{border-radius:10px;backdrop-filter:none;background:#ffffff14}
+.rhead{background:var(--r2)!important}
+.r-iceking{--rt:#fff}
+.r-yeti{--r2:#c98a0e;--rt:#2a1b00}
+.rcard,.card,.pack,.gm,.nfeat,.acard{border-radius:var(--r)!important}
+.rgen{gap:4px 16px}
+.rgen li{padding:0;background:none;border-radius:0;font-weight:600}
+.ntag{padding:0;border-radius:0;background:none;text-transform:uppercase;letter-spacing:.06em;font-size:11.5px;font-weight:800}
+.nlist{margin-top:14px;border-radius:var(--r);background:var(--solid);box-shadow:inset 0 0 0 1px var(--line)}
+.nrow{display:grid;grid-template-columns:120px 1fr;gap:6px 20px;padding:18px 22px;color:inherit;text-decoration:none;border-top:1px solid var(--line)}
+.nrow:first-child{border-top:0}
+.nrow:hover h3{color:var(--ice)}
+.nrow .nd{padding-top:2px;color:var(--mute);font-size:13px;font-weight:600}
+.page .nrow h3{margin:2px 0 4px;font-size:17px;line-height:1.3}
+.nrow p{margin:0 0 6px;color:var(--mute);font-size:14.5px;line-height:1.55;max-width:62ch}
+.nrow .nmore{font-weight:700;font-size:14px;color:var(--ice)}
+@media (max-width:560px){.nrow{grid-template-columns:1fr;padding:16px 18px}.nrow .nd{order:-1}}
+.ifield input{padding-left:14px}
+.ubtop .ubi,.win .wi,.cico,.steps li::before,.howto b,.badge{background:var(--btn)!important}
+.badge.gold{background:#c27408!important}
+.ubcard.big .ubtop .ubi{background:#d48a0c!important}
+.win .wa{background:none;color:var(--ice);-webkit-background-clip:border-box;background-clip:border-box}
+.pack .art{background:var(--bg2)}
+#scrim,.cartbg{backdrop-filter:none!important;-webkit-backdrop-filter:none!important}
+.gart{background:var(--a2)!important}
+.gart::before,.gart::after{display:none!important}
 </style>
 </head>
 <body>
@@ -844,13 +886,13 @@ body[data-srv="down"] .sdot{background:#ef4444;box-shadow:0 0 0 4px #ef444433}
             <div class="thead"><div class="px" style="font-size:19px">IceCoin utalás</div><span class="avail"><span class="pcoin"></span>Elérhető: <b id="tAvail">0</b></span></div>
             <p class="hint" style="margin:-6px 0 0">Küldj IceCoint egy másik játékosnak.</p>
             <div class="trow">
-              <label>Akinek utalod<div class="ifield"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg><input name="to" required maxlength="16" placeholder="Felhasználónév" autocomplete="off" autocapitalize="off"></div></label>
+              <label>Akinek utalod<div class="ifield"><input name="to" required maxlength="16" placeholder="Felhasználónév" autocomplete="off" autocapitalize="off"></div></label>
               <div class="fgrp">
-                <label>Mennyiség<div class="ifield"><span class="pcoin"></span><input name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="0" required></div></label>
+                <label>Mennyiség<div class="ifield"><input name="amount" type="number" min="1" step="1" inputmode="numeric" placeholder="0" required></div></label>
                 <div class="quick" id="tQuick"><button type="button" data-q="100">+100</button><button type="button" data-q="500">+500</button><button type="button" data-q="1000">+1000</button><button type="button" data-q="max">Max</button></div>
               </div>
             </div>
-            <label>Üzenet (nem kötelező)<div class="ifield"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg><input name="message" maxlength="100" placeholder="Pl. Köszi a segítséget!" autocomplete="off"></div></label>
+            <label>Üzenet (nem kötelező)<div class="ifield"><input name="message" maxlength="100" placeholder="Pl. Köszi a segítséget!" autocomplete="off"></div></label>
             <div class="cnt" id="tCnt">0/100</div>
             <div class="tsum"><span>Egyenleged utalás után</span><b id="tAfter">–</b></div>
             <div class="msg" id="tMsg" aria-live="polite"></div>
@@ -1707,7 +1749,7 @@ function render(){
   $("#auth").hidden=!!user;$("#app").hidden=!user;
   if(!user)return;
   const coins=fmtN(user.coins||0),rank=user.rank||"default";
-  $("#cRank").textContent=rank;$("#cRankN").textContent=rank;
+  {const rn=rank==="default"?"Nincs rang":rank;$("#cRank").textContent=rn;$("#cRankN").textContent=rn;}
   $("#cRankExp").textContent=user.rankUntil?"Lejár: "+dayHu(user.rankUntil):rank==="default"?"Nincs aktív rang":"Lejárat: –";
   {const rr=RANKS.find(x=>x.name===rank),ico=$("#cRankIco");if(rr&&ico.dataset.r!==rr.id){ico.dataset.r=rr.id;ico.innerHTML=rankImg(rr.id,"")}else if(!rr&&ico.dataset.r){ico.dataset.r="";ico.innerHTML='<svg class="i crown" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>'}}
   $("#cNick").textContent=user.name;
@@ -2069,7 +2111,7 @@ $("#vList").addEventListener("click",async e=>{
 const NEWS=[
  {d:"2026-10-12",tag:"Bejelentés",t:"Elindult az IceMine új weboldala!",x:"Mostantól egy helyen intézhetsz mindent: a fiókodat, az IceCoin egyenlegedet, a rangjaidat és a vásárlásaidat. Nézz körül, és írd meg a Discordon, mit gondolsz!",href:"https://discord.gg/YJV2HNqTMc",more:"Írj nekünk a Discordon"},
  {d:"2026-10-12",tag:"Újdonság",t:"Pörgess a Szerencsekeréken",x:"Hetente egy pörgetés ingyen jár, utána 50 IceCoinért pörgethetsz újra. A fődíj a Bronz rang!",href:"#szerencsekerek",more:"Irány a kerék",a:["#3fb4ff","#1c6fd6"],ico:'<svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18M5.6 5.6l12.8 12.8M18.4 5.6L5.6 18.4"/></svg>'},
- {d:"2026-10-12",tag:"Újdonság",t:"Töltsd fel a saját skined",x:"A Karakter oldalon saját skint állíthatsz be, és egy paranccsal a játékban is viselheted.",href:"#karakter",more:"Skin feltöltése",a:["#7fd3ff","#2192dc"],ico:'<svg class="i" viewBox="0 0 24 24"><path d="M8 3L3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-1 2-2.4 3-4 3S9 5 8 3z"/></svg>'},
+ {d:"2026-10-12",tag:"Újdonság",t:"Töltsd fel a saját skined",x:"A Karakter oldalon feltöltött skin a szerveren is rád kerül, parancs nélkül. Tört klienssel is működik.",href:"#karakter",more:"Skin feltöltése",a:["#7fd3ff","#2192dc"],ico:'<svg class="i" viewBox="0 0 24 24"><path d="M8 3L3 7l3 4 2-1v11h8V10l2 1 3-4-5-4c-1 2-2.4 3-4 3S9 5 8 3z"/></svg>'},
  {d:"2026-10-12",tag:"Bolt",t:"Rangok forintért is",x:"A Bronz, Wizard, IceKing és Yeti rangot IceCoin mellett már bankkártyával is megveheted.",href:"#rangok",more:"Rangok megtekintése",a:["#f3b783","#a4592a"],ico:'<svg class="i" viewBox="0 0 24 24"><path d="M3 8l4 4 5-7 5 7 4-4-2 11H5z"/></svg>'},
  {d:"2026-10-12",tag:"Bolt",t:"Több IceCoin egyszerre",x:"A Vásárlás oldalon most már egy csomagból egyszerre akár 10 darabot is megvehetsz.",href:"#vasarlas",more:"IceCoin vásárlás",a:["#62c4ff","#0d4f8a"],ico:'<span class="pcoin" style="width:46px;height:46px"></span>'},
  {d:"2026-10-12",tag:"Újdonság",t:"Kitiltás csökkentése",x:"Ha kitiltottak vagy lenémítottak, a weboldalon csökkentheted a büntetésed. Kliens ban esetén nincs feloldás.",href:"#kitiltas",more:"Részletek",a:["#a593ff","#33238a"],ico:'<svg class="i" viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V7a4 4 0 017.6-1.7M12 15v2"/></svg>'}
@@ -2080,7 +2122,7 @@ const ndate=s=>{const [y,m,d]=s.split("-").map(Number);return y+". "+HUMON[m-1]+
   const [f,...rest]=NEWS,land=$("#auth svg.land"),art=land?land.outerHTML.replace(/id="lsky"/,'id="nsky"').replace(/url\(#lsky\)/g,"url(#nsky)"):"";
   const ext=h=>/^https?:/.test(h)?' target="_blank" rel="noopener"':"";
   $("#news").innerHTML=`<article class="nfeat"><div class="nart">${art}<img class="lg" alt="IceMine" src="${LOGO}"></div><div class="nbody"><div class="nmeta"><span class="ntag">${f.tag}</span><span>${ndate(f.d)}</span></div><h3>${f.t}</h3><p>${f.x}</p><a class="btn mc" href="${f.href}"${ext(f.href)}>${f.more}</a></div></article>`
-   +`<div class="ngrid">${rest.map(n=>`<a class="ncard" href="${n.href}"${ext(n.href)} style="--a1:${n.a[0]};--a2:${n.a[1]}"><div class="nart">${n.ico}</div><div class="nbody"><div class="nmeta"><span class="ntag">${n.tag}</span><span>${ndate(n.d)}</span></div><h3>${n.t}</h3><p>${n.x}</p><span class="nmore">${n.more} →</span></div></a>`).join("")}</div>`
+   +`<div class="nlist">${rest.map(n=>`<a class="nrow" href="${n.href}"${ext(n.href)}><span class="nd">${ndate(n.d)}</span><div><span class="ntag">${n.tag}</span><h3>${n.t}</h3><p>${n.x}</p><span class="nmore">${n.more} →</span></div></a>`).join("")}</div>`
    +`<div class="ncomm"><div><b>Csatlakozz a közösséghez!</b><span>Hírek, események és nyereményjátékok elsőként.</span></div><div class="nbtns"><a href="https://discord.gg/YJV2HNqTMc" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><path d="M5 6h14a2 2 0 012 2v7a2 2 0 01-2 2h-7l-4 3v-3H5a2 2 0 01-2-2V8a2 2 0 012-2z"/></svg>Discord</a><a href="https://youtube.com/@icemine_1?si=AdKZdLQsWEK8M_tw" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="2" y="5" width="20" height="14" rx="4"/><path d="M10 9.5v5l4.5-2.5z"/></svg>YouTube</a><a href="https://www.instagram.com/icemine_1" target="_blank" rel="noopener"><svg class="i" viewBox="0 0 24 24"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r=".6"/></svg>Instagram</a></div></div>`;
 })();
 function pNote(box,t,s,ring){

@@ -1002,8 +1002,8 @@ app.post("/api/mc/login", limit(300, 6e5), (req, res) => {
 });
 
 app.get("/fonts/:file", (req, res) => {
-  if (!/^(sora|manrope)\.woff$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen fájl.");
-  res.set({ "Content-Type": "font/woff", "Cache-Control": "public, max-age=2592000", "Access-Control-Allow-Origin": "*" });
+  if (!/^[a-z0-9-]+\.woff2?$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen fájl.");
+  res.set({ "Content-Type": req.params.file.endsWith(".woff2") ? "font/woff2" : "font/woff", "Cache-Control": "public, max-age=2592000", "Access-Control-Allow-Origin": "*" });
   res.sendFile(path.join(__dirname, "fonts", req.params.file));
 });
 app.get(["/favicon.png", "/favicon.ico"], (req, res) => res.sendFile(path.join(__dirname, "favicon.png")));
