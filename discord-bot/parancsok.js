@@ -331,6 +331,8 @@ module.exports = [
     .addSubcommand((s) => s.setName("reportok").setDescription("Ide jönnek a játékbeli /jelent jelentések").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("adminhivasok").setDescription("Ide jönnek a játékbeli /segitseg kérések (a staff rangot pingeli)").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("jelentkezesek").setDescription("Ide jönnek a weboldalas staff jelentkezések").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
+    .addSubcommand((s) => s.setName("buntetesek").setDescription("Ide jönnek a szerveres kitiltások, némítások, kirúgások").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
+    .addSubcommand((s) => s.setName("csalasgyanu").setDescription("Ide jönnek a GrimAC csalásgyanús jelzései").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("szerverhibak").setDescription("Ide jönnek a lobby és a proxy hibái").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("hirek").setDescription("Az itt lévő üzenetek megjelennek a weboldal hírei között").addChannelOption((o) => szovegCsatorna(o, "csatorna", "A hírek csatorna")))
     .addSubcommand((s) =>

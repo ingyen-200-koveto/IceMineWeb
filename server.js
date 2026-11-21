@@ -13,7 +13,8 @@ const app = express();
 app.set("trust proxy", 1);
 app.post("/api/stripe-webhook", express.raw({ type: "*/*", limit: "1mb" }), (req, res) => stripeHook(req, res));
 app.post("/api/skin", express.json({ limit: "64kb" }), (req, res) => skinLimit(req, res, () => saveSkin(req, res)));
-app.use(express.json({ limit: "10kb" }));
+const jsonKicsi = express.json({ limit: "10kb" }), jsonSzerver = express.json({ limit: "512kb" });
+app.use((req, res, next) => (req.path.startsWith("/api/mc/") ? jsonSzerver : jsonKicsi)(req, res, next));
 
 const FILE = path.join(__dirname, "data.json");
 let db = { users: {}, sessions: {} };
@@ -67,6 +68,7 @@ async function boot() {
   const tls = fs.existsSync(certFile) && fs.existsSync(keyFile);
   const server = tls ? require("https").createServer({ cert: fs.readFileSync(certFile), key: fs.readFileSync(keyFile) }, app) : require("http").createServer(app);
   const ready = () => { console.log("Cloudflare ellenőrzés: " + (TS_SITE && TS_SECRET ? "bekapcsolva (regisztráció és belépés)." : "kikapcsolva (TURNSTILE_SITE_KEY és TURNSTILE_SECRET_KEY kell a .env-be).")); console.log("IceMine fut" + (pool ? " (adatbázissal)" : " (fájllal)") + (tls ? ", HTTPS" : ", HTTP") + ", port: " + port); (async () => { await checkMail().catch(e => console.log("E-mail: ellenőrzési hiba – " + e.message)); await checkStripe().catch(e => console.log("Fizetés: ellenőrzési hiba – " + e.message)); })(); };
+  server.requestTimeout = 15 * 6e4;
   host ? server.listen(port, host, ready) : server.listen(port, ready);
   const bport = Number(process.env.INTERNAL_PORT) || 3001, bs = require("http").createServer((req, res) => belso(req, res));
   bs.on("error", e => console.error("Bot kapcsolat: nem indult el a belső API (" + e.message + ")."));
@@ -1292,6 +1294,86 @@ app.post("/api/mc/jelzes", limit(120, 6e5), (req, res) => {
   const fiok = db.users[nev.replace(/^\./, "").toLowerCase()];
   esemeny("jelzes", { fajta: tipus, jatekos: nev, discord: dcId(fiok), celpont, szoveg, mod: String(b.mod || "Lobby").slice(0, 40), vilag: String(b.vilag || "").slice(0, 40), online: celpont ? !!b.celpontOnline : null });
   console.log((tipus === "admin" ? "Segítségkérés (/segitseg): " : "Jelentés (/jelent): ") + nev + (celpont ? " → " + celpont : "") + " (" + String(b.mod || "Lobby").slice(0, 40) + ")" + (szoveg ? ": " + szoveg : ""));
+  save();
+  res.json({ ok: true });
+});
+const MENTES_DIR = process.env.MENTES_DIR || "/var/lib/icemine/mentesek", MENTES_MEGTART = Math.max(1, parseInt(process.env.MENTES_MEGTART || "7", 10) || 7);
+const mentesAllapot = { nev: null, kovetkezo: 0, t: 0 };
+app.post("/api/mc/mentes", limit(2000, 36e5), async (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key) return fail(res, 503, "Az MC_API_KEY nincs beállítva a weboldalon.");
+  if (!same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const nev = String(req.query.nev || ""), resz = parseInt(req.query.resz || "0", 10), osszes = parseInt(req.query.osszes || "1", 10);
+  if (!/^mentes_[0-9_-]{10,20}\.zip$/.test(nev) || !(resz >= 0) || !(osszes >= 1) || resz >= osszes || osszes > 1000) return fail(res, 400, "Hibás adat.");
+  const tmp = path.join(MENTES_DIR, nev + ".resz");
+  if (resz === 0) {
+    for (const f of await fs.promises.readdir(MENTES_DIR).catch(() => [])) if (f.endsWith(".resz") || /\.resz\.\d+$/.test(f)) await fs.promises.unlink(path.join(MENTES_DIR, f)).catch(() => {});
+    Object.assign(mentesAllapot, { nev, kovetkezo: 0, t: Date.now() });
+  }
+  else if (mentesAllapot.nev !== nev || mentesAllapot.kovetkezo !== resz) return fail(res, 409, "Rossz sorrend, kezdd elölről.");
+  mentesAllapot.t = Date.now();
+  try {
+    await fs.promises.mkdir(MENTES_DIR, { recursive: true });
+    if (resz === 0) {
+      const st = await fs.promises.statfs(MENTES_DIR), hossz = Number(req.get("content-length")) || 0;
+      if (st.bavail * st.bsize - hossz * osszes < 1024 ** 3) return fail(res, 507, "Nincs elég hely a VPS-en a mentéshez.");
+    }
+    let meret = 0;
+    await new Promise((kesz, hiba) => {
+      const ki = fs.createWriteStream(tmp + "." + resz);
+      req.on("data", d => { meret += d.length; if (meret > 200 * 1024 ** 2) req.destroy(new Error("túl nagy darab")); });
+      req.on("error", hiba); ki.on("error", hiba); ki.on("finish", kesz);
+      req.pipe(ki);
+    });
+    mentesAllapot.kovetkezo = resz + 1;
+    if (resz + 1 < osszes) return res.json({ ok: true, resz });
+    const cel = fs.createWriteStream(tmp);
+    for (let i = 0; i < osszes; i++) {
+      await new Promise((kesz, hiba) => { const be = fs.createReadStream(tmp + "." + i); be.on("error", hiba); be.on("end", kesz); be.pipe(cel, { end: false }); });
+      await fs.promises.unlink(tmp + "." + i).catch(() => {});
+    }
+    await new Promise((kesz, hiba) => { cel.on("error", hiba); cel.end(kesz); });
+    await fs.promises.rename(tmp, path.join(MENTES_DIR, nev));
+    mentesAllapot.nev = null;
+    const lista = (await fs.promises.readdir(MENTES_DIR)).filter(f => /^mentes_.*\.zip$/.test(f)).sort().reverse();
+    for (const regi of lista.slice(MENTES_MEGTART)) await fs.promises.unlink(path.join(MENTES_DIR, regi)).catch(() => {});
+    const teljes = (await fs.promises.stat(path.join(MENTES_DIR, nev))).size;
+    console.log("Mentés megérkezett a szerverről: " + nev + " (" + Math.round(teljes / 1048576) + " MB)");
+    res.json({ ok: true, kesz: true, meret: teljes });
+  } catch (e) {
+    await fs.promises.unlink(tmp + "." + resz).catch(() => {});
+    console.error("Mentés feltöltése nem sikerült:", e.message);
+    if (!res.headersSent) fail(res, 500, "A mentés mentése nem sikerült.");
+  }
+});
+const mcKulcsOk = (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key) { fail(res, 503, "Az MC_API_KEY nincs beállítva a weboldalon."); return false; }
+  if (!same(String(req.get("x-icemine-key") || ""), key)) { fail(res, 401, "Hibás kulcs."); return false; }
+  return true;
+};
+const mcNev = x => typeof x === "string" && /^\.?[A-Za-z0-9_]{1,16}$/.test(x) ? x : null;
+const mcSzoveg = (x, n) => String(x || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+app.post("/api/mc/buntetes-esemeny", limit(300, 6e5), (req, res) => {
+  if (!mcKulcsOk(req, res)) return;
+  const b = req.body || {};
+  const tipus = ["ban", "mute", "kick", "warn"].includes(b.tipus) ? b.tipus : null;
+  if (!tipus) return fail(res, 400, "Hibás adat.");
+  const jatekos = mcNev(b.jatekos) || "IP-cím", fiok = db.users[String(jatekos).replace(/^\./, "").toLowerCase()];
+  esemeny("buntetes", { mufaj: b.mufaj === "feloldas" ? "feloldas" : "uj", btipus: tipus, jatekos, discord: fiok ? dcId(fiok) : null, staff: mcNev(b.staff) || mcSzoveg(b.staff, 20) || "Ismeretlen", indok: mcSzoveg(b.indok, 300), lejar: Math.max(0, Number(b.lejar) || 0), id: Number(b.id) || 0 });
+  save();
+  res.json({ ok: true });
+});
+const gyanuUtolso = new Map();
+app.post("/api/mc/csalasgyanu", limit(300, 6e5), (req, res) => {
+  if (!mcKulcsOk(req, res)) return;
+  const b = req.body || {}, jatekos = mcNev(b.jatekos);
+  if (!jatekos) return fail(res, 400, "Hibás adat.");
+  const most = Date.now(), k = jatekos.toLowerCase();
+  if (most - (gyanuUtolso.get(k) || 0) < 5 * 6e4) return fail(res, 429, "Túl gyakran.");
+  gyanuUtolso.set(k, most);
+  const checkek = (Array.isArray(b.checkek) ? b.checkek : []).slice(0, 6).map(c => ({ nev: mcSzoveg(c && c.nev, 40), db: Math.max(1, Math.min(1e5, Number(c && c.db) || 1)), vl: Math.round((Number(c && c.vl) || 0) * 10) / 10 })).filter(c => c.nev);
+  esemeny("csalasgyanu", { jatekos, db: Math.max(1, Math.min(1e5, Number(b.db) || 1)), mp: Math.max(1, Math.min(86400, Number(b.mp) || 1)), checkek, vilag: mcSzoveg(b.vilag, 40), ping: Number.isFinite(Number(b.ping)) ? Number(b.ping) : -1, online: !!b.online });
   save();
   res.json({ ok: true });
 });

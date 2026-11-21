@@ -62,23 +62,76 @@ async function jelzes(client, e) {
 
 const kod = (x) => String(x || "").replace(/```/g, "ʼʼʼ");
 
-async function hibaCsatorna(g, b) {
-  const meglevo = await csatorna(g, b.szerverhibak);
+async function autoCsatorna(g, b, mezo, nev, tema) {
+  const meglevo = await csatorna(g, b[mezo]);
   if (meglevo) return meglevo;
   const me = g.members.me;
   const minta = (await csatorna(g, b.reportok)) || (await csatorna(g, b.naplo));
   if (me && me.permissions.has(P.ManageChannels) && minta && minta.parent) {
-    const uj = await g.channels
-      .create({ name: "⚠️・szerver-hibák", type: 0, parent: minta.parent.id, topic: "A lobby és a proxy hibái és figyelmeztetései", reason: "Szerverhiba-figyelő" })
-      .catch(() => null);
+    const uj = await g.channels.create({ name: nev, type: 0, parent: minta.parent.id, topic: tema, reason: "IceMine automatikus csatorna" }).catch(() => null);
     if (uj) {
       await uj.lockPermissions().catch(() => {});
-      b.szerverhibak = uj.id;
+      b[mezo] = uj.id;
       mentKesobb();
       return uj;
     }
   }
   return naploCsatorna(g, "fo");
+}
+
+const hibaCsatorna = (g, b) => autoCsatorna(g, b, "szerverhibak", "⚠️・szerver-hibák", "A lobby és a proxy hibái és figyelmeztetései");
+
+const BUNTETES = {
+  ban: { uj: "🔨 Kitiltás", fel: "✅ Kitiltás feloldva", szin: K.PIROS },
+  mute: { uj: "🔇 Némítás", fel: "🔊 Némítás feloldva", szin: K.SARGA },
+  kick: { uj: "👢 Kirúgás", fel: "👢 Kirúgás", szin: K.SZURKE },
+  warn: { uj: "⚠️ Figyelmeztetés", fel: "✅ Figyelmeztetés törölve", szin: K.ARANY },
+};
+
+async function buntetes(client, e) {
+  const t = BUNTETES[e.btipus] || BUNTETES.ban, fel = e.mufaj === "feloldas";
+  const ido = fel || e.btipus === "kick" || e.btipus === "warn" ? null : e.lejar > 0 ? `⏳ **Lejár:** <t:${unix(e.lejar)}:f> (<t:${unix(e.lejar)}:R>)` : "⏳ **Időtartam:** végleges";
+  const k = kartya(fel ? K.ZOLD : t.szin)
+    .kepes(
+      [
+        `### ${fel ? t.fel : t.uj}`,
+        `👤 **Játékos:** ${e.jatekos}${e.discord ? ` (<@${e.discord}>)` : ""}`,
+        `🛡️ **${fel ? "Feloldotta" : "Staff"}:** ${e.staff}`,
+        !fel && e.indok ? `📝 **Indok:** ${e.indok}` : null,
+        ido,
+        `🕒 <t:${unix(e.t)}:R>${e.id ? ` · #${e.id}` : ""}`,
+      ]
+        .filter(Boolean)
+        .join("\n"),
+      mcFej(e.jatekos),
+    )
+    .lab("LibertyBans • 🧊 IceMine");
+  for (const g of client.guilds.cache.values()) {
+    const ch = await autoCsatorna(g, beall(g.id), "buntetesek", "🔨・büntetések", "Kitiltások, némítások, kirúgások a szerverről");
+    if (ch && tudIrni(ch)) await ch.send(k.uzenet()).catch((x) => console.error("Büntetés küldése:", x.message));
+  }
+}
+
+async function csalasgyanu(client, e) {
+  const checkek = (e.checkek || []).map((c) => `\`${c.nev}\` ×${c.db}${c.vl ? ` · VL ${c.vl}` : ""}`);
+  const k = kartya(K.LILA)
+    .kepes(
+      [
+        `### 🕵️ Csalásgyanú: ${e.jatekos}`,
+        `📊 **${e.db} jelzés** ${e.mp} másodperc alatt`,
+        ...(checkek.length ? ["**Ellenőrzések:**", ...checkek.map((x) => `• ${x}`)] : []),
+        `${e.online ? "🟢 Fent van" : "⚫ Már nincs fent"}${e.vilag ? ` · 🌍 ${e.vilag}` : ""}${e.ping >= 0 ? ` · 📶 ${e.ping} ms` : ""}`,
+        `🕒 <t:${unix(e.t)}:R>`,
+        "-# A GrimAC jelzése nem biztos bizonyíték, előbb nézd meg (/grim spectate, /grim history).",
+      ].join("\n"),
+      mcFej(e.jatekos),
+    )
+    .sor(gomb("jelzes_at", "Megnézem", ButtonStyle.Primary, "👀"))
+    .lab("GrimAC • 🧊 IceMine");
+  for (const g of client.guilds.cache.values()) {
+    const ch = await autoCsatorna(g, beall(g.id), "csalasgyanu", "🕵️・csalásgyanú", "A GrimAC csalásgyanús jelzései");
+    if (ch && tudIrni(ch)) await ch.send(k.uzenet()).catch((x) => console.error("Csalásgyanú küldése:", x.message));
+  }
 }
 
 async function szerverhiba(client, e) {
@@ -283,6 +336,8 @@ function indit(client) {
 module.exports = {
   jelzes,
   szerverhiba,
+  buntetes,
+  csalasgyanu,
   jelentkezes,
   hirUj,
   hirSzerk,
