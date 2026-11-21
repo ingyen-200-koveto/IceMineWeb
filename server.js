@@ -80,7 +80,7 @@ const same = (a, b) => { const x = Buffer.from(a), y = Buffer.from(b); return x.
 const ALPH = "ABCDEFGHJKLMNPQRSTUVWXYZ23456789";
 const makeCode = () => Array.from({ length: 12 }, () => ALPH[crypto.randomInt(ALPH.length)]).join("");
 const mask = e => e.replace(/^(.).*(@.*)$/, "$1***$2");
-const pub = u => (rangLejart(u), { name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", rankUntil: u.rank && u.rank !== "default" ? u.rankUntil || null : null, skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null });
+const pub = u => (rangLejart(u), { name: u.name, email: u.email, coins: u.coins || 0, created: u.created, rank: u.rank || "default", rankUntil: u.rank && u.rank !== "default" ? u.rankUntil || null : null, skin: u.skin || null, unbanNext: unbanNext(u), unbanLast: u.unbanLast ? { t: u.unbanLast, item: u.unbanItem || "" } : null, discord: u.discord ? { nev: u.discord.nev } : null, punish: buntetesFiok(u) });
 const fail = (res, code, error) => res.status(code).json({ error });
 function esemeny(tipus, adat, u) {
   db.esemenyek = db.esemenyek || [];
@@ -1294,6 +1294,23 @@ app.post("/api/mc/jelzes", limit(120, 6e5), (req, res) => {
   console.log((tipus === "admin" ? "Segítségkérés (/segitseg): " : "Jelentés (/jelent): ") + nev + (celpont ? " → " + celpont : "") + " (" + String(b.mod || "Lobby").slice(0, 40) + ")" + (szoveg ? ": " + szoveg : ""));
   save();
   res.json({ ok: true });
+});
+function buntetesFiok(u) {
+  const b = db.buntetesek;
+  if (!b || !b.t || Date.now() - b.t > 864e5) return undefined;
+  const sajat = (b.lista || []).filter(x => x.nev === String(u.name || "").toLowerCase() && (!x.lejar || x.lejar > Date.now()));
+  const egy = tipus => { const x = sajat.find(y => y.tipus === tipus); return x ? { until: x.lejar || 0, reason: x.indok || "" } : null; };
+  return { ban: egy("ban"), mute: egy("mute") };
+}
+app.post("/api/mc/buntetesek", limit(120, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key) return fail(res, 503, "Az MC_API_KEY nincs beállítva a weboldalon.");
+  if (!same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const lista = Array.isArray(req.body && req.body.lista) ? req.body.lista : null;
+  if (!lista) return fail(res, 400, "Hibás adat.");
+  db.buntetesek = { t: Date.now(), lista: lista.slice(0, 5000).filter(x => x && typeof x.nev === "string" && /^\.?[A-Za-z0-9_]{1,16}$/.test(x.nev) && (x.tipus === "ban" || x.tipus === "mute")).map(x => ({ nev: x.nev.replace(/^\./, "").toLowerCase(), tipus: x.tipus, lejar: Math.max(0, Number(x.lejar) || 0), indok: String(x.indok || "").replace(/[\u0000-\u001f]/g, " ").slice(0, 200) })) };
+  save();
+  res.json({ ok: true, db: db.buntetesek.lista.length });
 });
 app.post("/api/mc/status", limit(200, 6e5), (req, res) => {
   const key = String(process.env.MC_API_KEY || "");
