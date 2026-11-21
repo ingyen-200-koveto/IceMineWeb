@@ -105,6 +105,8 @@ async function merfoldKuld(client, k) {
 }
 
 async function feldolgoz(client, e) {
+  if (e.tipus === "jelzes") return require("./jelzesek").jelzes(client, e);
+  if (e.tipus === "jelentkezes") return require("./jelzesek").jelentkezes(client, e);
   if (e.tipus === "ranglejar" && e.discord) {
     const u = await client.users.fetch(e.discord).catch(() => null);
     e.dm = !!(u && (await u.send(lejarKartya(e).uzenet()).then(() => true).catch(() => false)));

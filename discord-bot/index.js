@@ -19,8 +19,9 @@ const staff = require("./modulok/staff");
 const panelek = require("./modulok/panelek");
 const weboldal = require("./modulok/weboldal");
 const felepites = require("./modulok/felepites");
+const jelzesek = require("./modulok/jelzesek");
 
-const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek, weboldal, felepites];
+const MODULOK = [statusz, alap, szintek, moderalas, ticket, otletek, nyeremeny, rangvalaszto, beallitas, szorakozas, kozosseg, staff, panelek, weboldal, felepites, jelzesek];
 
 const parancsok = {};
 const komponensek = {};
@@ -104,6 +105,7 @@ client.once(Events.ClientReady, async () => {
   moderalas.indit(client);
   kozosseg.indit(client);
   weboldal.indit(client);
+  jelzesek.indit(client);
 });
 
 async function kezel(i) {
@@ -179,6 +181,9 @@ client.on(
     await szintek.uzenet(m);
   }),
 );
+client.on(Events.MessageCreate, vedett("Hírek", jelzesek.hirUj));
+client.on(Events.MessageUpdate, vedett("Hírek", jelzesek.hirSzerk));
+client.on(Events.MessageDelete, vedett("Hírek", jelzesek.hirTorolve));
 client.on(Events.GuildCreate, (g) => console.log(`Új szerverre kerültem: ${g.name}`));
 process.on("unhandledRejection", (e) => console.error("Hiba:", e));
 

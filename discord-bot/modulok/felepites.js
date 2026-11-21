@@ -95,6 +95,9 @@ const FELEPITES = [
     csatornak: [
       { kulcs: "staffchat", nev: "🛡️・staff-chat", tipus: T, tema: "Csak a csapatnak" },
       { kulcs: "vasarlasok", nev: "🛒・vásárlások", tipus: T, tema: "Weboldalas vásárlások" },
+      { kulcs: "reportok", nev: "🚨・reportok", tipus: T, tema: "Játékbeli /report jelentések" },
+      { kulcs: "adminhivasok", nev: "🆘・admin-hívások", tipus: T, tema: "Játékbeli /admin hívások" },
+      { kulcs: "jelentkezesek", nev: "📝・jelentkezések", tipus: T, tema: "Staff jelentkezések a weboldalról" },
       { kulcs: "naplo", nev: "📒・napló", tipus: T, tema: "Moderálás, ticketek, minden más" },
       { kulcs: "naplo_uzenet", nev: "💬・üzenet-napló", tipus: T, tema: "Törölt és szerkesztett üzenetek, automod" },
       { kulcs: "naplo_tag", nev: "👥・tag-napló", tipus: T, tema: "Belépés, kilépés, rangok, kitiltások" },
@@ -323,6 +326,10 @@ async function epit(i, panelekKellenek) {
   await allit("otletek", ch.otletek, "💡 Ötletek");
   await allit("vasarlasok", ch.vasarlasok, "🛒 Vásárlások");
   await allit("merfoldkovek", ch.altalanos, "🏆 Mérföldkövek");
+  await allit("reportok", ch.reportok, "🚨 Reportok");
+  await allit("adminhivasok", ch.adminhivasok, "🆘 Admin hívások");
+  await allit("jelentkezesek", ch.jelentkezesek, "📝 Jelentkezések");
+  await allit("hirek", ch.hirek, "📢 Hírek a weboldalra");
   await allit("naplo", ch.naplo, "📒 Fő napló");
   b.naplok ||= {};
   for (const [tipus, kulcs, cimke] of [

@@ -372,6 +372,12 @@ async function emberE(req, token) {
   } catch (e) { console.error("Cloudflare ellenőrzés hiba: " + e.message); return "Az ellenőrzés most nem érhető el. Próbáld újra pár perc múlva."; }
 }
 app.get("/api/beallitasok", (req, res) => res.json({ turnstile: TS_SITE && TS_SECRET ? TS_SITE : null }));
+async function jelentkezesLevel(u, j) {
+  const site = oldalCim(), ok = j.allapot === "elfogadva";
+  const text = `Szia ${u.name}!\n${ok ? "Elfogadtuk a staff jelentkezésedet! Hamarosan keresünk a Discordon a részletekkel." : "Köszönjük a staff jelentkezésedet, de most nem tudjuk elfogadni."}${!ok && j.indok ? "\nIndok: " + j.indok : ""}${!ok ? "\n14 nap múlva újra jelentkezhetsz." : ""}\n\nÜdvözlettel, IceMine csapata!`;
+  const html = levelSablon(site, { cim: ok ? "Elfogadtuk a jelentkezésed! 🎉" : "A staff jelentkezésedről", torzs: levelP(`Szia ${levelEsc(u.name)}!`) + levelP(ok ? "Örömmel írjuk, hogy elfogadtuk a staff jelentkezésedet. Hamarosan keresünk a Discordon a részletekkel, addig nézz be gyakran!" : "Köszönjük, hogy jelentkeztél staffnak. Most nem tudjuk elfogadni a jelentkezésedet.") + (!ok && j.indok ? `<div style="margin:0 0 18px;padding:14px 16px;border-radius:10px;background:#f7fafc;border:1px solid #e3e9ef;font-size:14.5px;color:#33434f"><b>Indok:</b> ${levelEsc(j.indok)}</div>` : "") + (!ok ? levelP("14 nap múlva újra jelentkezhetsz. Addig is játssz sokat, és segíts a többieknek, ez sokat számít!") : "") + levelGomb(DISCORD_URL, "Discord szerver →") });
+  await sendMail({ to: u.email, subject: ok ? "IceMine – elfogadtuk a staff jelentkezésed" : "IceMine – a staff jelentkezésedről", text, html });
+}
 async function sendWelcome(req, u) {
   const site = base(req), token = crypto.randomBytes(24).toString("hex");
   u.torles = { h: sha(token), exp: Date.now() + 30 * 864e5 }; save();
@@ -637,6 +643,44 @@ async function voteApi(s, claim, name) {
   if (!r.ok) throw new Error("HTTP " + r.status);
   return (await r.text()).trim();
 }
+const JEL_KERDESEK = [
+  ["kor", "Hány éves vagy?", 2, 3], ["discord", "Discord neved", 2, 40], ["ido", "Mióta játszol az IceMine-on?", 2, 80], ["mod", "Melyik játékmódban vagy a legaktívabb?", 2, 80],
+  ["orak", "Naponta hány órát tudsz aktív lenni?", 1, 40], ["tapasztalat", "Voltál már staff máshol? Hol és mióta?", 2, 500], ["miert", "Miért szeretnél staff lenni?", 30, 1500],
+  ["helyzet", "Mit csinálsz, ha valaki csal vagy sérteget a chatben?", 30, 1500], ["mikrofon", "Van mikrofonod, tudsz hangcsatornában beszélni?", 2, 20]
+];
+const JEL_SZUNET = 14 * 864e5;
+const sajatJel = u => Object.values(db.jelentkezesek || {}).filter(j => j.uid === u.id).sort((a, b) => b.t - a.t)[0] || null;
+const jelPub = j => j && { id: j.id, t: j.t, allapot: j.allapot, dontesT: j.dontesT || null, indok: j.allapot === "elutasitva" ? j.indok || null : null };
+app.get("/api/staff-jelentkezes", (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  const j = sajatJel(u);
+  res.json({ jelentkezes: jelPub(j), kerdesek: JEL_KERDESEK.map(([id, cim, min, max]) => ({ id, cim, min, max })), ujra: j && j.allapot === "elutasitva" ? j.dontesT + JEL_SZUNET : null, discord: u.discord ? u.discord.nev || null : null });
+});
+app.post("/api/staff-jelentkezes", limit(5, 36e5), (req, res) => {
+  const u = authUser(req);
+  if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
+  if (!u.verified) return fail(res, 403, "Előbb erősítsd meg a fiókodat.");
+  const j0 = sajatJel(u);
+  if (j0 && j0.allapot === "fuggoben") return fail(res, 409, "Már van egy elbírálás alatt lévő jelentkezésed.");
+  if (j0 && j0.allapot === "elfogadva") return fail(res, 409, "A jelentkezésedet már elfogadtuk.");
+  if (j0 && j0.allapot === "elutasitva" && Date.now() - j0.dontesT < JEL_SZUNET) return fail(res, 429, "Elutasítás után 14 nap múlva jelentkezhetsz újra.");
+  const b = (req.body && req.body.valaszok) || {}, valaszok = {};
+  for (const [id, cim, min, max] of JEL_KERDESEK) {
+    const v = String(b[id] == null ? "" : b[id]).replace(/[\u0000-\u0008\u000b-\u001f]/g, " ").trim();
+    if (v.length < min) return fail(res, 400, "Töltsd ki rendesen ezt is: " + cim);
+    valaszok[id] = v.slice(0, max);
+  }
+  if (!/^\d{1,2}$/.test(valaszok.kor) || +valaszok.kor < 10) return fail(res, 400, "Az életkorodat számmal add meg.");
+  db.jelentkezesek = db.jelentkezesek || {};
+  if (!u.id) u.id = crypto.randomBytes(9).toString("hex");
+  const id = "J-" + crypto.randomBytes(4).toString("hex").toUpperCase();
+  db.jelentkezesek[id] = { id, t: Date.now(), uid: u.id, user: u.name, allapot: "fuggoben", valaszok };
+  esemeny("jelentkezes", { id, user: u.name, discord: dcId(u), rang: u.rank || "default", regisztralt: u.created || null, valaszok, kerdesek: JEL_KERDESEK.map(([k, c]) => [k, c]) });
+  save();
+  console.log("Staff jelentkezés: " + u.name + " (" + id + ").");
+  res.json({ ok: true, jelentkezes: jelPub(db.jelentkezesek[id]) });
+});
 app.get("/api/vote", (req, res) => {
   const u = authUser(req);
   if (!u) return fail(res, 401, "Nem vagy bejelentkezve.");
@@ -707,8 +751,8 @@ function votifierV1(buf, k) {
   return { serviceName: sorok[1], username: sorok[2], address: sorok[3], timestamp: sorok[4] };
 }
 function votifierInditas() {
-  const port = Number(process.env.VOTIFIER_PORT) || 8192;
-  if (port <= 0) return;
+  const port = String(process.env.VOTIFIER_PORT || "").trim() === "" ? 8192 : Number(process.env.VOTIFIER_PORT);
+  if (!(port > 0)) return console.log("Votifier: kikapcsolva (VOTIFIER_PORT=0).");
   const k = votifierKulcsok();
   const srv = net.createServer(sock => {
     const kihivas = crypto.randomBytes(16).toString("hex");
@@ -834,6 +878,32 @@ function saveSkin(req, res) {
   u.skin = { v: Date.now(), slim: !!b.slim };
   save();
   res.json({ ok: true, user: pub(u) });
+}
+const HIRKEP_DIR = path.join(__dirname, "hirkepek");
+app.get("/api/hirek", (req, res) => {
+  res.set("Cache-Control", "no-store");
+  res.json({ hirek: (db.hirek || []).slice(0, 12).map(h => ({ id: h.id, t: h.t, cim: h.cim, szoveg: h.szoveg, kep: h.kep ? "/hirkep/" + h.kep : null, szerzo: h.szerzo || null })) });
+});
+app.get("/hirkep/:file", (req, res) => {
+  if (!/^\d{5,25}\.(png|jpg|jpeg|gif|webp)$/.test(req.params.file || "")) return res.status(404).type("text/plain").send("Nincs ilyen kép.");
+  res.set({ "Cache-Control": "public, max-age=86400", "X-Content-Type-Options": "nosniff" });
+  res.sendFile(path.join(HIRKEP_DIR, req.params.file), err => { if (err && !res.headersSent) res.status(404).type("text/plain").send("Nincs ilyen kép."); });
+});
+function hirMentes(d) {
+  if (!d || !/^\d{5,25}$/.test(String(d.id || ""))) return "Hibás azonosító.";
+  db.hirek = (db.hirek || []).filter(h => h.id !== d.id);
+  const cim = String(d.cim || "").trim().slice(0, 200), szoveg = String(d.szoveg || "").trim().slice(0, 4000);
+  if (!cim && !szoveg) return null;
+  let kep = null;
+  if (d.kep && typeof d.kep.adat === "string") {
+    const ext = { "image/png": "png", "image/jpeg": "jpg", "image/gif": "gif", "image/webp": "webp" }[d.kep.tipus];
+    const buf = ext ? Buffer.from(d.kep.adat, "base64") : null;
+    if (buf && buf.length > 100 && buf.length < 6e6) { fs.mkdirSync(HIRKEP_DIR, { recursive: true }); kep = d.id + "." + ext; fs.writeFileSync(path.join(HIRKEP_DIR, kep), buf); }
+  }
+  db.hirek.push({ id: d.id, t: Number(d.t) || Date.now(), cim: cim || szoveg.split("\n")[0].slice(0, 120), szoveg: cim ? szoveg : szoveg.split("\n").slice(1).join("\n").trim(), kep, szerzo: String(d.szerzo || "").slice(0, 40) || null });
+  db.hirek.sort((a, b) => b.t - a.t);
+  for (const h of db.hirek.splice(30)) if (h.kep) fs.rm(path.join(HIRKEP_DIR, h.kep), () => {});
+  return null;
 }
 app.get("/skin/:file", (req, res) => {
   const m = /^([A-Za-z0-9_]{3,16})\.png$/.exec(req.params.file || "");
@@ -1019,6 +1089,34 @@ function belso(req, res) {
     const utan = Number(url.searchParams.get("utan")) || 0;
     return kuld(200, { utolso: db.esemenySeq || 0, esemenyek: (db.esemenyek || []).filter(e => e.seq > utan).slice(0, 100) });
   }
+  if (req.method === "POST" && ["/hirek", "/hirek-torles", "/jelentkezes-dontes"].includes(url.pathname)) {
+    const max = url.pathname === "/hirek" ? 9e6 : 4000, darabok = []; let hossz = 0;
+    req.on("data", c => { hossz += c.length; if (hossz > max) { req.destroy(); return; } darabok.push(c); });
+    req.on("end", () => {
+      let d;
+      try { d = JSON.parse(Buffer.concat(darabok).toString("utf8")); } catch (e) { return kuld(400, { error: "Hibás kérés." }); }
+      if (url.pathname === "/hirek") {
+        const hibak = [];
+        for (const h of Array.isArray(d.hirek) ? d.hirek : [d]) { const e = hirMentes(h); if (e) hibak.push(e); }
+        save();
+        return kuld(hibak.length ? 400 : 200, hibak.length ? { error: hibak[0] } : { ok: true, db: (db.hirek || []).length });
+      }
+      if (url.pathname === "/hirek-torles") {
+        const h = (db.hirek || []).find(x => x.id === String(d.id));
+        if (h) { db.hirek = db.hirek.filter(x => x !== h); if (h.kep) fs.rm(path.join(HIRKEP_DIR, h.kep), () => {}); save(); }
+        return kuld(200, { ok: true, torolve: !!h });
+      }
+      const j = (db.jelentkezesek || {})[String(d.id || "")];
+      if (!j) return kuld(404, { error: "Nincs ilyen jelentkezés." });
+      if (j.allapot !== "fuggoben") return kuld(409, { error: "Ezt már elbírálta: " + (j.dontoNev || "valaki") + " (" + (j.allapot === "elfogadva" ? "elfogadva" : "elutasítva") + ").", allapot: j.allapot });
+      j.allapot = d.dontes === "elfogad" ? "elfogadva" : "elutasitva"; j.dontesT = Date.now(); j.dontoNev = String(d.staff || "").slice(0, 40); j.indok = String(d.indok || "").trim().slice(0, 500) || null;
+      save();
+      const u = Object.values(db.users).find(x => x.id === j.uid);
+      if (u && u.email) jelentkezesLevel(u, j).catch(e => console.error("Jelentkezés e-mail hiba: " + e.message));
+      return kuld(200, { ok: true, allapot: j.allapot, user: j.user, discord: dcId(u) });
+    });
+    return;
+  }
   if (req.method === "GET" && url.pathname === "/rendeles") {
     const id = String(url.searchParams.get("id") || "").trim(), idK = id.toUpperCase();
     if (!/^[A-Za-z0-9_-]{6,80}$/.test(id)) return kuld(400, { error: "Hibás azonosító. Így néz ki: IC-H8D3RT6WNB vagy pi_3Qx..." });
@@ -1042,7 +1140,7 @@ function belso(req, res) {
   }
   if (req.method === "GET" && url.pathname === "/votifier") {
     const k = votifierKulcsok();
-    return kuld(200, { port: Number(process.env.VOTIFIER_PORT) || 8192, publicKey: k.pub, token: k.token, oldalak: VOTE_SITES.map(s => ({ id: s.id, nev: s.name, mod: s.mod, url: s.url || null })) });
+    return kuld(200, { port: String(process.env.VOTIFIER_PORT || "").trim() === "" ? 8192 : Number(process.env.VOTIFIER_PORT), publicKey: k.pub, token: k.token, oldalak: VOTE_SITES.map(s => ({ id: s.id, nev: s.name, mod: s.mod, url: s.url || null })) });
   }
   if (req.method === "GET" && url.pathname === "/rangok") {
     let lejart = false;
@@ -1175,6 +1273,27 @@ async function mcAllapot() {
 app.get("/api/status", async (req, res) => {
   const d = await mcAllapot();
   res.set("Cache-Control", "no-store").json(Object.assign({ host: MC_HOST }, d, { modes: Date.now() - modAll.t < 120000 ? modAll.modes : null }));
+});
+const JELZES_SZUNET = { report: 6e4, admin: 3e5 }, jelzesUtolso = new Map();
+app.post("/api/mc/jelzes", limit(120, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key) return fail(res, 503, "Az MC_API_KEY nincs beállítva a weboldalon.");
+  if (!same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const b = req.body || {}, tipus = b.tipus === "admin" ? "admin" : b.tipus === "report" ? "report" : null;
+  const nev = typeof b.jatekos === "string" && /^\.?[A-Za-z0-9_]{1,16}$/.test(b.jatekos) ? b.jatekos : null;
+  if (!tipus || !nev) return fail(res, 400, "Hibás adat.");
+  const celpont = tipus === "report" && typeof b.celpont === "string" && /^\.?[A-Za-z0-9_]{1,16}$/.test(b.celpont) ? b.celpont : null;
+  if (tipus === "report" && !celpont) return fail(res, 400, "Hiányzik a jelentett játékos.");
+  const szoveg = String(b.szoveg || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, 300);
+  if (tipus === "report" && szoveg.length < 3) return fail(res, 400, "Hiányzik az indok.");
+  const k = tipus + ":" + nev.toLowerCase(), most = Date.now();
+  if (most - (jelzesUtolso.get(k) || 0) < JELZES_SZUNET[tipus]) return fail(res, 429, "Túl gyakran.");
+  jelzesUtolso.set(k, most);
+  const fiok = db.users[nev.replace(/^\./, "").toLowerCase()];
+  esemeny("jelzes", { fajta: tipus, jatekos: nev, discord: dcId(fiok), celpont, szoveg, mod: String(b.mod || "Lobby").slice(0, 40), vilag: String(b.vilag || "").slice(0, 40), online: celpont ? !!b.celpontOnline : null });
+  console.log((tipus === "admin" ? "Admin hívás: " : "Report: ") + nev + (celpont ? " → " + celpont : "") + " (" + String(b.mod || "Lobby").slice(0, 40) + ")" + (szoveg ? ": " + szoveg : ""));
+  save();
+  res.json({ ok: true });
 });
 app.post("/api/mc/status", limit(200, 6e5), (req, res) => {
   const key = String(process.env.MC_API_KEY || "");

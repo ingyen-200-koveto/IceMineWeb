@@ -328,6 +328,10 @@ module.exports = [
     .addSubcommand((s) =>
       s.setName("vasarlasok").setDescription("Ide küldöm a weboldalas vásárlásokat").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")),
     )
+    .addSubcommand((s) => s.setName("reportok").setDescription("Ide jönnek a játékbeli /report jelentések").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
+    .addSubcommand((s) => s.setName("adminhivasok").setDescription("Ide jönnek a játékbeli /admin hívások (a staff rangot pingeli)").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
+    .addSubcommand((s) => s.setName("jelentkezesek").setDescription("Ide jönnek a weboldalas staff jelentkezések").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
+    .addSubcommand((s) => s.setName("hirek").setDescription("Az itt lévő üzenetek megjelennek a weboldal hírei között").addChannelOption((o) => szovegCsatorna(o, "csatorna", "A hírek csatorna")))
     .addSubcommand((s) =>
       s.setName("merfoldkovek").setDescription("Ide küldöm az online rekordokat és a regisztrációs mérföldköveket").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (lehet nyilvános)")),
     )
