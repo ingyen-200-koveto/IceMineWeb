@@ -1431,6 +1431,31 @@ app.get("/api/mc/coins", limit(400, 6e5), (req, res) => {
   res.set("Cache-Control", "no-store").json({ players });
 });
 
+const mcKoltes = new Map();
+app.post("/api/mc/ic-koltes", limit(300, 6e5), (req, res) => {
+  const key = String(process.env.MC_API_KEY || "");
+  if (!key || !same(String(req.get("x-icemine-key") || ""), key)) return fail(res, 401, "Hibás kulcs.");
+  const b = req.body || {};
+  const name = String(b.name || "").toLowerCase(), amount = Math.floor(Number(b.amount)), item = String(b.item || "").slice(0, 80), id = String(b.id || "").slice(0, 60);
+  if (!/^[a-z0-9_]{1,16}$/.test(name) || !Number.isFinite(amount) || amount < 1 || amount > 100000 || !item || !id) return fail(res, 400, "Hibás kérés.");
+  const prev = mcKoltes.get(id);
+  if (prev) return res.status(prev.status).json(prev.body);
+  const u = db.users[name];
+  const kesz = (status, body) => { mcKoltes.set(id, { status, body, t: Date.now() }); res.status(status).json(body); };
+  if (!u || !u.verified) return kesz(404, { error: "Nincs ilyen fiók." });
+  const bal = u.coins || 0;
+  if (bal < amount) return kesz(402, { error: "Nincs elég IceCoin.", coins: bal });
+  u.coins = bal - amount;
+  db.purchases = db.purchases || [];
+  const rid = rendelesId();
+  db.purchases.push({ t: Date.now(), user: u.name, item, ic: amount, id: rid, jatekban: true });
+  if (db.purchases.length > 2000) db.purchases.splice(0, db.purchases.length - 2000);
+  esemeny("vasarlas", { user: u.name, discord: dcId(u), fizetes: "ic", ic: amount, tetelek: [item + " (játékban)"], rendeles: rid }, u);
+  save();
+  kesz(200, { ok: true, coins: u.coins });
+});
+setInterval(() => { const n = Date.now(); for (const [k, v] of mcKoltes) if (n - v.t > 36e5) mcKoltes.delete(k); }, 6e5).unref();
+
 const mcHibak = new Map();
 setInterval(() => { const n = Date.now(); for (const [k, v] of mcHibak) if (v.zar < n && n - v.t > 9e5) mcHibak.delete(k); }, 3e5).unref();
 app.post("/api/mc/login", limit(300, 6e5), (req, res) => {
