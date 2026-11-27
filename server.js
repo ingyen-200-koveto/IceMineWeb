@@ -1377,6 +1377,25 @@ app.post("/api/mc/csalasgyanu", limit(300, 6e5), (req, res) => {
   save();
   res.json({ ok: true });
 });
+app.post("/api/mc/changelog", limit(30, 6e5), (req, res) => {
+  if (!mcKulcsOk(req, res)) return;
+  const b = req.body || {};
+  const tiszta = (x, n) => String(x || "").replace(/[\u0000-\u001f]/g, " ").trim().slice(0, n);
+  const verzioOk = (v) => /^\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(String(v || ""));
+  const lista = (Array.isArray(b.bejegyzesek) ? b.bejegyzesek : []).slice(0, 10)
+    .filter((x) => x && verzioOk(x.verzio))
+    .map((x) => ({ verzio: x.verzio, cim: tiszta(x.cim, 120), pontok: (Array.isArray(x.pontok) ? x.pontok : []).slice(0, 15).map((p) => tiszta(p, 300)).filter(Boolean) }))
+    .filter((x) => x.cim || x.pontok.length);
+  if (!lista.length) return fail(res, 400, "Hibás adat.");
+  db.changelogKuldve ||= [];
+  const uj = lista.filter((x) => !db.changelogKuldve.includes(x.verzio));
+  if (!uj.length) return res.json({ ok: true, kuldve: 0 });
+  for (const x of uj) db.changelogKuldve.push(x.verzio);
+  db.changelogKuldve = db.changelogKuldve.slice(-200);
+  esemeny("changelog", { bejegyzesek: uj });
+  save();
+  res.json({ ok: true, kuldve: uj.length });
+});
 const hibaKorlat = { perc: 0, db: 0 };
 app.post("/api/mc/hibak", limit(300, 6e5), (req, res) => {
   const key = String(process.env.MC_API_KEY || "");

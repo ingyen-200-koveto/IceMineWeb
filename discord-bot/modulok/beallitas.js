@@ -2,7 +2,7 @@ const { P, ment, beall, kartya, rejtett, hiba, siker, tudIrni } = require("../ko
 const statusz = require("./statusz");
 const weboldal = require("./weboldal");
 
-const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások", merfoldkovek: "Mérföldkövek (online rekord, regisztrációk)", reportok: "Jelentések (a játékbeli /jelent)", adminhivasok: "Segítségkérések (a játékbeli /segitseg)", jelentkezesek: "Staff jelentkezések", hirek: "Hírek (ezek kerülnek a weboldalra)", szerverhibak: "Szerverhibák (lobby és proxy)", buntetesek: "Büntetések (LibertyBans)", csalasgyanu: "Csalásgyanú (GrimAC)" };
+const CSATORNA_NEVEK = { udvozlo: "Üdvözlő üzenetek", otletek: "Ötletek", vasarlasok: "Vásárlások", merfoldkovek: "Mérföldkövek (online rekord, regisztrációk)", reportok: "Jelentések (a játékbeli /jelent)", adminhivasok: "Segítségkérések (a játékbeli /segitseg)", jelentkezesek: "Staff jelentkezések", hirek: "Hírek (ezek kerülnek a weboldalra)", frissitesek: "Frissítések (a szerver changelogja; ha nincs, a hírekbe megy)", szerverhibak: "Szerverhibák (lobby és proxy)", buntetesek: "Büntetések (LibertyBans)", csalasgyanu: "Csalásgyanú (GrimAC)" };
 const NAPLO_TIPUSOK = {
   fo: "📒 Fő napló (moderálás, ticketek és minden, aminek nincs külön csatornája)",
   uzenet: "💬 Üzenetek (törlés, szerkesztés, automod)",
@@ -45,6 +45,7 @@ async function beallitas(i) {
         `🆘 Segítségkérések (/segitseg): ${b.adminhivasok ? cs(b.adminhivasok) : "→ jelentések csatorna"}`,
         `📝 Staff jelentkezések: ${cs(b.jelentkezesek)}`,
         `📢 Hírek a weboldalra: ${cs(b.hirek)}`,
+        `🆕 Frissítések (changelog): ${b.frissitesek ? cs(b.frissitesek) : "`a hírek csatornába megy`"}`,
         `⚠️ Szerverhibák: ${b.szerverhibak ? cs(b.szerverhibak) : "`az első hibánál létrehozom`"}`,
         `🔨 Büntetések: ${b.buntetesek ? cs(b.buntetesek) : "`az elsőnél létrehozom`"}`,
         `🕵️ Csalásgyanú: ${b.csalasgyanu ? cs(b.csalasgyanu) : "`az elsőnél létrehozom`"}`,

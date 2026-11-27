@@ -153,6 +153,31 @@ async function szerverhiba(client, e) {
   }
 }
 
+async function changelog(client, e) {
+  const lista = (e.bejegyzesek || []).slice().sort((a, b) => verzioSzam(a.verzio) - verzioSzam(b.verzio));
+  if (!lista.length) return;
+  const utolso = lista[lista.length - 1];
+  const cim = lista.length === 1 ? `### 🆕 Frissítés: ${utolso.cim || utolso.verzio}` : `### 🆕 Frissítések a szerveren`;
+  const reszek = [cim];
+  for (const x of lista) {
+    if (lista.length > 1) reszek.push(`**${x.cim || "Újdonságok"}** \`${x.verzio}\``);
+    for (const p of x.pontok || []) reszek.push(`• ${p}`);
+    if (lista.length > 1) reszek.push("");
+  }
+  reszek.push(`-# Verzió: ${utolso.verzio} · <t:${unix(e.t)}:f>`);
+  for (const g of client.guilds.cache.values()) {
+    const b = beall(g.id);
+    const ch = (await csatorna(g, b.frissitesek)) || (await csatorna(g, b.hirek));
+    if (!ch || !tudIrni(ch)) continue;
+    const rang = g.roles.cache.find((r) => r.name === "📢 Hírek");
+    const k = kartya(K.ZOLD).szoveg(...(rang ? [`<@&${rang.id}>`] : []), reszek.join("\n").slice(0, 3800)).lab("Changelog • 🧊 IceMine");
+    const m = await ch.send(k.uzenet({ allowedMentions: { roles: rang ? [rang.id] : [] } })).catch((x) => console.error("Changelog küldése:", x.message));
+    if (m && ch.type === 5 && m.crosspostable) await m.crosspost().catch(() => {});
+  }
+}
+
+const verzioSzam = (v) => String(v || "0.0.0").split(".").reduce((a, x) => a * 1000 + (parseInt(x, 10) || 0), 0);
+
 function lezar(uzenet, sorSzoveg) {
   const c = uzenet.components.map((x) => x.toJSON());
   for (const kont of c) if (kont.type === 17) kont.components = kont.components.filter((x) => x.type !== 1).concat([{ type: 10, content: sorSzoveg }]);
@@ -338,6 +363,7 @@ module.exports = {
   szerverhiba,
   buntetes,
   csalasgyanu,
+  changelog,
   jelentkezes,
   hirUj,
   hirSzerk,

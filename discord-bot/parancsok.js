@@ -335,6 +335,7 @@ module.exports = [
     .addSubcommand((s) => s.setName("csalasgyanu").setDescription("Ide jönnek a GrimAC csalásgyanús jelzései").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("szerverhibak").setDescription("Ide jönnek a lobby és a proxy hibái").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (legyen csak a staffé)")))
     .addSubcommand((s) => s.setName("hirek").setDescription("Az itt lévő üzenetek megjelennek a weboldal hírei között").addChannelOption((o) => szovegCsatorna(o, "csatorna", "A hírek csatorna")))
+    .addSubcommand((s) => s.setName("frissitesek").setDescription("Ide jön a szerver changelogja (ha nincs megadva, a hírek csatornába)").addChannelOption((o) => szovegCsatorna(o, "csatorna", "A frissítések csatorna")))
     .addSubcommand((s) =>
       s.setName("merfoldkovek").setDescription("Ide küldöm az online rekordokat és a regisztrációs mérföldköveket").addChannelOption((o) => szovegCsatorna(o, "csatorna", "Csatorna (lehet nyilvános)")),
     )
